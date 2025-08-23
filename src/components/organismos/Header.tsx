@@ -1,4 +1,4 @@
-import { User, Settings, Wallet, LogOut } from "lucide-react";
+import { User, Wallet, LogOut } from "lucide-react";
 
 const Header = () => {
   return (
