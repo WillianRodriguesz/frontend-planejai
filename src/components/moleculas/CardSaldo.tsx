@@ -17,7 +17,7 @@ const CardSaldo = ({
   dataAno,
 }: CardProps) => {
   return (
-    <div className="w-full min-w-0 md:min-w-96 max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6">
+    <div className="w-full min-w-[28rem] md:min-w-[28rem] max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6">
       {/* Cabeçalho com mês/ano e ícone */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="flex items-baseline gap-1">
