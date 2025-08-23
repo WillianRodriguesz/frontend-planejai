@@ -17,7 +17,7 @@ const CardSaldo = ({
   dataAno,
 }: CardProps) => {
   return (
-    <div className="w-full min-w-[28rem] md:min-w-[28rem] max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6">
+    <div className="w-full min-w-[24rem] md:min-w-[24rem] max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4">
       {/* Cabeçalho com mês/ano e ícone */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="flex items-baseline gap-1">
@@ -28,7 +28,7 @@ const CardSaldo = ({
       </div>
 
       {/* Saldo principal */}
-      <div className="text-center mb-6">
+      <div className="text-left mb-6">
         <p className="text-gray-500 text-sm">orçamento disponível</p>
         <p className="text-white text-3xl font-bold">
           {formataValorBRL(saldo)}
