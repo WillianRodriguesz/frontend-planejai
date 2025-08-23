@@ -3,22 +3,15 @@ import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 
 export default function Home() {
-  const headerHeight = "h-[100px]"; // altura do header
+  const headerHeight = "h-[100px]";
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
-      {/* Header */}
+    <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
       <Header />
       <div className={headerHeight}></div>
 
-      {/* Conteúdo principal */}
-      <main className="flex-1 px-4 md:px-8">
-        {/* Selecionador de mês */}
-        <MenuSelecionadorMes
-          onChange={(mes) => console.log(mes)}
-        />
-
-        {/* Card */}
+      <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
+        <MenuSelecionadorMes onChange={(mes) => console.log(mes)} />
         <div className="w-full mt-6">
           <CardSaldo
             dataMes="Março"
@@ -28,7 +21,7 @@ export default function Home() {
             saldoSainda={2300.0}
           />
         </div>
-      </main>
+      </div>
     </div>
   );
 }

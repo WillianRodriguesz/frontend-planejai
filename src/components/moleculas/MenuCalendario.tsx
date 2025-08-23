@@ -30,6 +30,11 @@ const MenuSelecionadorMes = ({
   const [mesIndex, setMesIndex] = useState(mesInicial);
   const [ano, setAno] = useState(anoInicial);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50; 
+
   const getMesesVisiveis = () => {
     const visiveis = [];
     for (let i = -2; i <= 2; i++) {
@@ -103,21 +108,47 @@ const MenuSelecionadorMes = ({
     }
   };
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null); 
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      navegarMes("proximo");
+    } else if (isRightSwipe) {
+      navegarMes("anterior");
+    }
+  };
+
   const mesesVisiveis = getMesesVisiveis();
 
   return (
-    <div className="flex items-center justify-center w-full max-w-4xl mx-auto pt-4 pb-2">
-      {/* Botão de navegação - Anterior */}
+    <div className="flex items-center justify-center w-full max-w-full mx-auto sm:pt-5 sm:pb-3">
       <button
         onClick={() => navegarMes("anterior")}
-        className="h-10 w-10 bg-transparent border-none outline-none cursor-pointer"
+        className="flex justify-start items-center h-12 w-12 sm:h-12 sm:w-12 p-2 sm:p-2 bg-transparent border-none outline-none cursor-pointer"
       >
-        <ChevronLeft className="h-5 w-5 text-white" />
+        <ChevronLeft className="h-6 w-6 sm:h-6 sm:w-6 text-white" />
       </button>
 
-      {/* Container do carrossel de meses */}
-      <div className="flex items-center justify-center mx-4 sm:mx-6 md:mx-8 relative">
-        <div className="flex items-center gap-4 sm:gap-6">
+      <div
+        className="flex items-center justify-center mx-3 sm:mx-5 md:mx-6 relative touch-pan-x"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className="flex items-center gap-3 xs:gap-4 sm:gap-5 md:gap-6">
           {mesesVisiveis.map((item, index) => {
             const isCentral = item.position === 0;
             const isAdjacente = Math.abs(item.position) === 1;
@@ -130,10 +161,10 @@ const MenuSelecionadorMes = ({
                   transition-all duration-300 ease-in-out cursor-pointer transform
                   ${
                     isCentral
-                      ? "scale-125"
+                      ? "scale-110 sm:scale-125"
                       : isAdjacente
                       ? "scale-100"
-                      : "scale-85"
+                      : "scale-90 sm:scale-85"
                   }
                   ${
                     isExterno
@@ -146,14 +177,14 @@ const MenuSelecionadorMes = ({
                 `}
                 onClick={() => selecionarMes(item.index, item.ano)}
               >
-                <div className="text-center min-w-[60px] transition-all duration-300 ease-in-out">
+                <div className="text-center min-w-[45px] xs:min-w-[55px] sm:min-w-[65px] transition-all duration-300 ease-in-out">
                   <span
                     className={`
                       block font-medium transition-all duration-300 ease-in-out
                       ${
                         isCentral
-                          ? "text-white text-xl font-semibold"
-                          : "text-white/60 text-base"
+                          ? "text-white text-lg xs:text-xl sm:text-2xl font-semibold"
+                          : "text-white/60 text-base xs:text-lg sm:text-xl"
                       }
                     `}
                   >
@@ -166,12 +197,11 @@ const MenuSelecionadorMes = ({
         </div>
       </div>
 
-      {/* Botão de navegação - Próximo */}
       <button
         onClick={() => navegarMes("proximo")}
-        className="h-10 w-10 bg-transparent border-none outline-none cursor-pointer"
+        className="flex justify-end items-center h-12 w-12 sm:h-12 sm:w-12 p-2 sm:p-2 bg-transparent border-none outline-none cursor-pointer"
       >
-        <ChevronRight className="h-5 w-5 text-white" />
+        <ChevronRight className="h-6 w-6 sm:h-6 sm:w-6 text-white" />
       </button>
     </div>
   );
