@@ -18,7 +18,7 @@ const CardSaldo = ({
 }: CardProps) => {
   return (
     <div className="w-full min-w-[24rem] md:min-w-[24rem] max-w-4xl mx-auto rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4">
-      {/* Cabeçalho com mês/ano e ícone */}
+      
       <div className="flex items-center justify-between mb-6">
         <h2 className="flex items-baseline gap-1">
           <span className="text-white text-lg font-semibold">{dataMes}</span>
@@ -27,7 +27,6 @@ const CardSaldo = ({
         <Settings className="text-gray-400 hover:text-white cursor-pointer w-5 h-5" />
       </div>
 
-      {/* Saldo principal */}
       <div className="text-left mb-6">
         <p className="text-gray-500 text-sm">orçamento disponível</p>
         <p className="text-white text-3xl font-bold">
@@ -35,7 +34,6 @@ const CardSaldo = ({
         </p>
       </div>
 
-      {/* Entradas e Saídas lado a lado */}
       <div className="flex justify-between">
         <div className="flex flex-col items-start">
           <span className="text-gray-500 text-sm">Entradas</span>
@@ -43,12 +41,14 @@ const CardSaldo = ({
             {formataValorBRL(saldoEntrada)}
           </span>
         </div>
+
         <div className="flex flex-col items-end">
           <span className="text-gray-500 text-sm">Saídas</span>
           <span className="text-red-500 text-base font-semibold">
             {formataValorBRL(saldoSainda)}
           </span>
         </div>
+        
       </div>
     </div>
   );
