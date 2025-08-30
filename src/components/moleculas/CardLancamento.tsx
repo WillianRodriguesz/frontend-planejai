@@ -31,7 +31,7 @@ const CardLancamento = ({
 
           <div className="flex flex-col gap-1">
             <h3 className="text-gray-300 font-medium text-sm">{titulo}</h3>
-            <span className="text-gray-500 text-xs">{data}</span>
+            <span className="text-gray-400 text-xs">{data}</span>
           </div>
         </div>
 

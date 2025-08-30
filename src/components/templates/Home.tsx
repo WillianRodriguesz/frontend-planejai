@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Header from "../organismos/Header";
 import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
@@ -6,6 +7,10 @@ import Lancamentos from "../organismos/Lancamentos";
 
 export default function Home() {
   const headerHeight = "h-[100px]";
+  const [dataSelecionada, setDataSelecionada] = useState({
+    mes: new Date().toLocaleString("pt-BR", { month: "long" }),
+    ano: new Date().getFullYear(),
+  });
 
   const mockLancamentos = [
     {
@@ -37,11 +42,16 @@ export default function Home() {
       <div className={headerHeight}></div>
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
-        <MenuSelecionadorMes onChange={(mes) => console.log(mes)} />
+        <MenuSelecionadorMes
+          onChange={(data) => setDataSelecionada(data)}
+          mesInicial={new Date().getMonth()}
+          anoInicial={new Date().getFullYear()}
+        />
         <div className="w-full mt-6">
           <CardSaldo
-            dataMes="Março"
-            dataAno="2023"
+            key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
+            dataMes={dataSelecionada.mes}
+            dataAno={dataSelecionada.ano.toString()}
             saldo={5000.0}
             saldoEntrada={1000.0}
             saldoSainda={2300.0}
