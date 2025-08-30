@@ -33,7 +33,7 @@ const MenuSelecionadorMes = ({
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const minSwipeDistance = 50; 
+  const minSwipeDistance = 50;
 
   const getMesesVisiveis = () => {
     const visiveis = [];
@@ -109,7 +109,7 @@ const MenuSelecionadorMes = ({
   };
 
   const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null); 
+    setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
   };
 
@@ -134,7 +134,7 @@ const MenuSelecionadorMes = ({
   const mesesVisiveis = getMesesVisiveis();
 
   return (
-    <div className="flex items-center justify-center w-full max-w-full mx-auto sm:pt-5 sm:pb-3">
+    <div className="flex items-center justify-center w-full max-w-full mx-auto py-2 sm:py-3 min-h-[60px]">
       <button
         onClick={() => navegarMes("anterior")}
         className="flex justify-start items-center h-12 w-12 sm:h-12 sm:w-12 p-2 sm:p-2 bg-transparent border-none outline-none cursor-pointer"
@@ -143,7 +143,7 @@ const MenuSelecionadorMes = ({
       </button>
 
       <div
-        className="flex items-center justify-center mx-3 sm:mx-5 md:mx-6 relative touch-pan-x"
+        className="flex items-center justify-center mx-3 sm:mx-5 md:mx-6 relative touch-pan-x z-20"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}

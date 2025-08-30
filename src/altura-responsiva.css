@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos específicos para telas de altura reduzida */
+@media screen and (max-height: 650px) {
+  .menu-altura-ajustada {
+    margin-top: 1rem;
+    padding-top: 0;
+  }
+}

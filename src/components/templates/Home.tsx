@@ -6,7 +6,6 @@ import { ShoppingBag, Coffee, Home as HomeIcon } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
 
 export default function Home() {
-  const headerHeight = "h-[100px]";
   const [dataSelecionada, setDataSelecionada] = useState({
     mes: new Date().toLocaleString("pt-BR", { month: "long" }),
     ano: new Date().getFullYear(),
@@ -39,14 +38,16 @@ export default function Home() {
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
       <Header />
-      <div className={headerHeight}></div>
+      <div className="min-h-[60px] w-full"></div>
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
-        <MenuSelecionadorMes
-          onChange={(data) => setDataSelecionada(data)}
-          mesInicial={new Date().getMonth()}
-          anoInicial={new Date().getFullYear()}
-        />
+        <div className="w-full z-10 pt-2 menu-altura-ajustada">
+          <MenuSelecionadorMes
+            onChange={(data) => setDataSelecionada(data)}
+            mesInicial={new Date().getMonth()}
+            anoInicial={new Date().getFullYear()}
+          />
+        </div>
         <div className="w-full mt-6">
           <CardSaldo
             key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
