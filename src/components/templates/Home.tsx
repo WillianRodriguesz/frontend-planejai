@@ -11,7 +11,7 @@ export default function Home() {
     ano: new Date().getFullYear(),
   });
 
-  const mockLancamentos = [
+  const [lancamentos, setLancamentos] = useState([
     {
       icone: ShoppingBag,
       titulo: "Supermercado",
@@ -33,7 +33,44 @@ export default function Home() {
       valor: 1500.0,
       tipo: "entrada" as const,
     },
-  ];
+  ]);
+
+  const adicionarLancamento = (novoLancamento: {
+    titulo: string;
+    categoria: string;
+    valor: number;
+    data: string;
+    tipo: "entrada" | "saida";
+  }) => {
+    // Determine qual ícone usar com base na categoria
+    let icone;
+    switch (novoLancamento.categoria) {
+      case "alimentacao":
+        icone = Coffee;
+        break;
+      case "moradia":
+        icone = HomeIcon;
+        break;
+      default:
+        icone = ShoppingBag;
+    }
+
+    // Formatar a data para o padrão brasileiro
+    const dataParts = novoLancamento.data.split("-");
+    const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+
+    // Adicionar o novo lançamento à lista
+    setLancamentos([
+      ...lancamentos,
+      {
+        titulo: novoLancamento.titulo,
+        data: dataFormatada,
+        valor: novoLancamento.valor,
+        tipo: novoLancamento.tipo,
+        icone,
+      },
+    ]);
+  };
 
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
@@ -59,7 +96,10 @@ export default function Home() {
           />
         </div>
 
-        <Lancamentos lancamentos={mockLancamentos} />
+        <Lancamentos
+          lancamentos={lancamentos}
+          onAdicionarLancamento={adicionarLancamento}
+        />
       </div>
     </div>
   );

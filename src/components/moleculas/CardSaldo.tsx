@@ -27,10 +27,7 @@ const CardSaldo = ({
         opacity: { duration: 0.3 },
       }}
       className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden"
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
     >
-      {/* Efeito de reflexo */}
       <motion.div
         className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-50 pointer-events-none"
         animate={{

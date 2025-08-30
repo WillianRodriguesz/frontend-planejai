@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { Filter, Plus, ShoppingBag } from "lucide-react";
 import CardLancamento from "../moleculas/CardLancamento";
+import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
+import ModalFiltroLancamento from "./ModalFiltroLancamento";
 
 interface LancamentosProps {
   lancamentos?: Array<{
@@ -9,9 +12,28 @@ interface LancamentosProps {
     valor: number;
     tipo: "entrada" | "saida";
   }>;
+  onAdicionarLancamento?: (novoLancamento: {
+    titulo: string;
+    categoria: string;
+    valor: number;
+    data: string;
+    tipo: "entrada" | "saida";
+  }) => void;
 }
 
-const Lancamentos = ({ lancamentos = [] }: LancamentosProps) => {
+const Lancamentos = ({
+  lancamentos = [],
+  onAdicionarLancamento,
+}: LancamentosProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalFiltroOpen, setIsModalFiltroOpen] = useState(false);
+  const [filtrosAtuais, setFiltrosAtuais] = useState({
+    categoria: "",
+    dataInicio: "",
+    dataFim: "",
+    tipo: "todos" as "todos" | "entrada" | "saida",
+  });
+
   const lancamentosParaExibir =
     lancamentos.length > 0
       ? lancamentos
@@ -34,12 +56,14 @@ const Lancamentos = ({ lancamentos = [] }: LancamentosProps) => {
         <div className="flex items-center gap-3">
           <button
             aria-label="Filtrar lançamentos"
+            onClick={() => setIsModalFiltroOpen(true)}
             className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 w-10 flex items-center justify-center"
           >
             <Filter className="h-5 w-5" />
           </button>
           <button
             aria-label="Adicionar lançamento"
+            onClick={() => setIsModalOpen(true)}
             className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 w-10 flex items-center justify-center"
           >
             <Plus className="h-6 w-6" />
@@ -59,6 +83,28 @@ const Lancamentos = ({ lancamentos = [] }: LancamentosProps) => {
           />
         ))}
       </div>
+
+      <ModalAdicionarLancamento
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={(novoLancamento) => {
+          if (onAdicionarLancamento) {
+            onAdicionarLancamento(novoLancamento);
+          }
+          setIsModalOpen(false);
+        }}
+      />
+
+      <ModalFiltroLancamento
+        isOpen={isModalFiltroOpen}
+        onClose={() => setIsModalFiltroOpen(false)}
+        onApplyFilter={(novosFiltros) => {
+          setFiltrosAtuais(novosFiltros);
+          // Aqui você pode implementar a lógica de filtro
+          console.log("Filtros aplicados:", novosFiltros);
+        }}
+        filtrosAtuais={filtrosAtuais}
+      />
     </div>
   );
 };
