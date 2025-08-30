@@ -23,11 +23,11 @@ const CardSaldo = ({
           <span className="text-white text-lg font-semibold">{dataMes}</span>
           <span className="text-gray-400 text-sm">/ {dataAno}</span>
         </h2>
-        <Settings className="text-gray-400 hover:text-white cursor-pointer w-5 h-5" />
+        <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
       </div>
 
       <div className="text-left mb-6">
-        <p className="text-gray-500 text-sm">orçamento disponível</p>
+        <p className="text-gray-500 text-sm">Orçamento disponível</p>
         <p className="text-white text-3xl font-bold">
           {formataValorBRL(saldo)}
         </p>

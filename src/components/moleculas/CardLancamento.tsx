@@ -7,7 +7,7 @@ interface CardLancamentoProps {
   titulo: string;
   data: string;
   valor: number;
-  tipo?: "entrada" | "saida"; // Opcional para definir a cor do valor (verde para entrada, vermelho para saída)
+  tipo?: "entrada" | "saida";
 }
 
 const CardLancamento = ({
@@ -15,12 +15,10 @@ const CardLancamento = ({
   titulo,
   data,
   valor,
-  tipo = "saida", // Por padrão, consideramos como saída
+  tipo = "saida",
 }: CardLancamentoProps) => {
-  // Determinar a cor com base no tipo
   const valorClassName = tipo === "entrada" ? "text-green-700" : "text-red-700";
 
-  // Determinar o ícone com base no tipo
   const DirecaoIcone = tipo === "entrada" ? ArrowUpRight : ArrowDownRight;
 
   return (
@@ -38,10 +36,10 @@ const CardLancamento = ({
         </div>
 
         <div className="flex items-center gap-1.5">
-          <DirecaoIcone className={`w-4 h-4 ${valorClassName} rounded-lg`} />
           <span className={`font-semibold text-sm ${valorClassName}`}>
             {formataValorBRL(valor)}
           </span>
+          <DirecaoIcone className={`w-4 h-4 ${valorClassName} rounded-lg`} />
         </div>
       </div>
     </div>

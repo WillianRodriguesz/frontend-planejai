@@ -2,10 +2,34 @@ import Header from "../organismos/Header";
 import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 import { ShoppingBag, Coffee, Home as HomeIcon } from "lucide-react";
-import CardLancamento from "../moleculas/CardLancamento";
+import Lancamentos from "../organismos/Lancamentos";
 
 export default function Home() {
   const headerHeight = "h-[100px]";
+
+  const mockLancamentos = [
+    {
+      icone: ShoppingBag,
+      titulo: "Supermercado",
+      data: "24/08/2025",
+      valor: 280.5,
+      tipo: "saida" as const,
+    },
+    {
+      icone: Coffee,
+      titulo: "Cafeteria",
+      data: "22/08/2025",
+      valor: 42.9,
+      tipo: "saida" as const,
+    },
+    {
+      icone: HomeIcon,
+      titulo: "Aluguel recebido",
+      data: "20/08/2025",
+      valor: 1500.0,
+      tipo: "entrada" as const,
+    },
+  ];
 
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
@@ -24,32 +48,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="w-full mt-6 ">
-          <h2 className="text-gray-300 text-lg font-semibold mb-3">
-            Últimos lançamentos
-          </h2>
-          <CardLancamento
-            icone={ShoppingBag}
-            titulo="Supermercado"
-            data="24/08/2025"
-            valor={280.5}
-            tipo="saida"
-          />
-          <CardLancamento
-            icone={Coffee}
-            titulo="Cafeteria"
-            data="22/08/2025"
-            valor={42.9}
-            tipo="saida"
-          />
-          <CardLancamento
-            icone={HomeIcon}
-            titulo="Aluguel recebido"
-            data="20/08/2025"
-            valor={1500.0}
-            tipo="entrada"
-          />
-        </div>
+        <Lancamentos lancamentos={mockLancamentos} />
       </div>
     </div>
   );
