@@ -90,7 +90,7 @@ export default function Home() {
             key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
             dataMes={dataSelecionada.mes}
             dataAno={dataSelecionada.ano.toString()}
-            saldo={5000.0}
+            saldo={100}
             saldoEntrada={1000.0}
             saldoSainda={2300.0}
           />
