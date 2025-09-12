@@ -1,6 +1,8 @@
 import { User, Wallet, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate = useNavigate();
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md border-b-4 border-purple-600 shadow-lg shadow-purple-600/30 h-[60px]">
       <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
@@ -15,6 +17,7 @@ const Header = () => {
 
         <div className="flex items-center">
           <button
+            onClick={() => navigate("/configuracoes")}
             aria-label="Perfil do usuário"
             className="text-white hover:text-violet-600 hover:bg-purple-600/15 p-2 rounded-xl transition-all duration-200 bg-transparent focus:outline-none border-none outline-none ring-0 focus:ring-0"
           >
