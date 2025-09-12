@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
+import CampoOutlined from "../atomos/CampoOutlined";
 
 interface FiltroLancamento {
   categoria: string;
@@ -99,18 +100,12 @@ const ModalFiltroLancamento = ({
 
               <form onSubmit={handleSubmit}>
                 <div className="space-y-5">
-                  <div>
-                    <label
-                      htmlFor="categoria"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Categoria
-                    </label>
+                  <CampoOutlined label="Categoria">
                     <select
                       id="categoria"
                       value={categoria}
                       onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                     >
                       <option value="">Todas as categorias</option>
                       <option value="alimentacao">Alimentação</option>
@@ -121,44 +116,27 @@ const ModalFiltroLancamento = ({
                       <option value="educacao">Educação</option>
                       <option value="outros">Outros</option>
                     </select>
-                  </div>
+                  </CampoOutlined>
 
-                  <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Período
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label
-                          htmlFor="dataInicio"
-                          className="block text-gray-400 text-xs mb-1"
-                        >
-                          Data inicial
-                        </label>
-                        <input
-                          type="date"
-                          id="dataInicio"
-                          value={dataInicio}
-                          onChange={(e) => setDataInicio(e.target.value)}
-                          className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="dataFim"
-                          className="block text-gray-400 text-xs mb-1"
-                        >
-                          Data final
-                        </label>
-                        <input
-                          type="date"
-                          id="dataFim"
-                          value={dataFim}
-                          onChange={(e) => setDataFim(e.target.value)}
-                          className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                        />
-                      </div>
-                    </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <CampoOutlined label="Data inicial">
+                      <input
+                        type="date"
+                        id="dataInicio"
+                        value={dataInicio}
+                        onChange={(e) => setDataInicio(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
+                      />
+                    </CampoOutlined>
+                    <CampoOutlined label="Data final">
+                      <input
+                        type="date"
+                        id="dataFim"
+                        value={dataFim}
+                        onChange={(e) => setDataFim(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
+                      />
+                    </CampoOutlined>
                   </div>
 
                   <div>
@@ -235,18 +213,12 @@ const ModalFiltroLancamento = ({
 
               <form onSubmit={handleSubmit} className="mt-4">
                 <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="categoria-mobile"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Categoria
-                    </label>
+                  <CampoOutlined label="Categoria" size="sm">
                     <select
                       id="categoria-mobile"
                       value={categoria}
                       onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                     >
                       <option value="">Todas as categorias</option>
                       <option value="alimentacao">Alimentação</option>
@@ -257,44 +229,27 @@ const ModalFiltroLancamento = ({
                       <option value="educacao">Educação</option>
                       <option value="outros">Outros</option>
                     </select>
-                  </div>
+                  </CampoOutlined>
 
-                  <div>
-                    <label className="block text-gray-300 text-sm font-medium mb-2">
-                      Período
-                    </label>
-                    <div className="space-y-3">
-                      <div>
-                        <label
-                          htmlFor="dataInicio-mobile"
-                          className="block text-gray-400 text-xs mb-1"
-                        >
-                          Data inicial
-                        </label>
-                        <input
-                          type="date"
-                          id="dataInicio-mobile"
-                          value={dataInicio}
-                          onChange={(e) => setDataInicio(e.target.value)}
-                          className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          htmlFor="dataFim-mobile"
-                          className="block text-gray-400 text-xs mb-1"
-                        >
-                          Data final
-                        </label>
-                        <input
-                          type="date"
-                          id="dataFim-mobile"
-                          value={dataFim}
-                          onChange={(e) => setDataFim(e.target.value)}
-                          className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                        />
-                      </div>
-                    </div>
+                  <div className="space-y-3">
+                    <CampoOutlined label="Data inicial" size="sm">
+                      <input
+                        type="date"
+                        id="dataInicio-mobile"
+                        value={dataInicio}
+                        onChange={(e) => setDataInicio(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
+                      />
+                    </CampoOutlined>
+                    <CampoOutlined label="Data final" size="sm">
+                      <input
+                        type="date"
+                        id="dataFim-mobile"
+                        value={dataFim}
+                        onChange={(e) => setDataFim(e.target.value)}
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
+                      />
+                    </CampoOutlined>
                   </div>
 
                   <div>

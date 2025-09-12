@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
+import CampoOutlined from "../atomos/CampoOutlined";
 
 interface ModalAdicionarLancamentoProps {
   isOpen: boolean;
@@ -88,36 +89,24 @@ const ModalAdicionarLancamento = ({
 
               <form onSubmit={handleSubmit}>
                 <div className="space-y-5">
-                  <div>
-                    <label
-                      htmlFor="titulo"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Título da transação
-                    </label>
+                  <CampoOutlined label="Título da transação" size="md">
                     <input
                       type="text"
                       id="titulo"
                       value={titulo}
                       onChange={(e) => setTitulo(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                       placeholder="Ex: Supermercado"
                       required
                     />
-                  </div>
+                  </CampoOutlined>
 
-                  <div>
-                    <label
-                      htmlFor="categoria"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Categoria
-                    </label>
+                  <CampoOutlined label="Categoria" size="md">
                     <select
                       id="categoria"
                       value={categoria}
                       onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                       required
                     >
                       <option value="" disabled>
@@ -131,45 +120,32 @@ const ModalAdicionarLancamento = ({
                       <option value="educacao">Educação</option>
                       <option value="outros">Outros</option>
                     </select>
-                  </div>
+                  </CampoOutlined>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label
-                        htmlFor="valor"
-                        className="block text-gray-300 text-sm font-medium mb-2"
-                      >
-                        Valor
-                      </label>
+                    <CampoOutlined label="Valor" size="md">
                       <input
                         type="number"
                         id="valor"
                         value={valor}
                         onChange={(e) => setValor(e.target.value)}
-                        className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
                         placeholder="R$ 0,00"
                         step="0.01"
                         min="0"
                         required
                       />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="data"
-                        className="block text-gray-300 text-sm font-medium mb-2"
-                      >
-                        Data
-                      </label>
+                    </CampoOutlined>
+                    <CampoOutlined label="Data" size="md">
                       <input
                         type="date"
                         id="data"
                         value={data}
                         onChange={(e) => setData(e.target.value)}
-                        className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
                         required
                       />
-                    </div>
+                    </CampoOutlined>
                   </div>
 
                   <div>
@@ -229,36 +205,24 @@ const ModalAdicionarLancamento = ({
 
               <form onSubmit={handleSubmit} className="mt-4">
                 <div className="space-y-4">
-                  <div>
-                    <label
-                      htmlFor="titulo-mobile"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Título da transação
-                    </label>
+                  <CampoOutlined label="Título da transação" size="sm">
                     <input
                       type="text"
                       id="titulo-mobile"
                       value={titulo}
                       onChange={(e) => setTitulo(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                       placeholder="Ex: Supermercado"
                       required
                     />
-                  </div>
+                  </CampoOutlined>
 
-                  <div>
-                    <label
-                      htmlFor="categoria-mobile"
-                      className="block text-gray-300 text-sm font-medium mb-2"
-                    >
-                      Categoria
-                    </label>
+                  <CampoOutlined label="Categoria" size="sm">
                     <select
                       id="categoria-mobile"
                       value={categoria}
                       onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full bg-transparent border-none outline-none focus:outline-none"
                       required
                     >
                       <option value="" disabled>
@@ -272,45 +236,32 @@ const ModalAdicionarLancamento = ({
                       <option value="educacao">Educação</option>
                       <option value="outros">Outros</option>
                     </select>
-                  </div>
+                  </CampoOutlined>
 
                   <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label
-                        htmlFor="valor-mobile"
-                        className="block text-gray-300 text-sm font-medium mb-2"
-                      >
-                        Valor
-                      </label>
+                    <CampoOutlined label="Valor" size="sm">
                       <input
                         type="number"
                         id="valor-mobile"
                         value={valor}
                         onChange={(e) => setValor(e.target.value)}
-                        className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
                         placeholder="R$ 0,00"
                         step="0.01"
                         min="0"
                         required
                       />
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="data-mobile"
-                        className="block text-gray-300 text-sm font-medium mb-2"
-                      >
-                        Data
-                      </label>
+                    </CampoOutlined>
+                    <CampoOutlined label="Data" size="sm">
                       <input
                         type="date"
                         id="data-mobile"
                         value={data}
                         onChange={(e) => setData(e.target.value)}
-                        className="w-full bg-card/50 border border-purple-500/30 rounded-xl p-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                        className="w-full bg-transparent border-none outline-none focus:outline-none"
                         required
                       />
-                    </div>
+                    </CampoOutlined>
                   </div>
 
                   <div>

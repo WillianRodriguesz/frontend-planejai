@@ -3,6 +3,7 @@ import { Filter, Plus, ShoppingBag } from "lucide-react";
 import CardLancamento from "../moleculas/CardLancamento";
 import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
 import ModalFiltroLancamento from "./ModalFiltroLancamento";
+import ModalDetalhesLancamento from "./ModalDetalhesLancamento";
 
 interface LancamentosProps {
   lancamentos?: Array<{
@@ -27,14 +28,69 @@ const Lancamentos = ({
 }: LancamentosProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalFiltroOpen, setIsModalFiltroOpen] = useState(false);
-  const [filtrosAtuais, setFiltrosAtuais] = useState({
+  const [isModalDetalhesOpen, setIsModalDetalhesOpen] = useState(false);
+  const [lancamentoSelecionado, setLancamentoSelecionado] = useState<{
+    icone: any;
+    titulo: string;
+    data: string;
+    valor: number;
+    tipo: "entrada" | "saida";
+    categoria?: string;
+  } | null>(null);
+  const [filtrosAtuais, setFiltrosAtuais] = useState<{
+    categoria: string;
+    dataInicio: string;
+    dataFim: string;
+    tipo: "todos" | "entrada" | "saida";
+  }>({
     categoria: "",
     dataInicio: "",
     dataFim: "",
-    tipo: "todos" as "todos" | "entrada" | "saida",
+    tipo: "todos",
   });
 
-  const lancamentosParaExibir =
+  const abrirModalDetalhes = (lancamento: {
+    icone: any;
+    titulo: string;
+    data: string;
+    valor: number;
+    tipo: "entrada" | "saida";
+    categoria?: string;
+  }) => {
+    setLancamentoSelecionado(lancamento);
+    setIsModalDetalhesOpen(true);
+  };
+
+  const handleEditLancamento = (lancamento: {
+    icone: any;
+    titulo: string;
+    data: string;
+    valor: number;
+    tipo: "entrada" | "saida";
+    categoria?: string;
+  }) => {
+    console.log("Editar lançamento:", lancamento);
+  };
+
+  const handleDeleteLancamento = (lancamento: {
+    icone: any;
+    titulo: string;
+    data: string;
+    valor: number;
+    tipo: "entrada" | "saida";
+    categoria?: string;
+  }) => {
+    // TODO: Implementar exclusão
+    console.log("Excluir lançamento:", lancamento);
+  };
+
+  const lancamentosParaExibir: Array<{
+    icone: any;
+    titulo: string;
+    data: string;
+    valor: number;
+    tipo: "entrada" | "saida";
+  }> =
     lancamentos.length > 0
       ? lancamentos
       : [
@@ -43,7 +99,7 @@ const Lancamentos = ({
             titulo: "Supermercado",
             data: "24/08/2025",
             valor: 280.5,
-            tipo: "saida",
+            tipo: "saida" as const,
           },
         ];
 
@@ -79,7 +135,8 @@ const Lancamentos = ({
             titulo={lancamento.titulo}
             data={lancamento.data}
             valor={lancamento.valor}
-            tipo={lancamento.tipo as "entrada" | "saida"}
+            tipo={lancamento.tipo}
+            onClick={() => abrirModalDetalhes(lancamento)}
           />
         ))}
       </div>
@@ -100,10 +157,17 @@ const Lancamentos = ({
         onClose={() => setIsModalFiltroOpen(false)}
         onApplyFilter={(novosFiltros) => {
           setFiltrosAtuais(novosFiltros);
-          // Aqui você pode implementar a lógica de filtro
           console.log("Filtros aplicados:", novosFiltros);
         }}
         filtrosAtuais={filtrosAtuais}
+      />
+
+      <ModalDetalhesLancamento
+        isOpen={isModalDetalhesOpen}
+        onClose={() => setIsModalDetalhesOpen(false)}
+        lancamento={lancamentoSelecionado}
+        onEdit={handleEditLancamento}
+        onDelete={handleDeleteLancamento}
       />
     </div>
   );

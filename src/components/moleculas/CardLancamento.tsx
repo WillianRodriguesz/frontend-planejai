@@ -8,6 +8,7 @@ interface CardLancamentoProps {
   data: string;
   valor: number;
   tipo?: "entrada" | "saida";
+  onClick?: () => void;
 }
 
 const CardLancamento = ({
@@ -16,13 +17,21 @@ const CardLancamento = ({
   data,
   valor,
   tipo = "saida",
+  onClick,
 }: CardLancamentoProps) => {
   const valorClassName = tipo === "entrada" ? "text-green-700" : "text-red-700";
 
   const DirecaoIcone = tipo === "entrada" ? ArrowUpRight : ArrowDownRight;
 
   return (
-    <div className="w-full bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-b border-purple-500/30 shadow-xl p-2">
+    <div
+      className={`w-full bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-b border-purple-500/30 shadow-xl p-2 ${
+        onClick
+          ? "cursor-pointer hover:from-card/90 hover:to-card/50 transition-all duration-200"
+          : ""
+      }`}
+      onClick={onClick}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-xl bg-purple-900/40 backdrop-blur-sm">

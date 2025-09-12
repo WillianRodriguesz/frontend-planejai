@@ -55,7 +55,6 @@ export default function Home() {
         icone = ShoppingBag;
     }
 
-    // Formatar a data para o padrão brasileiro
     const dataParts = novoLancamento.data.split("-");
     const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
 
