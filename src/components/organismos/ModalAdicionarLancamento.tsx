@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { X, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
+import TituloModal from "../atomos/TituloModal";
+import BotaoSalvar from "../atomos/BotaoSalvar";
 
 interface ModalAdicionarLancamentoProps {
   isOpen: boolean;
@@ -40,7 +43,6 @@ const ModalAdicionarLancamento = ({
       tipo,
     });
 
-    // Resetar o formulário
     setTitulo("");
     setCategoria("");
     setValor("");
@@ -72,12 +74,10 @@ const ModalAdicionarLancamento = ({
           >
             <div className="bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 shadow-xl rounded-2xl p-6 w-full max-w-md">
               <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Plus className="w-5 h-5 text-purple-400" />
-                  <h2 className="text-white text-xl font-semibold">
-                    Novo lançamento
-                  </h2>
-                </div>
+                <TituloModal
+                  titulo="Novo lançamento"
+                  icone={<Plus className="w-5 h-5 text-purple-400" />}
+                />
                 <button
                   onClick={onClose}
                   className="text-gray-400 hover:text-white p-1 rounded-full transition-colors focus:outline-none"
@@ -177,38 +177,27 @@ const ModalAdicionarLancamento = ({
                       Tipo de transação
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
+                      <BotaoTipoTransacaoModal
+                        tipo="entrada"
+                        isAtivo={tipo === "entrada"}
                         onClick={() => setTipo("entrada")}
-                        className={`p-3 rounded-xl border ${
-                          tipo === "entrada"
-                            ? "bg-green-500/20 border-green-500 text-green-400"
-                            : "bg-card/30 border-purple-500/30 text-gray-400"
-                        } font-medium transition-colors focus:outline-none`}
                       >
                         Entrada
-                      </button>
-                      <button
-                        type="button"
+                      </BotaoTipoTransacaoModal>
+                      <BotaoTipoTransacaoModal
+                        tipo="saida"
+                        isAtivo={tipo === "saida"}
                         onClick={() => setTipo("saida")}
-                        className={`p-3 rounded-xl border ${
-                          tipo === "saida"
-                            ? "bg-red-500/20 border-red-500 text-red-400"
-                            : "bg-card/30 border-purple-500/30 text-gray-400"
-                        } font-medium transition-colors focus:outline-none`}
                       >
                         Saída
-                      </button>
+                      </BotaoTipoTransacaoModal>
                     </div>
                   </div>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full mt-8 bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition-colors focus:outline-none"
-                >
-                  Salvar
-                </button>
+                <div className="mt-8">
+                  <BotaoSalvar>Salvar</BotaoSalvar>
+                </div>
               </form>
             </div>
           </motion.div>
@@ -225,12 +214,10 @@ const ModalAdicionarLancamento = ({
               <div className="flex flex-col items-center mb-4">
                 <div className="w-10 h-1 bg-gray-500/30 rounded-full mb-4"></div>
                 <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-2">
-                    <Plus className="w-5 h-5 text-purple-400" />
-                    <h2 className="text-white text-xl font-semibold">
-                      Novo lançamento
-                    </h2>
-                  </div>
+                  <TituloModal
+                    titulo="Novo lançamento"
+                    icone={<Plus className="w-5 h-5 text-purple-400" />}
+                  />
                   <button
                     onClick={onClose}
                     className="text-gray-400 hover:text-white p-1 rounded-full transition-colors focus:outline-none"
@@ -331,38 +318,26 @@ const ModalAdicionarLancamento = ({
                       Tipo de transação
                     </label>
                     <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
+                      <BotaoTipoTransacaoModal
+                        tipo="entrada"
+                        isAtivo={tipo === "entrada"}
                         onClick={() => setTipo("entrada")}
-                        className={`p-3 rounded-xl border ${
-                          tipo === "entrada"
-                            ? "bg-green-500/20 border-green-500 text-green-400"
-                            : "bg-card/30 border-purple-500/30 text-gray-400"
-                        } font-medium transition-colors focus:outline-none`}
                       >
                         Entrada
-                      </button>
-                      <button
-                        type="button"
+                      </BotaoTipoTransacaoModal>
+                      <BotaoTipoTransacaoModal
+                        tipo="saida"
+                        isAtivo={tipo === "saida"}
                         onClick={() => setTipo("saida")}
-                        className={`p-3 rounded-xl border ${
-                          tipo === "saida"
-                            ? "bg-red-500/20 border-red-500 text-red-400"
-                            : "bg-card/30 border-purple-500/30 text-gray-400"
-                        } font-medium transition-colors focus:outline-none`}
                       >
                         Saída
-                      </button>
+                      </BotaoTipoTransacaoModal>
                     </div>
                   </div>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full mt-6 bg-gradient-to-r from-purple-600 to-violet-500 hover:from-purple-700 hover:to-violet-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-purple-600/30 transition-colors focus:outline-none"
-                >
-                  Salvar
-                </button>
+                <div className="mt-6">
+                  <BotaoSalvar>Salvar</BotaoSalvar>
+                </div>
               </form>
             </div>
           </motion.div>
