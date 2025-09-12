@@ -77,28 +77,30 @@ export default function Home() {
       <div className="min-h-[60px] w-full"></div>
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
-        <div className="w-full z-10 pt-2 menu-altura-ajustada">
-          <MenuSelecionadorMes
-            onChange={(data) => setDataSelecionada(data)}
-            mesInicial={new Date().getMonth()}
-            anoInicial={new Date().getFullYear()}
-          />
-        </div>
-        <div className="w-full mt-6">
-          <CardSaldo
-            key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
-            dataMes={dataSelecionada.mes}
-            dataAno={dataSelecionada.ano.toString()}
-            saldo={100}
-            saldoEntrada={1000.0}
-            saldoSainda={2300.0}
-          />
-        </div>
+        <div className="w-full max-w-7xl">
+          <div className="w-full z-10 pt-2 menu-altura-ajustada">
+            <MenuSelecionadorMes
+              onChange={(data) => setDataSelecionada(data)}
+              mesInicial={new Date().getMonth()}
+              anoInicial={new Date().getFullYear()}
+            />
+          </div>
+          <div className="w-full mt-6">
+            <CardSaldo
+              key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
+              dataMes={dataSelecionada.mes}
+              dataAno={dataSelecionada.ano.toString()}
+              saldo={100}
+              saldoEntrada={1000.0}
+              saldoSainda={2300.0}
+            />
+          </div>
 
-        <Lancamentos
-          lancamentos={lancamentos}
-          onAdicionarLancamento={adicionarLancamento}
-        />
+          <Lancamentos
+            lancamentos={lancamentos}
+            onAdicionarLancamento={adicionarLancamento}
+          />
+        </div>
       </div>
     </div>
   );
