@@ -153,7 +153,7 @@ const CardSaldo = ({
 
       {/* Seção do Saldo */}
       <div className="text-left mb-6">
-        <p className="text-gray-400 text-sm">Orçamento disponível</p>
+        <p className="text-gray-400 text-sm">Saldo do mês</p>
         {isEmptyBudget ? (
           <motion.button
             initial={{ scale: 0.95, opacity: 0 }}

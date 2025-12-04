@@ -5,7 +5,12 @@ import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
 
 export default function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />

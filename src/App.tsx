@@ -2,11 +2,14 @@ import "./App.css";
 import "./index.css";
 import AppRoutes from "./routes";
 import { LoadingProvider } from "./contexts/LoadingContext";
+import { CarteiraProvider } from "./contexts/CarteiraContext";
 
 function App() {
   return (
     <LoadingProvider>
-      <AppRoutes />
+      <CarteiraProvider>
+        <AppRoutes />
+      </CarteiraProvider>
     </LoadingProvider>
   );
 }

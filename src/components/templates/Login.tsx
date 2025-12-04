@@ -16,11 +16,15 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    showLoading();
+    showLoading("Entrando...", "Entrando na página inicial");
 
     try {
       // Simular delay de autenticação
       await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // TODO: Após implementar autenticação real, pegar o ID da carteira do cookie
+      // Por enquanto, o ID já vem da env no CarteiraContext
+
       navigate("/home");
     } finally {
       hideLoading();

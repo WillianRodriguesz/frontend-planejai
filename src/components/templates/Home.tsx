@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../organismos/Header";
 import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 import { ShoppingBag, Coffee, Home as HomeIcon } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
+import { useSaldo } from "../../hooks/useSaldo";
+import { useLoading } from "../../contexts/LoadingContext";
+import { converterMesParaNumero, formatarDataBR } from "../../utils/dateUtils";
 
 export default function Home() {
   const [dataSelecionada, setDataSelecionada] = useState({
     mes: new Date().toLocaleString("pt-BR", { month: "long" }),
     ano: new Date().getFullYear(),
   });
+
+  // Converter nome do mês para número (1-12)
+  const mesNumero = converterMesParaNumero(dataSelecionada.mes);
+
+  const { saldo, loading, error } = useSaldo({
+    mes: mesNumero,
+    ano: dataSelecionada.ano,
+  });
+
+  const { showLoading, hideLoading } = useLoading();
 
   const [lancamentos, setLancamentos] = useState([
     {
@@ -55,8 +68,7 @@ export default function Home() {
         icone = ShoppingBag;
     }
 
-    const dataParts = novoLancamento.data.split("-");
-    const dataFormatada = `${dataParts[2]}/${dataParts[1]}/${dataParts[0]}`;
+    const dataFormatada = formatarDataBR(novoLancamento.data);
 
     // Adicionar o novo lançamento à lista
     setLancamentos([
@@ -70,6 +82,14 @@ export default function Home() {
       },
     ]);
   };
+
+  useEffect(() => {
+    if (loading) {
+      showLoading("Carregando dados...", "Buscando informações da carteira");
+    } else {
+      hideLoading();
+    }
+  }, [loading]);
 
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
@@ -86,14 +106,27 @@ export default function Home() {
             />
           </div>
           <div className="w-full mt-6">
-            <CardSaldo
-              key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
-              dataMes={dataSelecionada.mes}
-              dataAno={dataSelecionada.ano.toString()}
-              saldo={100}
-              saldoEntrada={1000.0}
-              saldoSainda={2300.0}
-            />
+            {error ? (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
+                <p className="text-red-400 font-semibold">
+                  Erro ao carregar saldo
+                </p>
+                <p className="text-red-300 text-sm mt-1">{error}</p>
+              </div>
+            ) : saldo ? (
+              <CardSaldo
+                key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
+                dataMes={dataSelecionada.mes}
+                dataAno={dataSelecionada.ano.toString()}
+                saldo={saldo.saldoMes}
+                saldoEntrada={saldo.entradas}
+                saldoSainda={saldo.saidas}
+              />
+            ) : (
+              <div className="bg-card/50 border border-purple-500/30 rounded-xl p-4 text-center">
+                <p className="text-gray-400">Carregando dados...</p>
+              </div>
+            )}
           </div>
 
           <Lancamentos
