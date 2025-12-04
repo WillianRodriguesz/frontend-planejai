@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#9333ea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7e22ce;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect width="100" height="100" rx="22" fill="url(#grad)"/>
+  
+  <!-- Shine effect -->
+  <rect width="100" height="100" rx="22" fill="url(#shine)"/>
+  
+  <!-- Wallet icon centered -->
+  <g transform="translate(25, 30)">
+    <!-- Main wallet body -->
+    <rect x="0" y="10" width="50" height="32" rx="3" fill="#ffffff" stroke="#e0e0e0" stroke-width="0.5"/>
+    
+    <!-- Wallet flap/top -->
+    <path d="M 0 10 L 0 3 Q 0 0, 3 0 L 47 0 Q 50 0, 50 3 L 50 10 Z" fill="#ffffff" stroke="#e0e0e0" stroke-width="0.5"/>
+    
+    <!-- Card slots -->
+    <rect x="4" y="6" width="42" height="2.5" rx="1" fill="#9333ea" opacity="0.3"/>
+    <rect x="4" y="17" width="42" height="2" rx="1" fill="#7e22ce" opacity="0.2"/>
+    <rect x="4" y="22" width="42" height="2" rx="1" fill="#7e22ce" opacity="0.2"/>
+    
+    <!-- Wallet button/clasp -->
+    <circle cx="40" cy="30" r="3.5" fill="#9333ea" opacity="0.4"/>
+    <circle cx="40" cy="30" r="1.8" fill="#ffffff"/>
+    
+    <!-- Money bills peeking out -->
+    <rect x="8" y="2" width="34" height="4" rx="1" fill="#10b981" opacity="0.6"/>
+    <rect x="10" y="0" width="30" height="4" rx="1" fill="#10b981" opacity="0.8"/>
+  </g>
+</svg>

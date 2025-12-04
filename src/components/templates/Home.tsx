@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Header from "../organismos/Header";
 import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
-import { ShoppingBag, Coffee, Home as HomeIcon } from "lucide-react";
+import { ShoppingBag, Coffee, Home as HomeIcon, Settings } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
-import { useLoading } from "../../contexts/LoadingContext";
 import { converterMesParaNumero, formatarDataBR } from "../../utils/dateUtils";
 
 export default function Home() {
@@ -21,8 +20,6 @@ export default function Home() {
     mes: mesNumero,
     ano: dataSelecionada.ano,
   });
-
-  const { showLoading, hideLoading } = useLoading();
 
   const [lancamentos, setLancamentos] = useState([
     {
@@ -83,14 +80,6 @@ export default function Home() {
     ]);
   };
 
-  useEffect(() => {
-    if (loading) {
-      showLoading("Carregando dados...", "Buscando informações da carteira");
-    } else {
-      hideLoading();
-    }
-  }, [loading]);
-
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
       <Header />
@@ -113,6 +102,50 @@ export default function Home() {
                 </p>
                 <p className="text-red-300 text-sm mt-1">{error}</p>
               </div>
+            ) : loading ? (
+              <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden">
+                {/* Efeito de shimmer global */}
+                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
+
+                {/* Cabeçalho com textos reais */}
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="flex items-baseline gap-1">
+                    <span className="text-white text-lg font-semibold">
+                      {dataSelecionada.mes}
+                    </span>
+                    <span className="text-gray-400 text-sm">/</span>
+                    <span className="text-gray-400 text-sm">
+                      {dataSelecionada.ano}
+                    </span>
+                  </h2>
+                  {/* Ícone settings real (sem skeleton) */}
+                  <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
+                </div>
+
+                {/* Saldo do mês - skeleton apenas no valor */}
+                <div className="text-left mb-6">
+                  <p className="text-gray-400 text-sm">Saldo do mês</p>
+                  <div className="relative h-9 w-40 bg-gray-700/50 rounded overflow-hidden mt-1">
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                  </div>
+                </div>
+
+                {/* Entradas e Saídas - skeleton apenas nos valores */}
+                <div className="flex justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-gray-400 text-sm">Entradas</span>
+                    <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-gray-400 text-sm">Saídas</span>
+                    <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
+                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ) : saldo ? (
               <CardSaldo
                 key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
@@ -122,11 +155,7 @@ export default function Home() {
                 saldoEntrada={saldo.entradas}
                 saldoSainda={saldo.saidas}
               />
-            ) : (
-              <div className="bg-card/50 border border-purple-500/30 rounded-xl p-4 text-center">
-                <p className="text-gray-400">Carregando dados...</p>
-              </div>
-            )}
+            ) : null}
           </div>
 
           <Lancamentos
