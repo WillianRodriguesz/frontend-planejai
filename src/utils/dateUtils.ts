@@ -51,12 +51,13 @@ export const converterNumeroParaMes = (numeroMes: number): string => {
 
 /**
  * Formata uma data no padrão brasileiro DD/MM/YYYY
- * @param data - Data no formato YYYY-MM-DD ou objeto Date
+ * @param data - Data no formato YYYY-MM-DD, YYYY-MM-DDTHH:mm:ss.sssZ ou objeto Date
  * @returns Data formatada como DD/MM/YYYY
  */
 export const formatarDataBR = (data: string | Date): string => {
   if (typeof data === "string") {
-    const [ano, mes, dia] = data.split("-");
+    const dataLimpa = data.split("T")[0];
+    const [ano, mes, dia] = dataLimpa.split("-");
     return `${dia}/${mes}/${ano}`;
   }
 

@@ -112,13 +112,14 @@ const ModalAdicionarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="moradia">Moradia</option>
-                      <option value="saude">Saúde</option>
-                      <option value="educacao">Educação</option>
-                      <option value="outros">Outros</option>
+                      {/* Usando IDs numéricos como valores */}
+                      <option value="1">Alimentação</option>
+                      <option value="2">Transporte</option>
+                      <option value="3">Lazer</option>
+                      <option value="4">Moradia</option>
+                      <option value="5">Saúde</option>
+                      <option value="6">Educação</option>
+                      <option value="7">Outros</option>
                     </select>
                   </CampoOutlined>
 
@@ -228,13 +229,14 @@ const ModalAdicionarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="moradia">Moradia</option>
-                      <option value="saude">Saúde</option>
-                      <option value="educacao">Educação</option>
-                      <option value="outros">Outros</option>
+                      {/* Usando IDs numéricos como valores */}
+                      <option value="1">Alimentação</option>
+                      <option value="2">Transporte</option>
+                      <option value="3">Lazer</option>
+                      <option value="4">Moradia</option>
+                      <option value="5">Saúde</option>
+                      <option value="6">Educação</option>
+                      <option value="7">Outros</option>
                     </select>
                   </CampoOutlined>
 
