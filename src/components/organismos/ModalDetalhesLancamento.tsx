@@ -1,10 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Edit, Trash2, Calendar, DollarSign, Tag } from "lucide-react";
+import { useState } from "react";
 import TituloModal from "../atomos/TituloModal";
 import CampoOutlined from "../atomos/CampoOutlined";
 import { formataValorBRL } from "../../utils/formataValorBrl";
+import ModalConfirmarExclusao from "./ModalConfirmarExclusao";
 
 interface Lancamento {
+  id: string;
   icone: any;
   titulo: string;
   data: string;
@@ -17,8 +20,8 @@ interface ModalDetalhesLancamentoProps {
   isOpen: boolean;
   onClose: () => void;
   lancamento: Lancamento | null;
-  onEdit?: (lancamento: Lancamento) => void;
-  onDelete?: (lancamento: Lancamento) => void;
+  onEdit?: () => void;
+  onDelete?: (idLancamento: string) => void;
 }
 
 const ModalDetalhesLancamento = ({
@@ -28,22 +31,26 @@ const ModalDetalhesLancamento = ({
   onEdit,
   onDelete,
 }: ModalDetalhesLancamentoProps) => {
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+
   if (!lancamento) return null;
 
   const handleEdit = () => {
     if (onEdit) {
-      onEdit(lancamento);
+      onEdit();
     }
     onClose();
   };
 
-  const handleDelete = () => {
-    if (
-      onDelete &&
-      window.confirm("Tem certeza que deseja excluir este lançamento?")
-    ) {
-      onDelete(lancamento);
+  const handleDeleteClick = () => {
+    setIsConfirmDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (onDelete) {
+      onDelete(lancamento.id);
     }
+    setIsConfirmDeleteOpen(false);
     onClose();
   };
 
@@ -171,7 +178,7 @@ const ModalDetalhesLancamento = ({
                   Editar
                 </button>
                 <button
-                  onClick={handleDelete}
+                  onClick={handleDeleteClick}
                   className="bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none flex items-center justify-center gap-2"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -181,7 +188,6 @@ const ModalDetalhesLancamento = ({
             </div>
           </motion.div>
 
-          {/* Bottom Sheet para Mobile */}
           <motion.div
             className="fixed inset-x-0 bottom-0 z-50 md:hidden"
             initial={{ y: "100%" }}
@@ -277,7 +283,7 @@ const ModalDetalhesLancamento = ({
                   Editar
                 </button>
                 <button
-                  onClick={handleDelete}
+                  onClick={handleDeleteClick}
                   className="bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 text-red-400 font-medium py-3 px-4 rounded-xl transition-colors focus:outline-none flex items-center justify-center gap-2"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -286,6 +292,13 @@ const ModalDetalhesLancamento = ({
               </div>
             </div>
           </motion.div>
+
+          <ModalConfirmarExclusao
+            isOpen={isConfirmDeleteOpen}
+            onClose={() => setIsConfirmDeleteOpen(false)}
+            onConfirm={handleConfirmDelete}
+            titulo={lancamento.titulo}
+          />
         </>
       )}
     </AnimatePresence>

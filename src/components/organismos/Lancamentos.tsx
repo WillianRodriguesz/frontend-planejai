@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { Filter, Plus, ShoppingBag, Loader2 } from "lucide-react";
 import CardLancamento from "../moleculas/CardLancamento";
 import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
+import ModalEditarLancamento from "./ModalEditarLancamento";
 import ModalFiltroLancamento from "./ModalFiltroLancamento";
 import ModalDetalhesLancamento from "./ModalDetalhesLancamento";
 
 interface LancamentosProps {
   lancamentos?: Array<{
+    id: string;
     icone: any;
     titulo: string;
     data: string;
@@ -20,6 +22,15 @@ interface LancamentosProps {
     data: string;
     tipo: "entrada" | "saida";
   }) => void;
+  onAtualizarLancamento?: (lancamento: {
+    id: string;
+    titulo: string;
+    categoria: string;
+    valor: number;
+    data: string;
+    tipo: "entrada" | "saida";
+  }) => void;
+  onDeletarLancamento?: (idLancamento: string) => void;
   onCarregarMais?: () => void;
   loading?: boolean;
   hasMore?: boolean;
@@ -28,14 +39,18 @@ interface LancamentosProps {
 const Lancamentos = ({
   lancamentos = [],
   onAdicionarLancamento,
+  onAtualizarLancamento,
+  onDeletarLancamento,
   onCarregarMais,
   loading = false,
   hasMore = true,
 }: LancamentosProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
   const [isModalFiltroOpen, setIsModalFiltroOpen] = useState(false);
   const [isModalDetalhesOpen, setIsModalDetalhesOpen] = useState(false);
   const [lancamentoSelecionado, setLancamentoSelecionado] = useState<{
+    id: string;
     icone: any;
     titulo: string;
     data: string;
@@ -88,6 +103,7 @@ const Lancamentos = ({
   }, [loading, hasMore, onCarregarMais]);
 
   const abrirModalDetalhes = (lancamento: {
+    id: string;
     icone: any;
     titulo: string;
     data: string;
@@ -99,30 +115,8 @@ const Lancamentos = ({
     setIsModalDetalhesOpen(true);
   };
 
-  const handleEditLancamento = (lancamento: {
-    icone: any;
-    titulo: string;
-    data: string;
-    valor: number;
-    tipo: "entrada" | "saida";
-    categoria?: string;
-  }) => {
-    console.log("Editar lançamento:", lancamento);
-  };
-
-  const handleDeleteLancamento = (lancamento: {
-    icone: any;
-    titulo: string;
-    data: string;
-    valor: number;
-    tipo: "entrada" | "saida";
-    categoria?: string;
-  }) => {
-    // TODO: Implementar exclusão
-    console.log("Excluir lançamento:", lancamento);
-  };
-
   const lancamentosParaExibir: Array<{
+    id: string;
     icone: any;
     titulo: string;
     data: string;
@@ -133,6 +127,7 @@ const Lancamentos = ({
       ? lancamentos
       : [
           {
+            id: "demo-1",
             icone: ShoppingBag,
             titulo: "Supermercado",
             data: "24/08/2025",
@@ -166,9 +161,9 @@ const Lancamentos = ({
       </div>
 
       <div className="rounded-xl overflow-hidden bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl">
-        {lancamentosParaExibir.map((lancamento, index) => (
+        {lancamentosParaExibir.map((lancamento) => (
           <CardLancamento
-            key={index}
+            key={lancamento.id}
             icone={lancamento.icone}
             titulo={lancamento.titulo}
             data={lancamento.data}
@@ -218,8 +213,23 @@ const Lancamentos = ({
         isOpen={isModalDetalhesOpen}
         onClose={() => setIsModalDetalhesOpen(false)}
         lancamento={lancamentoSelecionado}
-        onEdit={handleEditLancamento}
-        onDelete={handleDeleteLancamento}
+        onEdit={() => {
+          setIsModalDetalhesOpen(false);
+          setIsModalEditOpen(true);
+        }}
+        onDelete={onDeletarLancamento}
+      />
+
+      <ModalEditarLancamento
+        isOpen={isModalEditOpen}
+        onClose={() => setIsModalEditOpen(false)}
+        lancamento={lancamentoSelecionado}
+        onSave={(lancamentoAtualizado) => {
+          if (onAtualizarLancamento) {
+            onAtualizarLancamento(lancamentoAtualizado);
+          }
+          setIsModalEditOpen(false);
+        }}
       />
     </div>
   );

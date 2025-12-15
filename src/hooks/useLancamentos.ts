@@ -20,11 +20,12 @@ interface UseLancamentosParams {
   pagina?: number;
   itensPorPagina?: number;
   filtros?: FiltrarLancamentosDto;
-  autoFetch?: boolean; // Se deve buscar automaticamente ao montar
+  autoFetch?: boolean;
 }
 
 // Formato simplificado para o componente usar
 export interface LancamentoExibicao {
+  id: string;
   icone: any;
   titulo: string;
   data: string;
@@ -94,11 +95,11 @@ export const useLancamentos = ({
         data = await buscarTodosLancamentos(idCarteira, pagina, itensPorPagina);
       }
 
-      // Formatar os novos lançamentos
       const lancamentosFormatados: LancamentoExibicao[] = data.lancamentos.map(
         (lanc) => {
           let icone = ShoppingBag;
           return {
+            id: lanc.id,
             icone,
             titulo: lanc.titulo,
             data: formatarDataBR(lanc.data),
@@ -108,11 +109,9 @@ export const useLancamentos = ({
         }
       );
 
-      // Verifica se há mais dados: se retornou menos que o solicitado, acabou
       const temMaisDados = lancamentosFormatados.length === itensPorPagina;
       setHasMore(temMaisDados);
 
-      // Se for página 1, substitui. Senão, adiciona aos existentes
       if (pagina === 1) {
         setTodosLancamentos(lancamentosFormatados);
       } else {
@@ -173,7 +172,6 @@ export const useLancamentos = ({
 
     try {
       await atualizarLancamentoApi(idCarteira, idLancamento, dadosAtualizacao);
-      // Recarrega a lista do zero após atualizar
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
@@ -189,7 +187,6 @@ export const useLancamentos = ({
 
     try {
       await deletarLancamentoApi(idCarteira, idLancamento);
-      // Recarrega a lista do zero após deletar
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
@@ -199,7 +196,6 @@ export const useLancamentos = ({
   };
 
   useEffect(() => {
-    // Só busca se a página mudou ou é a primeira vez
     if (autoFetch && pagina !== paginaAnterior) {
       fetchLancamentos();
     }

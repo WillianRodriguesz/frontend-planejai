@@ -47,8 +47,8 @@ export default function Home() {
     error: _errorLancamentos,
     hasMore,
     adicionarLancamento: adicionarLancamentoOriginal,
-    atualizarLancamento: _atualizarLancamentoOriginal,
-    deletarLancamento: _deletarLancamentoOriginal,
+    atualizarLancamento: atualizarLancamentoOriginal,
+    deletarLancamento: deletarLancamentoOriginal,
   } = useLancamentos({
     pagina: paginaAtual,
     itensPorPagina: itensPorPagina,
@@ -56,23 +56,35 @@ export default function Home() {
 
   const adicionarLancamento = async (novoLancamento: any) => {
     await adicionarLancamentoOriginal(novoLancamento);
-    refetchSaldo(); // Atualiza o saldo após adicionar
-    setPaginaAtual(1); // Reset para primeira página ao adicionar
+    refetchSaldo();
+    setPaginaAtual(1);
   };
 
-  // Wrapper para atualizar lançamento e atualizar saldo (futuro)
-  // const atualizarLancamento = async (idLancamento: string, dados: any) => {
-  //   await atualizarLancamentoOriginal(idLancamento, dados);
-  //   refetchSaldo();
-  //   setPaginaAtual(1);
-  // };
+  const atualizarLancamento = async (lancamento: {
+    id: string;
+    titulo: string;
+    categoria: string;
+    valor: number;
+    data: string;
+    tipo: "entrada" | "saida";
+  }) => {
+    const idCategoria = parseInt(lancamento.categoria, 10);
+    await atualizarLancamentoOriginal(lancamento.id, {
+      idCategoria,
+      tipoTransacao: lancamento.tipo,
+      valor: lancamento.valor,
+      titulo: lancamento.titulo,
+      data: lancamento.data,
+    });
+    refetchSaldo();
+    setPaginaAtual(1);
+  };
 
-  // Wrapper para deletar lançamento e atualizar saldo (futuro)
-  // const deletarLancamento = async (idLancamento: string) => {
-  //   await deletarLancamentoOriginal(idLancamento);
-  //   refetchSaldo();
-  //   setPaginaAtual(1);
-  // };
+  const deletarLancamento = async (idLancamento: string) => {
+    await deletarLancamentoOriginal(idLancamento);
+    refetchSaldo();
+    setPaginaAtual(1);
+  };
 
   const carregarMais = () => {
     setPaginaAtual((prev) => prev + 1);
@@ -154,6 +166,8 @@ export default function Home() {
           <Lancamentos
             lancamentos={lancamentos}
             onAdicionarLancamento={adicionarLancamento}
+            onAtualizarLancamento={atualizarLancamento}
+            onDeletarLancamento={deletarLancamento}
             onCarregarMais={carregarMais}
             loading={loadingLancamentos}
             hasMore={hasMore}
