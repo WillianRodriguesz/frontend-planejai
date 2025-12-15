@@ -45,6 +45,7 @@ interface UseLancamentosReturn {
   lancamentos: LancamentoExibicao[];
   loading: boolean;
   error: string | null;
+  hasMore: boolean;
   refetch: () => void;
   adicionarLancamento: (lancamento: NovoLancamentoForm) => Promise<void>;
   atualizarLancamento: (
@@ -61,9 +62,13 @@ export const useLancamentos = ({
   autoFetch = true,
 }: UseLancamentosParams = {}): UseLancamentosReturn => {
   const { idCarteira } = useCarteira();
-  const [dados, setDados] = useState<LancamentosPaginadosDto | null>(null);
+  const [todosLancamentos, setTodosLancamentos] = useState<
+    LancamentoExibicao[]
+  >([]);
   const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState<string | null>(null);
+  const [paginaAnterior, setPaginaAnterior] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   const fetchLancamentos = async () => {
     if (!idCarteira) {
@@ -89,10 +94,37 @@ export const useLancamentos = ({
         data = await buscarTodosLancamentos(idCarteira, pagina, itensPorPagina);
       }
 
-      setDados(data);
+      // Formatar os novos lançamentos
+      const lancamentosFormatados: LancamentoExibicao[] = data.lancamentos.map(
+        (lanc) => {
+          let icone = ShoppingBag;
+          return {
+            icone,
+            titulo: lanc.titulo,
+            data: formatarDataBR(lanc.data),
+            valor: lanc.valor,
+            tipo: lanc.tipoTransacao,
+          };
+        }
+      );
+
+      // Verifica se há mais dados: se retornou menos que o solicitado, acabou
+      const temMaisDados = lancamentosFormatados.length === itensPorPagina;
+      setHasMore(temMaisDados);
+
+      // Se for página 1, substitui. Senão, adiciona aos existentes
+      if (pagina === 1) {
+        setTodosLancamentos(lancamentosFormatados);
+      } else {
+        setTodosLancamentos((prev) => [...prev, ...lancamentosFormatados]);
+      }
+
+      setPaginaAnterior(pagina);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro desconhecido");
-      setDados(null);
+      if (pagina === 1) {
+        setTodosLancamentos([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -122,8 +154,10 @@ export const useLancamentos = ({
       };
 
       await adicionarLancamentoApi(idCarteira, lancamentoDto);
-      // Recarrega a lista após adicionar
-      await fetchLancamentos();
+      // Recarrega a lista do zero após adicionar
+      setTodosLancamentos([]);
+      setPaginaAnterior(0);
+      setHasMore(true);
     } catch (err) {
       throw err;
     }
@@ -139,8 +173,10 @@ export const useLancamentos = ({
 
     try {
       await atualizarLancamentoApi(idCarteira, idLancamento, dadosAtualizacao);
-      // Recarrega a lista após atualizar
-      await fetchLancamentos();
+      // Recarrega a lista do zero após atualizar
+      setTodosLancamentos([]);
+      setPaginaAnterior(0);
+      setHasMore(true);
     } catch (err) {
       throw err;
     }
@@ -153,39 +189,27 @@ export const useLancamentos = ({
 
     try {
       await deletarLancamentoApi(idCarteira, idLancamento);
-      // Recarrega a lista após deletar
-      await fetchLancamentos();
+      // Recarrega a lista do zero após deletar
+      setTodosLancamentos([]);
+      setPaginaAnterior(0);
+      setHasMore(true);
     } catch (err) {
       throw err;
     }
   };
 
   useEffect(() => {
-    if (autoFetch) {
+    // Só busca se a página mudou ou é a primeira vez
+    if (autoFetch && pagina !== paginaAnterior) {
       fetchLancamentos();
     }
   }, [idCarteira, pagina, itensPorPagina, JSON.stringify(filtros)]);
 
-  // Mapear os lançamentos da API para o formato de exibição
-  const lancamentosFormatados: LancamentoExibicao[] =
-    dados?.lancamentos.map((lanc) => {
-      // Determinar ícone baseado na categoria (por enquanto genérico)
-      let icone = ShoppingBag;
-      // TODO: Mapear idCategoria para ícones específicos quando tiver endpoint de categorias
-
-      return {
-        icone,
-        titulo: lanc.titulo,
-        data: formatarDataBR(lanc.data),
-        valor: lanc.valor,
-        tipo: lanc.tipoTransacao,
-      };
-    }) || [];
-
   return {
-    lancamentos: lancamentosFormatados,
+    lancamentos: todosLancamentos,
     loading,
     error,
+    hasMore,
     refetch: fetchLancamentos,
     adicionarLancamento,
     atualizarLancamento,

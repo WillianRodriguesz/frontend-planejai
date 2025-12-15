@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Filter, Plus, ShoppingBag } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Filter, Plus, ShoppingBag, Loader2 } from "lucide-react";
 import CardLancamento from "../moleculas/CardLancamento";
 import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
 import ModalFiltroLancamento from "./ModalFiltroLancamento";
@@ -20,11 +20,17 @@ interface LancamentosProps {
     data: string;
     tipo: "entrada" | "saida";
   }) => void;
+  onCarregarMais?: () => void;
+  loading?: boolean;
+  hasMore?: boolean;
 }
 
 const Lancamentos = ({
   lancamentos = [],
   onAdicionarLancamento,
+  onCarregarMais,
+  loading = false,
+  hasMore = true,
 }: LancamentosProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalFiltroOpen, setIsModalFiltroOpen] = useState(false);
@@ -48,6 +54,38 @@ const Lancamentos = ({
     dataFim: "",
     tipo: "todos",
   });
+
+  // Ref para o observador de scroll infinito
+  const observerTarget = useRef<HTMLDivElement>(null);
+
+  // Implementa scroll infinito
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Quando o elemento observado está visível, não está carregando e ainda há mais dados
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          hasMore &&
+          onCarregarMais
+        ) {
+          onCarregarMais();
+        }
+      },
+      { threshold: 0.1 } // Dispara quando 10% do elemento está visível
+    );
+
+    const currentTarget = observerTarget.current;
+    if (currentTarget) {
+      observer.observe(currentTarget);
+    }
+
+    return () => {
+      if (currentTarget) {
+        observer.unobserve(currentTarget);
+      }
+    };
+  }, [loading, hasMore, onCarregarMais]);
 
   const abrirModalDetalhes = (lancamento: {
     icone: any;
@@ -140,6 +178,20 @@ const Lancamentos = ({
           />
         ))}
       </div>
+
+      {/* Indicador de carregamento lazy loading */}
+      {loading && (
+        <div className="flex justify-center items-center py-6">
+          <Loader2 className="h-6 w-6 text-violet-500 animate-spin" />
+          <span className="ml-2 text-gray-400 text-sm">Carregando mais...</span>
+        </div>
+      )}
+
+      {/* Elemento observador para scroll infinito */}
+      <div ref={observerTarget} className="h-4" />
+
+      {/* Espaçamento no final */}
+      <div className="h-8 md:h-12"></div>
 
       <ModalAdicionarLancamento
         isOpen={isModalOpen}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../organismos/Header";
 import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
@@ -13,6 +13,21 @@ export default function Home() {
     mes: new Date().toLocaleString("pt-BR", { month: "long" }),
     ano: new Date().getFullYear(),
   });
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const itensPorPagina = isMobile ? 5 : 10;
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      setPaginaAtual(1);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const mesNumero = converterMesParaNumero(dataSelecionada.mes);
 
@@ -29,31 +44,38 @@ export default function Home() {
   const {
     lancamentos,
     loading: loadingLancamentos,
-    error: errorLancamentos,
+    error: _errorLancamentos,
+    hasMore,
     adicionarLancamento: adicionarLancamentoOriginal,
-    atualizarLancamento: atualizarLancamentoOriginal,
-    deletarLancamento: deletarLancamentoOriginal,
+    atualizarLancamento: _atualizarLancamentoOriginal,
+    deletarLancamento: _deletarLancamentoOriginal,
   } = useLancamentos({
-    pagina: 1,
-    itensPorPagina: 10,
+    pagina: paginaAtual,
+    itensPorPagina: itensPorPagina,
   });
 
-  // Wrapper para adicionar lançamento e atualizar saldo
   const adicionarLancamento = async (novoLancamento: any) => {
     await adicionarLancamentoOriginal(novoLancamento);
     refetchSaldo(); // Atualiza o saldo após adicionar
+    setPaginaAtual(1); // Reset para primeira página ao adicionar
   };
 
-  // Wrapper para atualizar lançamento e atualizar saldo
-  const atualizarLancamento = async (idLancamento: string, dados: any) => {
-    await atualizarLancamentoOriginal(idLancamento, dados);
-    refetchSaldo(); // Atualiza o saldo após atualizar
-  };
+  // Wrapper para atualizar lançamento e atualizar saldo (futuro)
+  // const atualizarLancamento = async (idLancamento: string, dados: any) => {
+  //   await atualizarLancamentoOriginal(idLancamento, dados);
+  //   refetchSaldo();
+  //   setPaginaAtual(1);
+  // };
 
-  // Wrapper para deletar lançamento e atualizar saldo
-  const deletarLancamento = async (idLancamento: string) => {
-    await deletarLancamentoOriginal(idLancamento);
-    refetchSaldo(); // Atualiza o saldo após deletar
+  // Wrapper para deletar lançamento e atualizar saldo (futuro)
+  // const deletarLancamento = async (idLancamento: string) => {
+  //   await deletarLancamentoOriginal(idLancamento);
+  //   refetchSaldo();
+  //   setPaginaAtual(1);
+  // };
+
+  const carregarMais = () => {
+    setPaginaAtual((prev) => prev + 1);
   };
 
   return (
@@ -132,6 +154,9 @@ export default function Home() {
           <Lancamentos
             lancamentos={lancamentos}
             onAdicionarLancamento={adicionarLancamento}
+            onCarregarMais={carregarMais}
+            loading={loadingLancamentos}
+            hasMore={hasMore}
           />
         </div>
       </div>
