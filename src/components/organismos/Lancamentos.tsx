@@ -192,7 +192,7 @@ const Lancamentos = ({
         ) : (
           <div className="p-8 text-center">
             <p className="text-gray-400 text-sm">
-              Nenhum lançamento encontrado
+              Nenhum lançamento para este mês
             </p>
           </div>
         )}

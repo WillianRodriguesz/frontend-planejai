@@ -50,6 +50,32 @@ export const converterNumeroParaMes = (numeroMes: number): string => {
 };
 
 /**
+ * Obtém o primeiro e último dia de um mês específico em formato ISO
+ * @param mes - Número do mês (1-12)
+ * @param ano - Ano (ex: 2024)
+ * @returns Objeto com dataInicio e dataFim em formato ISO (YYYY-MM-DD)
+ */
+export const obterPrimeiroeUltimoDiaDoMes = (
+  mes: number,
+  ano: number
+): { dataInicio: string; dataFim: string } => {
+  const primeiroDia = new Date(ano, mes - 1, 1);
+  const ultimoDia = new Date(ano, mes, 0);
+
+  const formatarData = (data: Date): string => {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const dia = String(data.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  };
+
+  return {
+    dataInicio: formatarData(primeiroDia),
+    dataFim: formatarData(ultimoDia),
+  };
+};
+
+/**
  * Formata uma data no padrão brasileiro DD/MM/YYYY
  * @param data - Data no formato YYYY-MM-DD, YYYY-MM-DDTHH:mm:ss.sssZ ou objeto Date
  * @returns Data formatada como DD/MM/YYYY

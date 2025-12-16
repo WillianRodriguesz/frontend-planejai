@@ -6,7 +6,10 @@ import { Settings } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useLancamentos } from "../../hooks/useLancamentos";
-import { converterMesParaNumero } from "../../utils/dateUtils";
+import {
+  converterMesParaNumero,
+  obterPrimeiroeUltimoDiaDoMes,
+} from "../../utils/dateUtils";
 
 export default function Home() {
   const [dataSelecionada, setDataSelecionada] = useState({
@@ -41,16 +44,22 @@ export default function Home() {
   }, []);
 
   const mesNumero = converterMesParaNumero(dataSelecionada.mes);
+  const { dataInicio: dataInicioMes, dataFim: dataFimMes } =
+    obterPrimeiroeUltimoDiaDoMes(mesNumero, dataSelecionada.ano);
 
   const filtrosApi = {
     ...(filtrosAtuais?.categoria && {
       idCategoria: parseInt(filtrosAtuais.categoria, 10),
     }),
-    ...(filtrosAtuais?.dataInicio && { dataInicial: filtrosAtuais.dataInicio }),
-    ...(filtrosAtuais?.dataFim && { dataFinal: filtrosAtuais.dataFim }),
+    dataInicial: filtrosAtuais?.dataInicio || dataInicioMes,
+    dataFinal: filtrosAtuais?.dataFim || dataFimMes,
     ...(filtrosAtuais?.tipo &&
       filtrosAtuais.tipo !== "todos" && { tipoTransacao: filtrosAtuais.tipo }),
   };
+
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [dataSelecionada.mes, dataSelecionada.ano]);
 
   const {
     saldo,
