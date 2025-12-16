@@ -29,7 +29,7 @@ const CampoOutlined = ({
   return (
     <div className="relative">
       <div
-        className={`relative border-2 border-purple-500/30 rounded-xl bg-card/50 ${sizeClasses[size].container}`}
+        className={`relative border-2 border-purple-500/30 rounded-xl bg-card/50 ${sizeClasses[size].container} overflow-visible`}
       >
         <span
           className={`absolute bg-card ${sizeClasses[size].label} font-medium text-gray-300 ${sizeClasses[size].span}`}

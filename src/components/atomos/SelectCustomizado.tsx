@@ -63,7 +63,7 @@ const SelectCustomizado = ({
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full flex items-center justify-between px-4 ${
+        className={`w-full flex items-center justify-between ${
           sizeClasses[size]
         } bg-transparent text-gray-300 focus:outline-none transition-all ${
           disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
@@ -80,7 +80,7 @@ const SelectCustomizado = ({
       </button>
 
       {isOpen && !disabled && (
-        <div className="absolute z-50 w-full mt-2 rounded-xl border border-purple-500/30 bg-card/95 backdrop-blur-xl shadow-xl max-h-60 overflow-y-auto">
+        <div className="absolute left-0 right-0 z-50 mt-2 rounded-xl border border-purple-500/30 bg-card/95 backdrop-blur-xl shadow-xl max-h-60 overflow-y-auto">
           {options.map((option) => (
             <button
               key={option.value}
