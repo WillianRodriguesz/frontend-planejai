@@ -46,10 +46,10 @@ const ModalEditarLancamento = ({
       setTitulo(lancamento.titulo);
       setCategoria(lancamento.categoria || "");
       setValor(lancamento.valor.toString());
-      
-      const dataFormatada = lancamento.data.split('/').reverse().join('-');
+
+      const dataFormatada = lancamento.data.split("/").reverse().join("-");
       setData(dataFormatada);
-      
+
       setTipo(lancamento.tipo);
     }
   }, [lancamento, isOpen]);

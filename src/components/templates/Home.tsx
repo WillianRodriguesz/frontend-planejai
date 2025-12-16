@@ -171,6 +171,7 @@ export default function Home() {
             onCarregarMais={carregarMais}
             loading={loadingLancamentos}
             hasMore={hasMore}
+            itensPorPagina={itensPorPagina}
           />
         </div>
       </div>
