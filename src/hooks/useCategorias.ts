@@ -40,7 +40,6 @@ export const useCategorias = (): UseCategoriaReturn => {
       const categoria = await buscarCategoriaPorId(id);
       return categoria;
     } catch (err) {
-      console.error("Erro ao buscar categoria:", err);
       return null;
     }
   };

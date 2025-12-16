@@ -218,7 +218,6 @@ const Lancamentos = ({
         onClose={() => setIsModalFiltroOpen(false)}
         onApplyFilter={(novosFiltros) => {
           setFiltrosAtuais(novosFiltros);
-          console.log("Filtros aplicados:", novosFiltros);
         }}
         filtrosAtuais={filtrosAtuais}
       />
