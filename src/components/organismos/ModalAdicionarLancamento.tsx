@@ -5,6 +5,7 @@ import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import CampoOutlined from "../atomos/CampoOutlined";
+import { useCategorias } from "../../hooks/useCategorias";
 
 interface ModalAdicionarLancamentoProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ const ModalAdicionarLancamento = ({
   onClose,
   onSave,
 }: ModalAdicionarLancamentoProps) => {
+  const { categorias } = useCategorias();
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("");
   const [valor, setValor] = useState("");
@@ -112,14 +114,11 @@ const ModalAdicionarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      {/* Usando IDs numéricos como valores */}
-                      <option value="1">Alimentação</option>
-                      <option value="2">Transporte</option>
-                      <option value="3">Lazer</option>
-                      <option value="4">Moradia</option>
-                      <option value="5">Saúde</option>
-                      <option value="6">Educação</option>
-                      <option value="7">Outros</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nome}
+                        </option>
+                      ))}
                     </select>
                   </CampoOutlined>
 
@@ -229,14 +228,11 @@ const ModalAdicionarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      {/* Usando IDs numéricos como valores */}
-                      <option value="1">Alimentação</option>
-                      <option value="2">Transporte</option>
-                      <option value="3">Lazer</option>
-                      <option value="4">Moradia</option>
-                      <option value="5">Saúde</option>
-                      <option value="6">Educação</option>
-                      <option value="7">Outros</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nome}
+                        </option>
+                      ))}
                     </select>
                   </CampoOutlined>
 

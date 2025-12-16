@@ -13,7 +13,8 @@ interface Lancamento {
   data: string;
   valor: number;
   tipo: "entrada" | "saida";
-  categoria?: string;
+  idCategoria?: number;
+  nomeCategoria?: string;
 }
 
 interface ModalDetalhesLancamentoProps {
@@ -58,19 +59,6 @@ const ModalDetalhesLancamento = ({
     return tipo === "entrada"
       ? "text-green-400 bg-green-500/20"
       : "text-red-400 bg-red-500/20";
-  };
-
-  const getCategoriaNome = (categoria?: string) => {
-    const categorias: { [key: string]: string } = {
-      alimentacao: "Alimentação",
-      transporte: "Transporte",
-      lazer: "Lazer",
-      moradia: "Moradia",
-      saude: "Saúde",
-      educacao: "Educação",
-      outros: "Outros",
-    };
-    return categoria ? categorias[categoria] || categoria : "Não especificada";
   };
 
   return (
@@ -162,7 +150,7 @@ const ModalDetalhesLancamento = ({
                       <Tag className="w-5 h-5 text-purple-400" />
                     </div>
                     <p className="text-lg font-medium text-white">
-                      {getCategoriaNome(lancamento.categoria)}
+                      {lancamento.nomeCategoria || "Não especificada"}
                     </p>
                   </div>
                 </CampoOutlined>
@@ -267,7 +255,7 @@ const ModalDetalhesLancamento = ({
                       <Tag className="w-4 h-4 text-purple-400" />
                     </div>
                     <p className="text-base font-medium text-white">
-                      {getCategoriaNome(lancamento.categoria)}
+                      {lancamento.nomeCategoria || "Não especificada"}
                     </p>
                   </div>
                 </CampoOutlined>

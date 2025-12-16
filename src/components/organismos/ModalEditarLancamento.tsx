@@ -5,6 +5,7 @@ import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import CampoOutlined from "../atomos/CampoOutlined";
+import { useCategorias } from "../../hooks/useCategorias";
 
 interface Lancamento {
   id: string;
@@ -12,7 +13,8 @@ interface Lancamento {
   valor: number;
   data: string;
   tipo: "entrada" | "saida";
-  categoria?: string;
+  idCategoria?: number;
+  nomeCategoria?: string;
 }
 
 interface ModalEditarLancamentoProps {
@@ -35,6 +37,7 @@ const ModalEditarLancamento = ({
   onSave,
   lancamento,
 }: ModalEditarLancamentoProps) => {
+  const { categorias } = useCategorias();
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("");
   const [valor, setValor] = useState("");
@@ -44,7 +47,7 @@ const ModalEditarLancamento = ({
   useEffect(() => {
     if (lancamento && isOpen) {
       setTitulo(lancamento.titulo);
-      setCategoria(lancamento.categoria || "");
+      setCategoria(lancamento.idCategoria?.toString() || "");
       setValor(lancamento.valor.toString());
 
       const dataFormatada = lancamento.data.split("/").reverse().join("-");
@@ -134,13 +137,11 @@ const ModalEditarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      <option value="1">Alimentação</option>
-                      <option value="2">Transporte</option>
-                      <option value="3">Lazer</option>
-                      <option value="4">Moradia</option>
-                      <option value="5">Saúde</option>
-                      <option value="6">Educação</option>
-                      <option value="7">Outros</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nome}
+                        </option>
+                      ))}
                     </select>
                   </CampoOutlined>
 
@@ -249,13 +250,11 @@ const ModalEditarLancamento = ({
                       <option value="" disabled>
                         Selecione uma categoria
                       </option>
-                      <option value="1">Alimentação</option>
-                      <option value="2">Transporte</option>
-                      <option value="3">Lazer</option>
-                      <option value="4">Moradia</option>
-                      <option value="5">Saúde</option>
-                      <option value="6">Educação</option>
-                      <option value="7">Outros</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nome}
+                        </option>
+                      ))}
                     </select>
                   </CampoOutlined>
 

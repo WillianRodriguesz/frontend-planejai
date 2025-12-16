@@ -5,6 +5,7 @@ import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
 import ModalEditarLancamento from "./ModalEditarLancamento";
 import ModalFiltroLancamento from "./ModalFiltroLancamento";
 import ModalDetalhesLancamento from "./ModalDetalhesLancamento";
+import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 interface LancamentosProps {
   lancamentos?: Array<{
@@ -14,6 +15,8 @@ interface LancamentosProps {
     data: string;
     valor: number;
     tipo: "entrada" | "saida";
+    idCategoria?: number;
+    nomeCategoria?: string;
   }>;
   onAdicionarLancamento?: (novoLancamento: {
     titulo: string;
@@ -58,7 +61,8 @@ const Lancamentos = ({
     data: string;
     valor: number;
     tipo: "entrada" | "saida";
-    categoria?: string;
+    idCategoria?: number;
+    nomeCategoria?: string;
   } | null>(null);
   const [filtrosAtuais, setFiltrosAtuais] = useState<{
     categoria: string;
@@ -72,14 +76,11 @@ const Lancamentos = ({
     tipo: "todos",
   });
 
-  // Ref para o observador de scroll infinito
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // Implementa scroll infinito
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        // Quando o elemento observado está visível, não está carregando e ainda há mais dados
         if (
           entries[0].isIntersecting &&
           !loading &&
@@ -89,7 +90,7 @@ const Lancamentos = ({
           onCarregarMais();
         }
       },
-      { threshold: 0.1 } // Dispara quando 10% do elemento está visível
+      { threshold: 0.1 }
     );
 
     const currentTarget = observerTarget.current;
@@ -111,7 +112,8 @@ const Lancamentos = ({
     data: string;
     valor: number;
     tipo: "entrada" | "saida";
-    categoria?: string;
+    idCategoria?: number;
+    nomeCategoria?: string;
   }) => {
     setLancamentoSelecionado(lancamento);
     setIsModalDetalhesOpen(true);
@@ -163,17 +165,22 @@ const Lancamentos = ({
             </div>
           ))
         ) : lancamentos.length > 0 ? (
-          lancamentos.map((lancamento) => (
-            <CardLancamento
-              key={lancamento.id}
-              icone={lancamento.icone}
-              titulo={lancamento.titulo}
-              data={lancamento.data}
-              valor={lancamento.valor}
-              tipo={lancamento.tipo}
-              onClick={() => abrirModalDetalhes(lancamento)}
-            />
-          ))
+          lancamentos.map((lancamento) => {
+            const IconeCategoria = obterIconeCategoria(
+              lancamento.nomeCategoria
+            );
+            return (
+              <CardLancamento
+                key={lancamento.id}
+                icone={IconeCategoria}
+                titulo={lancamento.titulo}
+                data={lancamento.data}
+                valor={lancamento.valor}
+                tipo={lancamento.tipo}
+                onClick={() => abrirModalDetalhes(lancamento)}
+              />
+            );
+          })
         ) : (
           <div className="p-8 text-center">
             <p className="text-gray-400 text-sm">

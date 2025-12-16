@@ -6,8 +6,12 @@ export interface LancamentoDto {
   titulo: string;
   descricao: string;
   data: string;
-  createdAt: string;
-  updatedAt: string;
+  categoria?: {
+    id: number;
+    nome: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface LancamentosPaginadosDto {

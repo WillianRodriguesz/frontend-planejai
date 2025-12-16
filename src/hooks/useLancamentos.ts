@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { ShoppingBag } from "lucide-react";
 import type {
   LancamentosPaginadosDto,
   FiltrarLancamentosDto,
@@ -15,6 +14,7 @@ import {
   deletarLancamento as deletarLancamentoApi,
 } from "../api/lancamentosApi";
 import { formatarDataBR } from "../utils/dateUtils";
+import { obterIconeCategoria } from "../utils/categoriaIcones";
 
 interface UseLancamentosParams {
   pagina?: number;
@@ -23,7 +23,6 @@ interface UseLancamentosParams {
   autoFetch?: boolean;
 }
 
-// Formato simplificado para o componente usar
 export interface LancamentoExibicao {
   id: string;
   icone: any;
@@ -31,9 +30,10 @@ export interface LancamentoExibicao {
   data: string;
   valor: number;
   tipo: "entrada" | "saida";
+  idCategoria: number;
+  nomeCategoria?: string;
 }
 
-// Formato do modal de adicionar
 export interface NovoLancamentoForm {
   titulo: string;
   categoria: string;
@@ -84,7 +84,6 @@ export const useLancamentos = ({
 
       let data: LancamentosPaginadosDto;
 
-      // Se tem filtros, usa o endpoint de filtrar, senão busca todos
       if (filtros && Object.keys(filtros).length > 0) {
         data = await filtrarLancamentos(idCarteira, {
           ...filtros,
@@ -97,7 +96,9 @@ export const useLancamentos = ({
 
       const lancamentosFormatados: LancamentoExibicao[] = data.lancamentos.map(
         (lanc) => {
-          let icone = ShoppingBag;
+          const nomeCategoria = lanc.categoria?.nome;
+          const icone = obterIconeCategoria(nomeCategoria);
+
           return {
             id: lanc.id,
             icone,
@@ -105,6 +106,8 @@ export const useLancamentos = ({
             data: formatarDataBR(lanc.data),
             valor: lanc.valor,
             tipo: lanc.tipoTransacao,
+            idCategoria: lanc.idCategoria,
+            nomeCategoria,
           };
         }
       );
@@ -135,14 +138,9 @@ export const useLancamentos = ({
     }
 
     try {
-      // Converte o ID da categoria (string) para número
       const idCategoria = parseInt(novoLancamento.categoria, 10);
-
-      // A data já vem no formato ISO (YYYY-MM-DD) do input type="date"
-      // Não precisa converter, apenas usar diretamente
       const dataFormatada = novoLancamento.data;
 
-      // Monta o DTO para a API
       const lancamentoDto: AdicionarLancamentoDto = {
         idCategoria,
         tipoTransacao: novoLancamento.tipo,
@@ -153,7 +151,6 @@ export const useLancamentos = ({
       };
 
       await adicionarLancamentoApi(idCarteira, lancamentoDto);
-      // Recarrega a lista do zero após adicionar
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
