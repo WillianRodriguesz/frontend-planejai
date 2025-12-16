@@ -5,6 +5,7 @@ import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import CampoOutlined from "../atomos/CampoOutlined";
+import SelectCustomizado from "../atomos/SelectCustomizado";
 import { useCategorias } from "../../hooks/useCategorias";
 
 interface ModalAdicionarLancamentoProps {
@@ -24,7 +25,7 @@ const ModalAdicionarLancamento = ({
   onClose,
   onSave,
 }: ModalAdicionarLancamentoProps) => {
-  const { categorias } = useCategorias();
+  const { categorias, loading: loadingCategorias } = useCategorias();
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("");
   const [valor, setValor] = useState("");
@@ -104,22 +105,21 @@ const ModalAdicionarLancamento = ({
                   </CampoOutlined>
 
                   <CampoOutlined label="Categoria" size="md">
-                    <select
-                      id="categoria"
+                    <SelectCustomizado
+                      options={categorias.map((cat) => ({
+                        value: cat.id.toString(),
+                        label: cat.nome,
+                      }))}
                       value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-transparent border-none outline-none focus:outline-none"
-                      required
-                    >
-                      <option value="" disabled>
-                        Selecione uma categoria
-                      </option>
-                      {categorias.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.nome}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setCategoria}
+                      placeholder={
+                        loadingCategorias
+                          ? "Carregando..."
+                          : "Selecione uma categoria"
+                      }
+                      disabled={loadingCategorias}
+                      size="md"
+                    />
                   </CampoOutlined>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -218,22 +218,21 @@ const ModalAdicionarLancamento = ({
                   </CampoOutlined>
 
                   <CampoOutlined label="Categoria" size="sm">
-                    <select
-                      id="categoria-mobile"
+                    <SelectCustomizado
+                      options={categorias.map((cat) => ({
+                        value: cat.id.toString(),
+                        label: cat.nome,
+                      }))}
                       value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-transparent border-none outline-none focus:outline-none"
-                      required
-                    >
-                      <option value="" disabled>
-                        Selecione uma categoria
-                      </option>
-                      {categorias.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.nome}
-                        </option>
-                      ))}
-                    </select>
+                      onChange={setCategoria}
+                      placeholder={
+                        loadingCategorias
+                          ? "Carregando..."
+                          : "Selecione uma categoria"
+                      }
+                      disabled={loadingCategorias}
+                      size="sm"
+                    />
                   </CampoOutlined>
 
                   <div className="grid grid-cols-2 gap-3">

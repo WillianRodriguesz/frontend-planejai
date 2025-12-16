@@ -5,6 +5,8 @@ import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
 import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import CampoOutlined from "../atomos/CampoOutlined";
+import SelectCustomizado from "../atomos/SelectCustomizado";
+import { useCategorias } from "../../hooks/useCategorias";
 
 interface FiltroLancamento {
   categoria: string;
@@ -26,6 +28,7 @@ const ModalFiltroLancamento = ({
   onApplyFilter,
   filtrosAtuais,
 }: ModalFiltroLancamentoProps) => {
+  const { categorias, loading: loadingCategorias } = useCategorias();
   const [categoria, setCategoria] = useState(filtrosAtuais?.categoria || "");
   const [dataInicio, setDataInicio] = useState(filtrosAtuais?.dataInicio || "");
   const [dataFim, setDataFim] = useState(filtrosAtuais?.dataFim || "");
@@ -101,21 +104,24 @@ const ModalFiltroLancamento = ({
               <form onSubmit={handleSubmit}>
                 <div className="space-y-5">
                   <CampoOutlined label="Categoria">
-                    <select
-                      id="categoria"
+                    <SelectCustomizado
+                      options={[
+                        { value: "", label: "Todas as categorias" },
+                        ...categorias.map((cat) => ({
+                          value: cat.id.toString(),
+                          label: cat.nome,
+                        })),
+                      ]}
                       value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-transparent border-none outline-none focus:outline-none"
-                    >
-                      <option value="">Todas as categorias</option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="moradia">Moradia</option>
-                      <option value="saude">Saúde</option>
-                      <option value="educacao">Educação</option>
-                      <option value="outros">Outros</option>
-                    </select>
+                      onChange={setCategoria}
+                      placeholder={
+                        loadingCategorias
+                          ? "Carregando..."
+                          : "Todas as categorias"
+                      }
+                      disabled={loadingCategorias}
+                      size="md"
+                    />
                   </CampoOutlined>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -214,21 +220,24 @@ const ModalFiltroLancamento = ({
               <form onSubmit={handleSubmit} className="mt-4">
                 <div className="space-y-4">
                   <CampoOutlined label="Categoria" size="sm">
-                    <select
-                      id="categoria-mobile"
+                    <SelectCustomizado
+                      options={[
+                        { value: "", label: "Todas as categorias" },
+                        ...categorias.map((cat) => ({
+                          value: cat.id.toString(),
+                          label: cat.nome,
+                        })),
+                      ]}
                       value={categoria}
-                      onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-transparent border-none outline-none focus:outline-none"
-                    >
-                      <option value="">Todas as categorias</option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="moradia">Moradia</option>
-                      <option value="saude">Saúde</option>
-                      <option value="educacao">Educação</option>
-                      <option value="outros">Outros</option>
-                    </select>
+                      onChange={setCategoria}
+                      placeholder={
+                        loadingCategorias
+                          ? "Carregando..."
+                          : "Todas as categorias"
+                      }
+                      disabled={loadingCategorias}
+                      size="sm"
+                    />
                   </CampoOutlined>
 
                   <div className="space-y-3">

@@ -35,6 +35,12 @@ interface LancamentosProps {
   }) => void;
   onDeletarLancamento?: (idLancamento: string) => void;
   onCarregarMais?: () => void;
+  onFiltrar?: (filtros: {
+    categoria: string;
+    dataInicio: string;
+    dataFim: string;
+    tipo: "todos" | "entrada" | "saida";
+  }) => void;
   loading?: boolean;
   hasMore?: boolean;
   itensPorPagina?: number;
@@ -46,6 +52,7 @@ const Lancamentos = ({
   onAtualizarLancamento,
   onDeletarLancamento,
   onCarregarMais,
+  onFiltrar,
   loading = false,
   hasMore = true,
   itensPorPagina = 10,
@@ -218,6 +225,9 @@ const Lancamentos = ({
         onClose={() => setIsModalFiltroOpen(false)}
         onApplyFilter={(novosFiltros) => {
           setFiltrosAtuais(novosFiltros);
+          if (onFiltrar) {
+            onFiltrar(novosFiltros);
+          }
         }}
         filtrosAtuais={filtrosAtuais}
       />

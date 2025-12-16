@@ -16,6 +16,17 @@ export default function Home() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [paginaAtual, setPaginaAtual] = useState(1);
+  const [filtrosAtuais, setFiltrosAtuais] = useState<{
+    categoria: string;
+    dataInicio: string;
+    dataFim: string;
+    tipo: "todos" | "entrada" | "saida";
+  }>({
+    categoria: "",
+    dataInicio: "",
+    dataFim: "",
+    tipo: "todos",
+  });
   const itensPorPagina = isMobile ? 5 : 10;
 
   useEffect(() => {
@@ -30,6 +41,16 @@ export default function Home() {
   }, []);
 
   const mesNumero = converterMesParaNumero(dataSelecionada.mes);
+
+  const filtrosApi = {
+    ...(filtrosAtuais?.categoria && {
+      idCategoria: parseInt(filtrosAtuais.categoria, 10),
+    }),
+    ...(filtrosAtuais?.dataInicio && { dataInicial: filtrosAtuais.dataInicio }),
+    ...(filtrosAtuais?.dataFim && { dataFinal: filtrosAtuais.dataFim }),
+    ...(filtrosAtuais?.tipo &&
+      filtrosAtuais.tipo !== "todos" && { tipoTransacao: filtrosAtuais.tipo }),
+  };
 
   const {
     saldo,
@@ -52,6 +73,7 @@ export default function Home() {
   } = useLancamentos({
     pagina: paginaAtual,
     itensPorPagina: itensPorPagina,
+    filtros: Object.keys(filtrosApi).length > 0 ? filtrosApi : undefined,
   });
 
   const adicionarLancamento = async (novoLancamento: any) => {
@@ -88,6 +110,16 @@ export default function Home() {
 
   const carregarMais = () => {
     setPaginaAtual((prev) => prev + 1);
+  };
+
+  const handleFiltrar = (filtros: {
+    categoria: string;
+    dataInicio: string;
+    dataFim: string;
+    tipo: "todos" | "entrada" | "saida";
+  }) => {
+    setFiltrosAtuais(filtros);
+    setPaginaAtual(1);
   };
 
   return (
@@ -169,6 +201,7 @@ export default function Home() {
             onAtualizarLancamento={atualizarLancamento}
             onDeletarLancamento={deletarLancamento}
             onCarregarMais={carregarMais}
+            onFiltrar={handleFiltrar}
             loading={loadingLancamentos}
             hasMore={hasMore}
             itensPorPagina={itensPorPagina}

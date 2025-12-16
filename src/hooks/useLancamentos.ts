@@ -193,8 +193,10 @@ export const useLancamentos = ({
   };
 
   useEffect(() => {
-    if (autoFetch && pagina !== paginaAnterior) {
-      fetchLancamentos();
+    if (autoFetch) {
+      if (pagina === 1 || pagina !== paginaAnterior) {
+        fetchLancamentos();
+      }
     }
   }, [idCarteira, pagina, itensPorPagina, JSON.stringify(filtros)]);
 
