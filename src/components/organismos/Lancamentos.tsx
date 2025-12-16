@@ -177,6 +177,7 @@ const Lancamentos = ({
                 data={lancamento.data}
                 valor={lancamento.valor}
                 tipo={lancamento.tipo}
+                nomeCategoria={lancamento.nomeCategoria}
                 onClick={() => abrirModalDetalhes(lancamento)}
               />
             );

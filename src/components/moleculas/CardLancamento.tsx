@@ -8,6 +8,7 @@ interface CardLancamentoProps {
   data: string;
   valor: number;
   tipo?: "entrada" | "saida";
+  nomeCategoria?: string;
   onClick?: () => void;
 }
 
@@ -17,6 +18,7 @@ const CardLancamento = ({
   data,
   valor,
   tipo = "saida",
+  nomeCategoria,
   onClick,
 }: CardLancamentoProps) => {
   const valorClassName = tipo === "entrada" ? "text-green-700" : "text-red-700";
@@ -40,7 +42,17 @@ const CardLancamento = ({
 
           <div className="flex flex-col gap-1">
             <h3 className="text-gray-300 font-medium text-sm">{titulo}</h3>
-            <span className="text-gray-400 text-xs">{data}</span>
+            <div className="flex items-center gap-2">
+              {nomeCategoria && (
+                <>
+                  <span className="text-purple-400 text-xs">
+                    {nomeCategoria}
+                  </span>
+                  <span className="text-gray-500 text-xs">•</span>
+                </>
+              )}
+              <span className="text-gray-400 text-xs">{data}</span>
+            </div>
           </div>
         </div>
 
