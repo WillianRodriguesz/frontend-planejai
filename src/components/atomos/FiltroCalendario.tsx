@@ -128,7 +128,7 @@ const FiltroCalendario = ({ onAplicar }: FiltroCalendarioProps) => {
       <button
         aria-label="Filtrar por data"
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 flex items-center justify-center gap-2 md:px-4"
+        className="text-white hover:text-violet-600 bg-card/80 backdrop-blur-xl border-solid border border-purple-500/30 px-8 py-2 rounded-xl transition-all duration-200 focus:outline-none h-11 flex items-center justify-center gap-2 md:px-4"
       >
         <Calendar className="h-5 w-5" />
         <span className="hidden md:inline-block text-sm font-medium">
@@ -137,7 +137,7 @@ const FiltroCalendario = ({ onAplicar }: FiltroCalendarioProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-12 right-0 z-50 w-64 bg-card/95 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-xl overflow-hidden">
+        <div className="absolute top-12 left-0 md:left-1/2 md:-translate-x-1/2 z-50 w-64 bg-card/95 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-xl overflow-hidden">
           {!mostrarPersonalizado ? (
             <div className="p-2">
               <button
