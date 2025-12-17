@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Filter, Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import CardLancamento from "../moleculas/CardLancamento";
 import ModalAdicionarLancamento from "./ModalAdicionarLancamento";
 import ModalEditarLancamento from "./ModalEditarLancamento";
-import ModalFiltroLancamento from "./ModalFiltroLancamento";
 import ModalDetalhesLancamento from "./ModalDetalhesLancamento";
+import FiltroCalendario from "../atomos/FiltroCalendario";
+import FiltroTipo from "../atomos/FiltroTipo";
+import FiltroCategoria from "../atomos/FiltroCategoria";
+import ChipFiltro from "../atomos/ChipFiltro";
+import CampoBusca from "../atomos/CampoBusca";
 import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 interface LancamentosProps {
@@ -59,8 +64,8 @@ const Lancamentos = ({
 }: LancamentosProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-  const [isModalFiltroOpen, setIsModalFiltroOpen] = useState(false);
   const [isModalDetalhesOpen, setIsModalDetalhesOpen] = useState(false);
+  const [termoBusca, setTermoBusca] = useState("");
   const [lancamentoSelecionado, setLancamentoSelecionado] = useState<{
     id: string;
     icone: any;
@@ -71,19 +76,99 @@ const Lancamentos = ({
     idCategoria?: number;
     nomeCategoria?: string;
   } | null>(null);
-  const [filtrosAtuais, setFiltrosAtuais] = useState<{
-    categoria: string;
-    dataInicio: string;
-    dataFim: string;
-    tipo: "todos" | "entrada" | "saida";
-  }>({
-    categoria: "",
-    dataInicio: "",
-    dataFim: "",
-    tipo: "todos",
-  });
+  const [filtrosAtivos, setFiltrosAtivos] = useState<
+    Array<{
+      tipo: "data" | "tipo" | "categoria";
+      label: string;
+      valor: string;
+      valorOriginal?: string;
+    }>
+  >([
+    {
+      tipo: "data",
+      label: "Data",
+      valor: "Mês atual",
+      valorOriginal: "mesAtual",
+    },
+  ]);
 
   const observerTarget = useRef<HTMLDivElement>(null);
+
+  const aplicarFiltros = (novosFiltros: typeof filtrosAtivos) => {
+    const filtroData = novosFiltros.find((f) => f.tipo === "data");
+    const filtroTipo = novosFiltros.find((f) => f.tipo === "tipo");
+    const filtroCategoria = novosFiltros.find((f) => f.tipo === "categoria");
+
+    const [dataInicio, dataFim] = filtroData?.valorOriginal?.split("|") || [
+      "",
+      "",
+    ];
+
+    if (onFiltrar) {
+      onFiltrar({
+        categoria: filtroCategoria?.valorOriginal || "",
+        dataInicio: dataInicio || "",
+        dataFim: dataFim || "",
+        tipo:
+          (filtroTipo?.valorOriginal as "todos" | "entrada" | "saida") ||
+          "todos",
+      });
+    }
+  };
+
+  const adicionarFiltroData = (
+    dataInicio: string,
+    dataFim: string,
+    label: string
+  ) => {
+    const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== "data");
+    novosFiltros.push({
+      tipo: "data",
+      label: "Data",
+      valor: label,
+      valorOriginal: `${dataInicio}|${dataFim}`,
+    });
+    setFiltrosAtivos(novosFiltros);
+    aplicarFiltros(novosFiltros);
+  };
+
+  const adicionarFiltroTipo = (
+    tipo: "todos" | "entrada" | "saida",
+    label: string
+  ) => {
+    const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== "tipo");
+    if (tipo !== "todos") {
+      novosFiltros.push({
+        tipo: "tipo",
+        label: "Tipo",
+        valor: label,
+        valorOriginal: tipo,
+      });
+    }
+    setFiltrosAtivos(novosFiltros);
+    aplicarFiltros(novosFiltros);
+  };
+
+  const adicionarFiltroCategoria = (
+    idCategoria: string,
+    nomeCategoria: string
+  ) => {
+    const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== "categoria");
+    novosFiltros.push({
+      tipo: "categoria",
+      label: "Categoria",
+      valor: nomeCategoria,
+      valorOriginal: idCategoria,
+    });
+    setFiltrosAtivos(novosFiltros);
+    aplicarFiltros(novosFiltros);
+  };
+
+  const removerFiltro = (tipoFiltro: "data" | "tipo" | "categoria") => {
+    const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== tipoFiltro);
+    setFiltrosAtivos(novosFiltros);
+    aplicarFiltros(novosFiltros);
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -128,28 +213,53 @@ const Lancamentos = ({
 
   const isLoadingInitial = loading && lancamentos.length === 0;
 
+  const lancamentosFiltrados = lancamentos.filter((lancamento) => {
+    if (!termoBusca) return true;
+    const termoLower = termoBusca.toLowerCase();
+    return (
+      lancamento.titulo.toLowerCase().includes(termoLower) ||
+      lancamento.nomeCategoria?.toLowerCase().includes(termoLower)
+    );
+  });
+
   return (
     <div className="w-full pt-3">
-      <div className="flex items-center justify-between pb-3">
-        <h2 className="text-gray-300 text-lg font-semibold">
-          Últimos lançamentos
-        </h2>
-        <div className="flex items-center gap-3">
-          <button
-            aria-label="Filtrar lançamentos"
-            onClick={() => setIsModalFiltroOpen(true)}
-            className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 w-10 flex items-center justify-center"
-          >
-            <Filter className="h-5 w-5" />
-          </button>
-          <button
-            aria-label="Adicionar lançamento"
-            onClick={() => setIsModalOpen(true)}
-            className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 w-10 flex items-center justify-center"
-          >
-            <Plus className="h-6 w-6" />
-          </button>
+      <div className="flex flex-col gap-3 pb-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex-1">
+            <CampoBusca
+              valor={termoBusca}
+              onChange={setTermoBusca}
+              placeholder="Buscar por título ou descrição..."
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <FiltroCalendario onAplicar={adicionarFiltroData} />
+            <FiltroTipo onAplicar={adicionarFiltroTipo} />
+            <FiltroCategoria onAplicar={adicionarFiltroCategoria} />
+            <button
+              aria-label="Adicionar lançamento"
+              onClick={() => setIsModalOpen(true)}
+              className="text-white hover:text-violet-600 bg-purple-600/15 p-2 rounded-xl transition-all duration-200 focus:outline-none border-none outline-none ring-0 focus:ring-0 h-10 w-10 flex items-center justify-center"
+            >
+              <Plus className="h-6 w-6" />
+            </button>
+          </div>
         </div>
+
+        {filtrosAtivos.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            <AnimatePresence>
+              {filtrosAtivos.map((filtro) => (
+                <ChipFiltro
+                  key={filtro.tipo}
+                  valor={filtro.valor}
+                  onRemover={() => removerFiltro(filtro.tipo)}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
       <div className="rounded-xl overflow-hidden bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl">
@@ -171,8 +281,8 @@ const Lancamentos = ({
               </div>
             </div>
           ))
-        ) : lancamentos.length > 0 ? (
-          lancamentos.map((lancamento) => {
+        ) : lancamentosFiltrados.length > 0 ? (
+          lancamentosFiltrados.map((lancamento) => {
             const IconeCategoria = obterIconeCategoria(
               lancamento.nomeCategoria
             );
@@ -192,7 +302,9 @@ const Lancamentos = ({
         ) : (
           <div className="p-8 text-center">
             <p className="text-gray-400 text-sm">
-              Nenhum lançamento para este mês
+              {termoBusca
+                ? "Nenhum lançamento encontrado"
+                : "Nenhum lançamento para este mês"}
             </p>
           </div>
         )}
@@ -218,18 +330,6 @@ const Lancamentos = ({
           }
           setIsModalOpen(false);
         }}
-      />
-
-      <ModalFiltroLancamento
-        isOpen={isModalFiltroOpen}
-        onClose={() => setIsModalFiltroOpen(false)}
-        onApplyFilter={(novosFiltros) => {
-          setFiltrosAtuais(novosFiltros);
-          if (onFiltrar) {
-            onFiltrar(novosFiltros);
-          }
-        }}
-        filtrosAtuais={filtrosAtuais}
       />
 
       <ModalDetalhesLancamento
