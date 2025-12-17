@@ -47,16 +47,26 @@ export default function Home() {
   const { dataInicio: dataInicioMes, dataFim: dataFimMes } =
     obterPrimeiroeUltimoDiaDoMes(mesNumero, dataSelecionada.ano);
 
-  const buscarTodos = filtrosAtuais?.dataInicio === "BUSCAR_TODOS" || filtrosAtuais?.dataFim === "BUSCAR_TODOS";
+  const buscarTodos =
+    filtrosAtuais?.dataInicio === "BUSCAR_TODOS" ||
+    filtrosAtuais?.dataFim === "BUSCAR_TODOS";
   const usarDatasPadrao = !filtrosAtuais?.dataInicio && !filtrosAtuais?.dataFim;
 
   const filtrosApi = {
     ...(filtrosAtuais?.categoria && {
       idCategoria: parseInt(filtrosAtuais.categoria, 10),
     }),
-    ...(!buscarTodos && usarDatasPadrao ? { dataInicial: dataInicioMes, dataFinal: dataFimMes } : {}),
-    ...(filtrosAtuais?.dataInicio && filtrosAtuais.dataInicio !== "BUSCAR_TODOS" && { dataInicial: filtrosAtuais.dataInicio }),
-    ...(filtrosAtuais?.dataFim && filtrosAtuais.dataFim !== "BUSCAR_TODOS" && { dataFinal: filtrosAtuais.dataFim }),
+    ...(!buscarTodos && usarDatasPadrao
+      ? { dataInicial: dataInicioMes, dataFinal: dataFimMes }
+      : {}),
+    ...(filtrosAtuais?.dataInicio &&
+      filtrosAtuais.dataInicio !== "BUSCAR_TODOS" && {
+        dataInicial: filtrosAtuais.dataInicio,
+      }),
+    ...(filtrosAtuais?.dataFim &&
+      filtrosAtuais.dataFim !== "BUSCAR_TODOS" && {
+        dataFinal: filtrosAtuais.dataFim,
+      }),
     ...(filtrosAtuais?.tipo &&
       filtrosAtuais.tipo !== "todos" && { tipoTransacao: filtrosAtuais.tipo }),
   };

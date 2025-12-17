@@ -167,7 +167,7 @@ const Lancamentos = ({
   const removerFiltro = (tipoFiltro: "data" | "tipo" | "categoria") => {
     const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== tipoFiltro);
     setFiltrosAtivos(novosFiltros);
-    
+
     if (tipoFiltro === "data" && novosFiltros.length === 0) {
       if (onFiltrar) {
         onFiltrar({
@@ -257,7 +257,9 @@ const Lancamentos = ({
               className="text-white bg-purple-600 hover:bg-purple-700 backdrop-blur-xl border-solid border border-purple-600 px-8 py-2 rounded-xl transition-all duration-200 focus:outline-none h-11 flex items-center justify-center gap-2 whitespace-nowrap md:px-4"
             >
               <Plus className="h-5 w-5" />
-              <span className="hidden md:inline-block text-sm font-medium">Novo</span>
+              <span className="hidden md:inline-block text-sm font-medium">
+                Novo
+              </span>
             </button>
           </div>
         </div>
