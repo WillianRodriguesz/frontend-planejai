@@ -101,9 +101,7 @@ const CardSaldo = ({
   saldoSainda,
   dataMes,
   dataAno,
-  onDefinirOrcamento,
 }: CardProps) => {
-  const isEmptyBudget = saldo === 0;
 
   return (
     <motion.div

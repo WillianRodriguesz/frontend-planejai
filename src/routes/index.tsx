@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "../components/templates/Login";
 import Home from "../components/templates/Home";
 import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
+import Registro from "../components/templates/Registro";
 
 export default function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/configuracoes" element={<ConfiguracoesUsuario />} />
+        <Route path="/registro" element={<Registro />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>

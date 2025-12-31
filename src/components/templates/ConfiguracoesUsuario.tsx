@@ -35,9 +35,7 @@ const ConfiguracoesUsuario = () => {
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
         <div className="w-full max-w-7xl">
-          {/* Conteúdo */}
           <div className="space-y-8">
-            {/* Seção de Foto do Perfil */}
             <div className="mt-8 bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-xl">
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
@@ -55,9 +53,7 @@ const ConfiguracoesUsuario = () => {
               </div>
             </div>
 
-            {/* Grid para Informações Pessoais e Segurança (lado a lado no desktop) */}
             <div className="grid md:grid-cols-2 md:gap-8 space-y-8 md:space-y-0">
-              {/* Seção de Informações Pessoais */}
               <div className="bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -109,7 +105,6 @@ const ConfiguracoesUsuario = () => {
                 </form>
               </div>
 
-              {/* Seção de Segurança */}
               <div className="bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-xl">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center">
