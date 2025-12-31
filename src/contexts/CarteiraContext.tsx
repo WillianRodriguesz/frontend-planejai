@@ -17,13 +17,10 @@ interface CarteiraProviderProps {
 export const CarteiraProvider: React.FC<CarteiraProviderProps> = ({
   children,
 }) => {
-  // Por enquanto, usa a variável de ambiente. Futuramente virá de um cookie
-  const [idCarteira, setIdCarteiraState] = useState<string | null>(
-    import.meta.env.VITE_CARTEIRA_ID_TEMP || null
-  );
+  // ID da carteira obtido da API buscarUsuario
+  const [idCarteira, setIdCarteiraState] = useState<string | null>(null);
 
   const setIdCarteira = (id: string) => {
-    // Futuramente, aqui será definido no cookie
     setIdCarteiraState(id);
   };
 

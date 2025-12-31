@@ -6,6 +6,8 @@ import { Settings } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useLancamentos } from "../../hooks/useLancamentos";
+import { useUsuario } from "../../hooks/useUsuario";
+import { useCarteira } from "../../contexts/CarteiraContext";
 import {
   converterMesParaNumero,
   obterPrimeiroeUltimoDiaDoMes,
@@ -32,6 +34,9 @@ export default function Home() {
   });
   const itensPorPagina = isMobile ? 5 : 10;
 
+  const { buscarUsuario } = useUsuario();
+  const { idCarteira, setIdCarteira } = useCarteira();
+
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768;
@@ -42,6 +47,24 @@ export default function Home() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    const carregarCarteiraId = async () => {
+      if (!idCarteira) {
+        console.log("Carregando ID da carteira...");
+        try {
+          const response = await buscarUsuario();
+          console.log("ID da carteira carregado:", response.carteiraId);
+          setIdCarteira(response.carteiraId);
+        } catch (error) {
+          console.error("Erro ao buscar usuário:", error);
+          // Opcional: definir erro global ou redirecionar
+        }
+      }
+    };
+
+    carregarCarteiraId();
+  }, [buscarUsuario, idCarteira, setIdCarteira]);
 
   const mesNumero = converterMesParaNumero(dataSelecionada.mes);
   const { dataInicio: dataInicioMes, dataFim: dataFimMes } =

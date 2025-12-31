@@ -5,6 +5,7 @@ import type {
   UsuarioDto,
   LoginResponseDto,
   BuscarUsuarioResponseDto,
+  AtualizarUsuarioDto,
 } from "../types/usuario";
 
 /**
@@ -30,4 +31,27 @@ export const loginUsuario = async (
  */
 export const buscarUsuario = async (): Promise<BuscarUsuarioResponseDto> => {
   return apiClient.get<BuscarUsuarioResponseDto>("/planejai/usuario");
+};
+
+/**
+ * Atualiza o usuário autenticado
+ */
+export const atualizarUsuario = async (
+  dados: AtualizarUsuarioDto
+): Promise<UsuarioDto> => {
+  return apiClient.put<UsuarioDto>("/planejai/usuario", dados);
+};
+
+/**
+ * Deleta o usuário autenticado
+ */
+export const deletarUsuario = async (): Promise<void> => {
+  return apiClient.delete<void>("/planejai/usuario");
+};
+
+/**
+ * Busca um usuário por ID
+ */
+export const buscarUsuarioPorId = async (id: string): Promise<UsuarioDto> => {
+  return apiClient.get<UsuarioDto>(`/planejai/usuario/${id}`);
 };

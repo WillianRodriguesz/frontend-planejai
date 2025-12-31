@@ -34,6 +34,7 @@ class ApiClient {
         "Content-Type": "application/json",
         ...fetchOptions.headers,
       },
+      credentials: "include", // Envia cookies automaticamente
       ...fetchOptions,
     });
 

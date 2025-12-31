@@ -24,6 +24,13 @@ export interface LoginResponseDto {
   message: string;
 }
 
+export interface AtualizarUsuarioDto {
+  nome?: string;
+  email?: string;
+  telefone?: string;
+  senha?: string;
+}
+
 export interface BuscarUsuarioResponseDto {
   usuario: UsuarioDto;
   carteiraId: string;
