@@ -38,7 +38,30 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error(`Erro na requisição: ${response.statusText}`);
+      let message = "Erro desconhecido";
+      switch (response.status) {
+        case 400:
+          message = "Dados inválidos fornecidos";
+          break;
+        case 401:
+          message = "Credenciais inválidas";
+          break;
+        case 403:
+          message = "Acesso negado";
+          break;
+        case 404:
+          message = "Recurso não encontrado";
+          break;
+        case 409:
+          message = "Conflito de dados";
+          break;
+        case 500:
+          message = "Erro interno do servidor";
+          break;
+        default:
+          message = `Erro na requisição: ${response.statusText}`;
+      }
+      throw new Error(message);
     }
 
     return response.json();

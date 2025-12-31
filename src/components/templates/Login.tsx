@@ -4,6 +4,7 @@ import { FcGoogle } from "react-icons/fc";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import { useLoading } from "../../contexts/LoadingContext";
+import { useUsuario } from "../../hooks/useUsuario";
 // Floating label custom input, não usa CampoOutlined para garantir animação
 
 export default function Login() {
@@ -11,21 +12,41 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [focado, setFocado] = useState<string | null>(null);
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [tentativasErradas, setTentativasErradas] = useState(0);
+  const [bloqueadoAte, setBloqueadoAte] = useState<Date | null>(null);
+  const [erroLogin, setErroLogin] = useState<string | null>(null);
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
+  const { loginUsuario, loading, error } = useUsuario();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErroLogin(null);
+
+    if (bloqueadoAte && new Date() < bloqueadoAte) {
+      setErroLogin(
+        "Login bloqueado temporariamente devido a múltiplas tentativas falhidas."
+      );
+      return;
+    }
+
     showLoading("Entrando...", "Entrando na página inicial");
 
     try {
-      // Simular delay de autenticação
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // TODO: Após implementar autenticação real, pegar o ID da carteira do cookie
-      // Por enquanto, o ID já vem da env no CarteiraContext
-
+      await loginUsuario({ email, senha });
+      setTentativasErradas(0); // Reset on success
       navigate("/home");
+    } catch (err) {
+      setTentativasErradas((prev) => prev + 1);
+      setErroLogin(error || "Erro ao fazer login. Verifique suas credenciais.");
+      if (tentativasErradas + 1 >= 3) {
+        const timeout = 5 * 60 * 1000; // 5 minutes
+        setBloqueadoAte(new Date(Date.now() + timeout));
+        setTentativasErradas(0); // Reset after block
+        setErroLogin(
+          "Muitas tentativas falhidas. Login bloqueado por 5 minutos."
+        );
+      }
     } finally {
       hideLoading();
     }
@@ -133,8 +154,19 @@ export default function Login() {
             </label>
           </div>
 
+          {erroLogin && (
+            <div className="text-red-400 text-sm text-center mt-2">
+              {erroLogin}
+            </div>
+          )}
+
           <div className="flex justify-center">
-            <BotaoSalvar className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center">
+            <BotaoSalvar
+              className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
+              disabled={
+                !!(loading || (bloqueadoAte && new Date() < bloqueadoAte))
+              }
+            >
               Entrar
             </BotaoSalvar>
           </div>

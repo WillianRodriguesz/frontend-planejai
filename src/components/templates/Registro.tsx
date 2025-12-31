@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Mail, User, Phone, Lock, Eye, EyeOff } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import { useLoading } from "../../contexts/LoadingContext";
+import { useUsuario } from "../../hooks/useUsuario";
 
 export default function Registro() {
   const [email, setEmail] = useState("");
@@ -15,23 +16,32 @@ export default function Registro() {
   const [focado, setFocado] = useState<string | null>(null);
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
+  const { criarUsuario, loading, error } = useUsuario();
 
   const [mensagem, setMensagem] = useState("");
+  const [erroRegistro, setErroRegistro] = useState<string | null>(null);
   const handleRegistro = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensagem("");
-    showLoading("Registrando...", "Enviando confirmação de e-mail");
+    setErroRegistro(null);
+
+    if (senha !== confirmarSenha) {
+      setErroRegistro("As senhas não coincidem.");
+      return;
+    }
+
+    showLoading("Registrando...", "Criando sua conta");
     try {
-      // Simular delay de registro
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // TODO: Implementar envio de e-mail de confirmação
+      await criarUsuario({ nome, email, telefone, senha });
       setMensagem(
-        `Um e-mail de confirmação foi enviado para ${email}. Verifique sua caixa de entrada.`
+        `Conta criada com sucesso! Um e-mail de confirmação foi enviado para ${email}. Verifique sua caixa de entrada.`
       );
       setTimeout(() => {
         setMensagem("");
         navigate("/login");
       }, 3500);
+    } catch (err) {
+      setErroRegistro(error || "Erro ao criar conta. Tente novamente.");
     } finally {
       hideLoading();
     }
@@ -51,6 +61,11 @@ export default function Registro() {
         {mensagem && (
           <div className="mb-4 p-3 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-300 text-center font-semibold shadow-md animate-fade-in">
             {mensagem}
+          </div>
+        )}
+        {erroRegistro && (
+          <div className="mb-4 p-3 rounded-xl bg-red-600/20 border border-red-500/40 text-red-300 text-center font-semibold shadow-md">
+            {erroRegistro}
           </div>
         )}
         <form
@@ -252,7 +267,10 @@ export default function Registro() {
             </label>
           </div>
           <div className="flex justify-center">
-            <BotaoSalvar className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center">
+            <BotaoSalvar
+              className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
+              disabled={!!loading}
+            >
               Criar conta
             </BotaoSalvar>
           </div>
