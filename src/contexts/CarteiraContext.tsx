@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 interface CarteiraContextData {
   idCarteira: string | null;
-  setIdCarteira: (id: string) => void;
+  setIdCarteira: (id: string | null) => void;
 }
 
 const CarteiraContext = createContext<CarteiraContextData | undefined>(
@@ -20,7 +20,7 @@ export const CarteiraProvider: React.FC<CarteiraProviderProps> = ({
   // ID da carteira obtido da API buscarUsuario
   const [idCarteira, setIdCarteiraState] = useState<string | null>(null);
 
-  const setIdCarteira = (id: string) => {
+  const setIdCarteira = (id: string | null) => {
     setIdCarteiraState(id);
   };
 
