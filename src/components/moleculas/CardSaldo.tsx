@@ -148,36 +148,29 @@ const CardSaldo = ({
             {dataAno}
           </AnimatedText>
         </h2>
-        <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
+        <Settings
+          className="text-gray-400 w-5 h-5 opacity-50 cursor-not-allowed"
+          aria-disabled="true"
+        />
       </div>
 
       {/* Seção do Saldo */}
       <div className="text-left mb-6">
         <p className="text-gray-400 text-sm">Saldo do mês</p>
-        {isEmptyBudget ? (
-          <motion.button
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={saldo}
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 1.05, opacity: 0 }}
             transition={{ duration: 0.4, ease: "anticipate" }}
-            onClick={onDefinirOrcamento}
-            className="w-full mt-3 border-solid border-purple-500/20 hover:border-purple-400/40 text-purple-400 hover:text-purple-300 font-bold text-lg py-2 rounded-xl transition-colors focus:outline-none bg-transparent flex items-center justify-center"
+            className={`text-3xl font-bold ${
+              saldo < 0 ? "text-red-500" : "text-white"
+            }`}
           >
-            Definir orçamento
-          </motion.button>
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={saldo}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.05, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "anticipate" }}
-              className="text-white text-3xl font-bold"
-            >
-              {formataValorBRL(saldo)}
-            </motion.p>
-          </AnimatePresence>
-        )}
+            {formataValorBRL(saldo)}
+          </motion.p>
+        </AnimatePresence>
       </div>
 
       {/* Seção Entradas e Saídas */}

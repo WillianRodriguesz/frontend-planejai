@@ -159,7 +159,7 @@ export default function Home() {
               anoInicial={new Date().getFullYear()}
             />
           </div>
-          <div className="w-full mt-6">
+          <div className="w-full pt-2">
             {error ? (
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
                 <p className="text-red-400 font-semibold">

@@ -4,24 +4,19 @@ import Header from "../organismos/Header";
 import CampoOutlined from "../atomos/CampoOutlined";
 
 const ConfiguracoesUsuario = () => {
-  // Estados para os campos do formulário
   const [nome, setNome] = useState("João Silva");
   const [email, setEmail] = useState("joao.silva@email.com");
   const [telefone, setTelefone] = useState("(11) 99999-9999");
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
-
-  // Estados para mostrar/ocultar senhas
   const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
   const handleSalvarPerfil = (e: React.FormEvent) => {
     e.preventDefault();
-    // Lógica para salvar as informações do perfil
     console.log("Salvando perfil:", { nome, email, telefone });
-    // Aqui você pode fazer uma chamada para a API
   };
 
   const handleTrocarSenha = (e: React.FormEvent) => {
@@ -30,9 +25,7 @@ const ConfiguracoesUsuario = () => {
       alert("As senhas não coincidem!");
       return;
     }
-    // Lógica para trocar a senha
     console.log("Trocando senha");
-    // Aqui você pode fazer uma chamada para a API
   };
 
   return (
