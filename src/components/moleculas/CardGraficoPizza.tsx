@@ -1,5 +1,6 @@
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { ChevronRight } from "lucide-react";
 
 interface DadosCategoria {
   nome: string;
@@ -12,6 +13,7 @@ interface CardGraficoPizzaProps {
   dataAno: string;
   dados: DadosCategoria[];
   loading?: boolean;
+  onVerDetalhes?: () => void;
 }
 
 const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
@@ -19,6 +21,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
   dataAno,
   dados,
   loading = false,
+  onVerDetalhes,
 }) => {
   // Cores neon fracas e minimalistas do projeto
   const cores = [
@@ -159,6 +162,15 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
             {dataMes}/{dataAno}
           </span>
         </h2>
+        {onVerDetalhes && (
+          <button
+            onClick={onVerDetalhes}
+            className="flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors text-xs group"
+          >
+            <span className="hidden sm:inline">Ver detalhes</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        )}
       </div>
 
       {/* Layout: Gráfico à esquerda, Legenda à direita */}

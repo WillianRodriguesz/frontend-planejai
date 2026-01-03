@@ -1,4 +1,4 @@
-import { Settings } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { formataValorBRL } from "../../utils/formataValorBrl";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,6 +9,7 @@ interface CardProps {
   dataMes: string;
   dataAno: string;
   onDefinirOrcamento?: () => void;
+  onVerDetalhes?: () => void;
 }
 
 // Componente para animação de texto
@@ -101,6 +102,7 @@ const CardSaldo = ({
   saldoSainda,
   dataMes,
   dataAno,
+  onVerDetalhes,
 }: CardProps) => {
   return (
     <motion.div
@@ -145,10 +147,15 @@ const CardSaldo = ({
             {dataAno}
           </AnimatedText>
         </h2>
-        <Settings
-          className="text-gray-400 w-5 h-5 opacity-50 cursor-not-allowed"
-          aria-disabled="true"
-        />
+        {onVerDetalhes && (
+          <button
+            onClick={onVerDetalhes}
+            className="flex items-center gap-1 text-purple-400 hover:text-purple-300 transition-colors text-xs group"
+          >
+            <span className="hidden sm:inline">Ver detalhes</span>
+            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        )}
       </div>
 
       {/* Seção do Saldo */}

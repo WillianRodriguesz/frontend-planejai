@@ -94,7 +94,6 @@ export default function Home() {
   const {
     dados: dadosGrafico,
     loading: loadingGrafico,
-    error: errorGrafico,
     refetch: refetchGrafico,
   } = useGastosCategoria(mesNumero, dataSelecionada.ano);
 
@@ -271,6 +270,10 @@ export default function Home() {
                 dataAno={dataSelecionada.ano.toString()}
                 dados={dadosGrafico}
                 loading={loadingGrafico}
+                onVerDetalhes={() => {
+                  // TODO: Implementar navegação para página de detalhes
+                  console.log("Navegar para detalhes de gastos por categoria");
+                }}
               />
             </div>
           </div>
