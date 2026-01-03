@@ -1,19 +1,17 @@
-import { useState, useEffect } from "react";
-import Header from "../organismos/Header";
-import CardSaldo from "../moleculas/CardSaldo";
-import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 import { Settings } from "lucide-react";
-import Lancamentos from "../organismos/Lancamentos";
-import Toast from "../atomos/Toast";
-import { useSaldo } from "../../hooks/useSaldo";
+import { useEffect, useState } from "react";
 import { useLancamentos } from "../../hooks/useLancamentos";
-import { useUsuario } from "../../hooks/useUsuario";
-import { useCarteira } from "../../contexts/CarteiraContext";
+import { useSaldo } from "../../hooks/useSaldo";
 import { useToast } from "../../hooks/useToast";
 import {
   converterMesParaNumero,
   obterPrimeiroeUltimoDiaDoMes,
 } from "../../utils/dateUtils";
+import Toast from "../atomos/Toast";
+import CardSaldo from "../moleculas/CardSaldo";
+import MenuSelecionadorMes from "../moleculas/MenuCalendario";
+import Header from "../organismos/Header";
+import Lancamentos from "../organismos/Lancamentos";
 
 export default function Home() {
   const [dataSelecionada, setDataSelecionada] = useState({
@@ -36,8 +34,6 @@ export default function Home() {
   });
   const itensPorPagina = isMobile ? 5 : 10;
 
-  const { buscarUsuario } = useUsuario();
-  const { idCarteira, setIdCarteira } = useCarteira();
   const { toasts, success, error: showError, hideToast } = useToast();
 
   useEffect(() => {
@@ -50,21 +46,6 @@ export default function Home() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    const carregarCarteiraId = async () => {
-      if (!idCarteira) {
-        try {
-          const response = await buscarUsuario();
-          setIdCarteira(response.carteiraId);
-        } catch (error) {
-          // Erro já tratado pelos hooks
-        }
-      }
-    };
-
-    carregarCarteiraId();
-  }, [buscarUsuario, idCarteira, setIdCarteira]);
 
   const mesNumero = converterMesParaNumero(dataSelecionada.mes);
   const { dataInicio: dataInicioMes, dataFim: dataFimMes } =

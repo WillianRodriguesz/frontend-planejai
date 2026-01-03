@@ -1,14 +1,7 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { useEffect } from "react";
 import type { ReactNode } from "react";
-
-interface CarteiraContextData {
-  idCarteira: string | null;
-  setIdCarteira: (id: string | null) => void;
-}
-
-const CarteiraContext = createContext<CarteiraContextData | undefined>(
-  undefined
-);
+import { useCarteiraStore } from "../stores/useCarteiraStore";
+import { useUsuarioStore } from "../stores/useUsuarioStore";
 
 interface CarteiraProviderProps {
   children: ReactNode;
@@ -17,23 +10,35 @@ interface CarteiraProviderProps {
 export const CarteiraProvider: React.FC<CarteiraProviderProps> = ({
   children,
 }) => {
-  const [idCarteira, setIdCarteiraState] = useState<string | null>(null);
+  const { setIdCarteira, clearCarteira } = useCarteiraStore();
+  const { fetchUsuario, carteiraId } = useUsuarioStore();
 
-  const setIdCarteira = (id: string | null) => {
-    setIdCarteiraState(id);
-  };
+  useEffect(() => {
+    // Busca o usuário e ID da carteira do backend via token JWT seguro
+    const carregarDados = async () => {
+      try {
+        await fetchUsuario();
+      } catch (error) {
+        // Token inválido ou expirado - limpa estado
+        clearCarteira();
+      }
+    };
 
-  return (
-    <CarteiraContext.Provider value={{ idCarteira, setIdCarteira }}>
-      {children}
-    </CarteiraContext.Provider>
-  );
+    carregarDados();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Executar apenas uma vez no mount
+
+  // Sincroniza carteiraId da store de usuário com a store de carteira
+  useEffect(() => {
+    if (carteiraId) {
+      setIdCarteira(carteiraId);
+    }
+  }, [carteiraId, setIdCarteira]);
+
+  return <>{children}</>;
 };
 
 export const useCarteira = () => {
-  const context = useContext(CarteiraContext);
-  if (context === undefined) {
-    throw new Error("useCarteira deve ser usado dentro de um CarteiraProvider");
-  }
-  return context;
+  const { idCarteira, setIdCarteira, clearCarteira } = useCarteiraStore();
+  return { idCarteira, setIdCarteira, clearCarteira };
 };

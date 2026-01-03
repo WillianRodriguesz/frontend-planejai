@@ -6,11 +6,13 @@ import Toast from "../atomos/Toast";
 import { useUsuario } from "../../hooks/useUsuario";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
+import { useUsuarioStore } from "../../stores/useUsuarioStore";
 
 const ConfiguracoesUsuario = () => {
-  const { buscarUsuario, atualizarUsuario, loading } = useUsuario();
+  const { atualizarUsuario, loading } = useUsuario();
   const { trocarSenha, loading: loadingAuth } = useAuth();
   const { toasts, success, error: showError, hideToast } = useToast();
+  const { usuario } = useUsuarioStore();
 
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
@@ -22,21 +24,14 @@ const ConfiguracoesUsuario = () => {
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
-  // Buscar dados do usuário ao carregar o componente
+  // Preencher campos quando o usuário estiver disponível na store
   useEffect(() => {
-    const carregarDadosUsuario = async () => {
-      try {
-        const response = await buscarUsuario();
-        setNome(response.usuario.nome);
-        setEmail(response.usuario.email);
-        setTelefone(response.usuario.telefone || "");
-      } catch (err) {
-        // Erro já tratado pelo hook
-      }
-    };
-
-    carregarDadosUsuario();
-  }, []);
+    if (usuario) {
+      setNome(usuario.nome);
+      setEmail(usuario.email);
+      setTelefone(usuario.telefone || "");
+    }
+  }, [usuario]);
 
   const handleSalvarPerfil = async (e: React.FormEvent) => {
     e.preventDefault();

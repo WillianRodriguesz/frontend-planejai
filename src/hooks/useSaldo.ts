@@ -47,12 +47,12 @@ export const useSaldo = ({ mes, ano }: UseSaldoParams): UseSaldoReturn => {
   };
 
   useEffect(() => {
-    console.log("useSaldo useEffect executado, idCarteira:", idCarteira);
     if (idCarteira) {
       fetchSaldo();
     } else {
-      setLoading(false);
-      setError("ID da carteira não encontrado");
+      setLoading(true);
+      setSaldo(null);
+      setError(null);
     }
   }, [idCarteira, mes, ano]);
 

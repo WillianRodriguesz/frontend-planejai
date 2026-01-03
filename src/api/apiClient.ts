@@ -39,6 +39,12 @@ class ApiClient {
     });
 
     if (!response.ok) {
+      // Detecta token expirado ou inválido e redireciona para login
+      if (response.status === 401 && !endpoint.includes("/auth/login")) {
+        window.location.href = "/login";
+        throw new Error("Sessão expirada");
+      }
+
       let message = "Erro desconhecido";
       switch (response.status) {
         case 400:
