@@ -31,7 +31,7 @@ const ConfiguracoesUsuario = () => {
         setEmail(response.usuario.email);
         setTelefone(response.usuario.telefone || "");
       } catch (err) {
-        console.error("Erro ao carregar dados do usuário:", err);
+        // Erro já tratado pelo hook
       }
     };
 

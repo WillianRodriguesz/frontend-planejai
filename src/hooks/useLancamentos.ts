@@ -146,7 +146,7 @@ export const useLancamentos = ({
         tipoTransacao: novoLancamento.tipo,
         valor: novoLancamento.valor,
         titulo: novoLancamento.titulo,
-        descricao: "", // Por enquanto vazio
+        descricao: "",
         data: dataFormatada,
       };
 
@@ -154,6 +154,7 @@ export const useLancamentos = ({
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
+      await fetchLancamentos();
     } catch (err) {
       throw err;
     }
@@ -172,6 +173,7 @@ export const useLancamentos = ({
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
+      await fetchLancamentos();
     } catch (err) {
       throw err;
     }
@@ -187,13 +189,15 @@ export const useLancamentos = ({
       setTodosLancamentos([]);
       setPaginaAnterior(0);
       setHasMore(true);
+      // Forçar refetch
+      await fetchLancamentos();
     } catch (err) {
       throw err;
     }
   };
 
   useEffect(() => {
-    if (autoFetch) {
+    if (autoFetch && idCarteira) {
       if (pagina === 1 || pagina !== paginaAnterior) {
         fetchLancamentos();
       }

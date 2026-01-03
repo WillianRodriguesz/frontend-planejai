@@ -85,10 +85,10 @@ const Toast = ({
 
   return (
     <div
-      className={`fixed top-6 right-6 z-50 max-w-md transition-all duration-300 ${
+      className={`fixed top-20 left-4 right-4 md:left-auto md:right-6 md:translate-x-0 z-[60] max-w-md mx-auto md:mx-0 transition-all duration-300 ${
         isLeaving
-          ? "translate-x-full opacity-0"
-          : "translate-x-0 opacity-100 animate-slide-in-right"
+          ? "opacity-0 -translate-y-4 md:translate-y-0 md:translate-x-full"
+          : "opacity-100 translate-y-0 md:translate-x-0 animate-slide-down md:animate-slide-in-right"
       }`}
     >
       <div
@@ -144,6 +144,16 @@ const Toast = ({
           }
           to {
             width: 0%;
+          }
+        }
+        @keyframes slide-down {
+          from {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
           }
         }
       `}</style>

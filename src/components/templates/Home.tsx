@@ -4,10 +4,12 @@ import CardSaldo from "../moleculas/CardSaldo";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 import { Settings } from "lucide-react";
 import Lancamentos from "../organismos/Lancamentos";
+import Toast from "../atomos/Toast";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useLancamentos } from "../../hooks/useLancamentos";
 import { useUsuario } from "../../hooks/useUsuario";
 import { useCarteira } from "../../contexts/CarteiraContext";
+import { useToast } from "../../hooks/useToast";
 import {
   converterMesParaNumero,
   obterPrimeiroeUltimoDiaDoMes,
@@ -36,6 +38,7 @@ export default function Home() {
 
   const { buscarUsuario } = useUsuario();
   const { idCarteira, setIdCarteira } = useCarteira();
+  const { toasts, success, error: showError, hideToast } = useToast();
 
   useEffect(() => {
     const handleResize = () => {
@@ -51,14 +54,11 @@ export default function Home() {
   useEffect(() => {
     const carregarCarteiraId = async () => {
       if (!idCarteira) {
-        console.log("Carregando ID da carteira...");
         try {
           const response = await buscarUsuario();
-          console.log("ID da carteira carregado:", response.carteiraId);
           setIdCarteira(response.carteiraId);
         } catch (error) {
-          console.error("Erro ao buscar usuário:", error);
-          // Opcional: definir erro global ou redirecionar
+          // Erro já tratado pelos hooks
         }
       }
     };
@@ -123,9 +123,15 @@ export default function Home() {
   });
 
   const adicionarLancamento = async (novoLancamento: any) => {
-    await adicionarLancamentoOriginal(novoLancamento);
-    refetchSaldo();
-    setPaginaAtual(1);
+    try {
+      await adicionarLancamentoOriginal(novoLancamento);
+      refetchSaldo();
+      success("Lançamento adicionado com sucesso!");
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Erro ao adicionar lançamento"
+      );
+    }
   };
 
   const atualizarLancamento = async (lancamento: {
@@ -136,22 +142,34 @@ export default function Home() {
     data: string;
     tipo: "entrada" | "saida";
   }) => {
-    const idCategoria = parseInt(lancamento.categoria, 10);
-    await atualizarLancamentoOriginal(lancamento.id, {
-      idCategoria,
-      tipoTransacao: lancamento.tipo,
-      valor: lancamento.valor,
-      titulo: lancamento.titulo,
-      data: lancamento.data,
-    });
-    refetchSaldo();
-    setPaginaAtual(1);
+    try {
+      const idCategoria = parseInt(lancamento.categoria, 10);
+      await atualizarLancamentoOriginal(lancamento.id, {
+        idCategoria,
+        tipoTransacao: lancamento.tipo,
+        valor: lancamento.valor,
+        titulo: lancamento.titulo,
+        data: lancamento.data,
+      });
+      refetchSaldo();
+      success("Lançamento atualizado com sucesso!");
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Erro ao atualizar lançamento"
+      );
+    }
   };
 
   const deletarLancamento = async (idLancamento: string) => {
-    await deletarLancamentoOriginal(idLancamento);
-    refetchSaldo();
-    setPaginaAtual(1);
+    try {
+      await deletarLancamentoOriginal(idLancamento);
+      refetchSaldo();
+      success("Lançamento excluído com sucesso!");
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Erro ao excluir lançamento"
+      );
+    }
   };
 
   const carregarMais = () => {
@@ -170,6 +188,14 @@ export default function Home() {
 
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
       <Header />
       <div className="min-h-[60px] w-full"></div>
 

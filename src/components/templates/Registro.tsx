@@ -10,8 +10,10 @@ import {
   CheckCircle,
 } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
+import Toast from "../atomos/Toast";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useUsuario } from "../../hooks/useUsuario";
+import { useToast } from "../../hooks/useToast";
 
 export default function Registro() {
   const [email, setEmail] = useState("");
@@ -24,18 +26,15 @@ export default function Registro() {
   const [focado, setFocado] = useState<string | null>(null);
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
-  const { criarUsuario, loading, error } = useUsuario();
+  const { criarUsuario, loading } = useUsuario();
+  const { toasts, success, error: showError, hideToast } = useToast();
 
-  const [mensagem, setMensagem] = useState("");
-  const [erroRegistro, setErroRegistro] = useState<string | null>(null);
   const [registroSucesso, setRegistroSucesso] = useState(false);
   const handleRegistro = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMensagem("");
-    setErroRegistro(null);
 
     if (senha !== confirmarSenha) {
-      setErroRegistro("As senhas não coincidem.");
+      showError("As senhas não coincidem.");
       return;
     }
 
@@ -43,12 +42,16 @@ export default function Registro() {
     try {
       await criarUsuario({ nome, email, telefone, senha });
       setRegistroSucesso(true);
-      setMensagem("Cadastro realizado com sucesso!");
+      success("Cadastro realizado com sucesso!");
       setTimeout(() => {
         navigate("/login");
       }, 10000);
     } catch (err) {
-      setErroRegistro(error || "Erro ao criar conta. Tente novamente.");
+      showError(
+        err instanceof Error
+          ? err.message
+          : "Erro ao criar conta. Tente novamente."
+      );
     } finally {
       hideLoading();
     }
@@ -56,6 +59,14 @@ export default function Registro() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#212121] flex items-center justify-center px-4">
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
       {registroSucesso ? (
         <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 min-h-[450px] md:min-h-[460px] flex flex-col items-center justify-center text-center">
           <CheckCircle className="w-16 h-16 text-green-400 mb-4 animate-pulse" />
@@ -76,16 +87,6 @@ export default function Registro() {
               Preencha os dados para registrar-se
             </p>
           </div>
-          {mensagem && (
-            <div className="mb-4 p-3 rounded-xl bg-purple-600/20 border border-purple-500/40 text-purple-300 text-center font-semibold shadow-md animate-fade-in">
-              {mensagem}
-            </div>
-          )}
-          {erroRegistro && (
-            <div className="mb-4 p-3 rounded-xl bg-red-600/20 border border-red-500/40 text-red-300 text-center font-semibold shadow-md">
-              {erroRegistro}
-            </div>
-          )}
           <form
             className="space-y-4 md:space-y-4"
             onSubmit={handleRegistro}

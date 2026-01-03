@@ -6,7 +6,9 @@ import TituloModal from "../atomos/TituloModal";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import CampoOutlined from "../atomos/CampoOutlined";
 import SelectCustomizado from "../atomos/SelectCustomizado";
+import Toast from "../atomos/Toast";
 import { useCategorias } from "../../hooks/useCategorias";
+import { useToast } from "../../hooks/useToast";
 
 interface ModalAdicionarLancamentoProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ const ModalAdicionarLancamento = ({
   onSave,
 }: ModalAdicionarLancamentoProps) => {
   const { categorias, loading: loadingCategorias } = useCategorias();
+  const { toasts, warning, hideToast } = useToast();
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("");
   const [valor, setValor] = useState("");
@@ -36,6 +39,7 @@ const ModalAdicionarLancamento = ({
     e.preventDefault();
 
     if (!titulo || !categoria || !valor || !data) {
+      warning("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -58,6 +62,14 @@ const ModalAdicionarLancamento = ({
 
   return (
     <AnimatePresence>
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
       {isOpen && (
         <>
           <motion.div

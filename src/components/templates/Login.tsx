@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
+import Toast from "../atomos/Toast";
 import { useLoading } from "../../contexts/LoadingContext";
-import { useUsuario } from "../../hooks/useUsuario";
+import { useAuth } from "../../hooks/useAuth";
+import { useToast } from "../../hooks/useToast";
 // Floating label custom input, não usa CampoOutlined para garantir animação
 
 export default function Login() {
@@ -14,17 +16,16 @@ export default function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [tentativasErradas, setTentativasErradas] = useState(0);
   const [bloqueadoAte, setBloqueadoAte] = useState<Date | null>(null);
-  const [erroLogin, setErroLogin] = useState<string | null>(null);
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
-  const { loginUsuario, loading, error } = useUsuario();
+  const { login, loading } = useAuth();
+  const { toasts, error: showError, hideToast } = useToast();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErroLogin(null);
 
     if (bloqueadoAte && new Date() < bloqueadoAte) {
-      setErroLogin(
+      showError(
         "Login bloqueado temporariamente devido a múltiplas tentativas falhidas."
       );
       return;
@@ -33,19 +34,22 @@ export default function Login() {
     showLoading("Entrando...", "Entrando na página inicial");
 
     try {
-      await loginUsuario({ email, senha });
-      setTentativasErradas(0); // Reset on success
+      await login({ email, senha });
+      setTentativasErradas(0);
       navigate("/home");
     } catch (err) {
       setTentativasErradas((prev) => prev + 1);
-      setErroLogin(error || "Erro ao fazer login. Verifique suas credenciais.");
+      const errorMsg =
+        err instanceof Error
+          ? err.message
+          : "Erro ao fazer login. Verifique suas credenciais.";
+      showError(errorMsg);
+
       if (tentativasErradas + 1 >= 3) {
-        const timeout = 5 * 60 * 1000; // 5 minutes
+        const timeout = 5 * 60 * 1000;
         setBloqueadoAte(new Date(Date.now() + timeout));
-        setTentativasErradas(0); // Reset after block
-        setErroLogin(
-          "Muitas tentativas falhidas. Login bloqueado por 5 minutos."
-        );
+        setTentativasErradas(0);
+        showError("Muitas tentativas falhidas. Login bloqueado por 5 minutos.");
       }
     } finally {
       hideLoading();
@@ -58,6 +62,14 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#212121] flex items-center justify-center px-4">
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
       <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 min-h-[450px] md:min-h-[460px]">
         <div className="mb-6 md:mb-6 text-center pb-4">
           <h1 className="text-3xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-2 md:mb-2">
@@ -153,12 +165,6 @@ export default function Login() {
               Senha
             </label>
           </div>
-
-          {erroLogin && (
-            <div className="text-red-400 text-sm text-center mt-2">
-              {erroLogin}
-            </div>
-          )}
 
           <div className="flex justify-center">
             <BotaoSalvar
