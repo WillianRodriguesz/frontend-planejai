@@ -17,7 +17,6 @@ interface CarteiraProviderProps {
 export const CarteiraProvider: React.FC<CarteiraProviderProps> = ({
   children,
 }) => {
-  // ID da carteira obtido da API buscarUsuario
   const [idCarteira, setIdCarteiraState] = useState<string | null>(null);
 
   const setIdCarteira = (id: string | null) => {

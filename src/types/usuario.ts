@@ -14,21 +14,10 @@ export interface CriarUsuarioDto {
   senha: string;
 }
 
-export interface LoginUsuarioDto {
-  email: string;
-  senha: string;
-}
-
-export interface LoginResponseDto {
-  statusCode: number;
-  message: string;
-}
-
 export interface AtualizarUsuarioDto {
   nome?: string;
   email?: string;
   telefone?: string;
-  senha?: string;
 }
 
 export interface BuscarUsuarioResponseDto {

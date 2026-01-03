@@ -1,15 +1,12 @@
 import { useState } from "react";
 import type {
   CriarUsuarioDto,
-  LoginUsuarioDto,
   UsuarioDto,
-  LoginResponseDto,
   BuscarUsuarioResponseDto,
   AtualizarUsuarioDto,
 } from "../types/usuario";
 import {
   criarUsuario as criarUsuarioApi,
-  loginUsuario as loginUsuarioApi,
   buscarUsuario as buscarUsuarioApi,
   atualizarUsuario as atualizarUsuarioApi,
   deletarUsuario as deletarUsuarioApi,
@@ -20,7 +17,6 @@ interface UseUsuarioReturn {
   loading: boolean;
   error: string | null;
   criarUsuario: (dados: CriarUsuarioDto) => Promise<UsuarioDto>;
-  loginUsuario: (dados: LoginUsuarioDto) => Promise<LoginResponseDto>;
   buscarUsuario: () => Promise<BuscarUsuarioResponseDto>;
   atualizarUsuario: (dados: AtualizarUsuarioDto) => Promise<UsuarioDto>;
   deletarUsuario: () => Promise<void>;
@@ -36,24 +32,6 @@ export const useUsuario = (): UseUsuarioReturn => {
     setError(null);
     try {
       const result = await criarUsuarioApi(dados);
-      return result;
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Erro desconhecido";
-      setError(errorMessage);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loginUsuario = async (
-    dados: LoginUsuarioDto
-  ): Promise<LoginResponseDto> => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await loginUsuarioApi(dados);
       return result;
     } catch (err) {
       const errorMessage =
@@ -134,7 +112,6 @@ export const useUsuario = (): UseUsuarioReturn => {
     loading,
     error,
     criarUsuario,
-    loginUsuario,
     buscarUsuario,
     atualizarUsuario,
     deletarUsuario,

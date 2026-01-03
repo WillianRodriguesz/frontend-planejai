@@ -1,12 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { User, Lock, Eye, EyeOff, Save, Camera } from "lucide-react";
 import Header from "../organismos/Header";
 import CampoOutlined from "../atomos/CampoOutlined";
+import Toast from "../atomos/Toast";
+import { useUsuario } from "../../hooks/useUsuario";
+import { useAuth } from "../../hooks/useAuth";
+import { useToast } from "../../hooks/useToast";
 
 const ConfiguracoesUsuario = () => {
-  const [nome, setNome] = useState("João Silva");
-  const [email, setEmail] = useState("joao.silva@email.com");
-  const [telefone, setTelefone] = useState("(11) 99999-9999");
+  const { buscarUsuario, atualizarUsuario, loading } = useUsuario();
+  const { trocarSenha, loading: loadingAuth } = useAuth();
+  const { toasts, success, error: showError, hideToast } = useToast();
+
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
   const [senhaAtual, setSenhaAtual] = useState("");
   const [novaSenha, setNovaSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
@@ -14,24 +22,83 @@ const ConfiguracoesUsuario = () => {
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
-  const handleSalvarPerfil = (e: React.FormEvent) => {
+  // Buscar dados do usuário ao carregar o componente
+  useEffect(() => {
+    const carregarDadosUsuario = async () => {
+      try {
+        const response = await buscarUsuario();
+        setNome(response.usuario.nome);
+        setEmail(response.usuario.email);
+        setTelefone(response.usuario.telefone || "");
+      } catch (err) {
+        console.error("Erro ao carregar dados do usuário:", err);
+      }
+    };
+
+    carregarDadosUsuario();
+  }, []);
+
+  const handleSalvarPerfil = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Salvando perfil:", { nome, email, telefone });
+
+    try {
+      await atualizarUsuario({
+        nome,
+        email,
+        telefone: telefone || undefined,
+      });
+      success("Perfil atualizado com sucesso!");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Erro ao salvar perfil");
+    }
   };
 
-  const handleTrocarSenha = (e: React.FormEvent) => {
+  const handleTrocarSenha = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (novaSenha !== confirmarSenha) {
-      alert("As senhas não coincidem!");
+
+    if (!senhaAtual) {
+      showError("Por favor, digite sua senha atual!");
       return;
     }
-    console.log("Trocando senha");
+
+    if (novaSenha !== confirmarSenha) {
+      showError("As senhas não coincidem!");
+      return;
+    }
+
+    if (novaSenha.length < 6) {
+      showError("A senha deve ter pelo menos 6 caracteres!");
+      return;
+    }
+
+    try {
+      const response = await trocarSenha({
+        senhaAtual,
+        novaSenha,
+      });
+      success(response.message || "Senha alterada com sucesso!");
+      setSenhaAtual("");
+      setNovaSenha("");
+      setConfirmarSenha("");
+    } catch (err) {
+      showError(err instanceof Error ? err.message : "Erro ao trocar senha");
+    }
   };
 
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
       <Header />
       <div className="min-h-[60px] w-full"></div>
+
+      {/* Toasts modernos */}
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center">
         <div className="w-full max-w-7xl">
@@ -97,10 +164,11 @@ const ConfiguracoesUsuario = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/25"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Save className="w-5 h-5" />
-                    Salvar Alterações
+                    {loading ? "Salvando..." : "Salvar Alterações"}
                   </button>
                 </form>
               </div>
@@ -189,10 +257,11 @@ const ConfiguracoesUsuario = () => {
 
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-red-500/25"
+                    disabled={loadingAuth}
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-red-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Lock className="w-5 h-5" />
-                    Alterar Senha
+                    {loadingAuth ? "Alterando..." : "Alterar Senha"}
                   </button>
                 </form>
               </div>
