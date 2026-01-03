@@ -80,7 +80,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
         x={x}
         y={y}
         fill="white"
-        textAnchor={x > cx ? "start" : "end"}
+        textAnchor="middle"
         dominantBaseline="central"
         className="text-[10px] font-semibold"
       >
