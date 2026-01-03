@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { useLancamentos } from "../../hooks/useLancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useToast } from "../../hooks/useToast";
+import { useGastosCategoria } from "../../hooks/useGastosCategoria";
 import {
   converterMesParaNumero,
   obterPrimeiroeUltimoDiaDoMes,
 } from "../../utils/dateUtils";
 import Toast from "../atomos/Toast";
 import CardSaldo from "../moleculas/CardSaldo";
+import CardGraficoPizza from "../moleculas/CardGraficoPizza";
 import MenuSelecionadorMes from "../moleculas/MenuCalendario";
 import Header from "../organismos/Header";
 import Lancamentos from "../organismos/Lancamentos";
@@ -90,6 +92,13 @@ export default function Home() {
   });
 
   const {
+    dados: dadosGrafico,
+    loading: loadingGrafico,
+    error: errorGrafico,
+    refetch: refetchGrafico,
+  } = useGastosCategoria(mesNumero, dataSelecionada.ano);
+
+  const {
     lancamentos,
     loading: loadingLancamentos,
     error: _errorLancamentos,
@@ -107,6 +116,7 @@ export default function Home() {
     try {
       await adicionarLancamentoOriginal(novoLancamento);
       refetchSaldo();
+      refetchGrafico();
       success("Lançamento adicionado com sucesso!");
     } catch (err) {
       showError(
@@ -133,6 +143,7 @@ export default function Home() {
         data: lancamento.data,
       });
       refetchSaldo();
+      refetchGrafico();
       success("Lançamento atualizado com sucesso!");
     } catch (err) {
       showError(
@@ -145,6 +156,7 @@ export default function Home() {
     try {
       await deletarLancamentoOriginal(idLancamento);
       refetchSaldo();
+      refetchGrafico();
       success("Lançamento excluído com sucesso!");
     } catch (err) {
       showError(
@@ -189,63 +201,78 @@ export default function Home() {
               anoInicial={new Date().getFullYear()}
             />
           </div>
-          <div className="w-full pt-2">
-            {error ? (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-                <p className="text-red-400 font-semibold">
-                  Erro ao carregar saldo
-                </p>
-                <p className="text-red-300 text-sm mt-1">{error}</p>
-              </div>
-            ) : loading ? (
-              <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden">
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
-
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="flex items-baseline gap-1">
-                    <span className="text-white text-lg font-semibold">
-                      {dataSelecionada.mes}
-                    </span>
-                    <span className="text-gray-400 text-sm">/</span>
-                    <span className="text-gray-400 text-sm">
-                      {dataSelecionada.ano}
-                    </span>
-                  </h2>
-                  <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
+          {/* Grid responsivo: 1 coluna no mobile, 2 colunas no desktop */}
+          <div className="w-full pt-2 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Card Saldo */}
+            <div className="w-full">
+              {error ? (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
+                  <p className="text-red-400 font-semibold">
+                    Erro ao carregar saldo
+                  </p>
+                  <p className="text-red-300 text-sm mt-1">{error}</p>
                 </div>
+              ) : loading ? (
+                <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden">
+                  <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
 
-                <div className="text-left mb-6">
-                  <p className="text-gray-400 text-sm">Saldo do mês</p>
-                  <div className="relative h-9 w-40 bg-gray-700/50 rounded overflow-hidden mt-1">
-                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="flex items-baseline gap-1">
+                      <span className="text-white text-lg font-semibold">
+                        {dataSelecionada.mes}
+                      </span>
+                      <span className="text-gray-400 text-sm">/</span>
+                      <span className="text-gray-400 text-sm">
+                        {dataSelecionada.ano}
+                      </span>
+                    </h2>
+                    <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
                   </div>
-                </div>
 
-                <div className="flex justify-between">
-                  <div className="flex flex-col">
-                    <span className="text-gray-400 text-sm">Entradas</span>
-                    <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
+                  <div className="text-left mb-6">
+                    <p className="text-gray-400 text-sm">Saldo do mês</p>
+                    <div className="relative h-9 w-40 bg-gray-700/50 rounded overflow-hidden mt-1">
                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end">
-                    <span className="text-gray-400 text-sm">Saídas</span>
-                    <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
-                      <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+
+                  <div className="flex justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-gray-400 text-sm">Entradas</span>
+                      <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
+                        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <span className="text-gray-400 text-sm">Saídas</span>
+                      <div className="relative h-5 w-24 bg-gray-700/50 rounded overflow-hidden mt-1">
+                        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : saldo ? (
-              <CardSaldo
-                key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
+              ) : saldo ? (
+                <CardSaldo
+                  key={`${dataSelecionada.mes}-${dataSelecionada.ano}`}
+                  dataMes={dataSelecionada.mes}
+                  dataAno={dataSelecionada.ano.toString()}
+                  saldo={saldo.saldoMes}
+                  saldoEntrada={saldo.entradas}
+                  saldoSainda={saldo.saidas}
+                />
+              ) : null}
+            </div>
+
+            {/* Card Gráfico Pizza - apenas desktop */}
+            <div className="hidden lg:block w-full">
+              <CardGraficoPizza
+                key={`grafico-${dataSelecionada.mes}-${dataSelecionada.ano}`}
                 dataMes={dataSelecionada.mes}
                 dataAno={dataSelecionada.ano.toString()}
-                saldo={saldo.saldoMes}
-                saldoEntrada={saldo.entradas}
-                saldoSainda={saldo.saidas}
+                dados={dadosGrafico}
+                loading={loadingGrafico}
               />
-            ) : null}
+            </div>
           </div>
 
           <Lancamentos

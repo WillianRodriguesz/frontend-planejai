@@ -102,7 +102,6 @@ const CardSaldo = ({
   dataMes,
   dataAno,
 }: CardProps) => {
-
   return (
     <motion.div
       layout
@@ -112,7 +111,7 @@ const CardSaldo = ({
         layout: { duration: 0.3, type: "spring" },
         opacity: { duration: 0.3 },
       }}
-      className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden"
+      className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden"
     >
       {/* Efeito de brilho */}
       <motion.div
@@ -129,7 +128,7 @@ const CardSaldo = ({
       />
 
       {/* Cabeçalho */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-10">
         <h2 className="flex items-baseline gap-1 overflow-hidden">
           <AnimatedText
             keyValue={dataMes}
@@ -153,8 +152,8 @@ const CardSaldo = ({
       </div>
 
       {/* Seção do Saldo */}
-      <div className="text-left mb-6">
-        <p className="text-gray-400 text-sm">Saldo do mês</p>
+      <div className="text-left mb-10">
+        <p className="text-gray-400 text-sm mb-2">Saldo do mês</p>
         <AnimatePresence mode="wait">
           <motion.p
             key={saldo}

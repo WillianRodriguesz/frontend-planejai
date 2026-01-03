@@ -99,3 +99,18 @@ export const deletarLancamento = async (
     `/planejai/carteira/${idCarteira}/lancamento/${idLancamento}`
   );
 };
+
+/**
+ * Busca gastos agrupados por categoria para um mês/ano específico
+ * TODO: Implementar quando o endpoint estiver pronto no backend
+ */
+// export const buscarGastosPorCategoria = async (
+//   idCarteira: string,
+//   mes: number,
+//   ano: number
+// ): Promise<{ nome: string; valor: number }[]> => {
+//   return apiClient.get(`/planejai/carteira/${idCarteira}/gastos-categoria`, {
+//     mes: mes.toString(),
+//     ano: ano.toString(),
+//   });
+// };
