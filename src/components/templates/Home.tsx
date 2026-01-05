@@ -58,33 +58,38 @@ export default function Home() {
     filtrosAtuais?.dataFim === "BUSCAR_TODOS";
   const usarDatasPadrao = !filtrosAtuais?.dataInicio && !filtrosAtuais?.dataFim;
 
-  const filtrosApi = useMemo(() => ({
-    ...(filtrosAtuais?.categoria && {
-      idCategoria: parseInt(filtrosAtuais.categoria, 10),
+  const filtrosApi = useMemo(
+    () => ({
+      ...(filtrosAtuais?.categoria && {
+        idCategoria: parseInt(filtrosAtuais.categoria, 10),
+      }),
+      ...(!buscarTodos && usarDatasPadrao
+        ? { dataInicial: dataInicioMes, dataFinal: dataFimMes }
+        : {}),
+      ...(filtrosAtuais?.dataInicio &&
+        filtrosAtuais.dataInicio !== "BUSCAR_TODOS" && {
+          dataInicial: filtrosAtuais.dataInicio,
+        }),
+      ...(filtrosAtuais?.dataFim &&
+        filtrosAtuais.dataFim !== "BUSCAR_TODOS" && {
+          dataFinal: filtrosAtuais.dataFim,
+        }),
+      ...(filtrosAtuais?.tipo &&
+        filtrosAtuais.tipo !== "todos" && {
+          tipoTransacao: filtrosAtuais.tipo,
+        }),
     }),
-    ...(!buscarTodos && usarDatasPadrao
-      ? { dataInicial: dataInicioMes, dataFinal: dataFimMes }
-      : {}),
-    ...(filtrosAtuais?.dataInicio &&
-      filtrosAtuais.dataInicio !== "BUSCAR_TODOS" && {
-        dataInicial: filtrosAtuais.dataInicio,
-      }),
-    ...(filtrosAtuais?.dataFim &&
-      filtrosAtuais.dataFim !== "BUSCAR_TODOS" && {
-        dataFinal: filtrosAtuais.dataFim,
-      }),
-    ...(filtrosAtuais?.tipo &&
-      filtrosAtuais.tipo !== "todos" && { tipoTransacao: filtrosAtuais.tipo }),
-  }), [
-    filtrosAtuais?.categoria,
-    filtrosAtuais?.dataInicio,
-    filtrosAtuais?.dataFim,
-    filtrosAtuais?.tipo,
-    buscarTodos,
-    usarDatasPadrao,
-    dataInicioMes,
-    dataFimMes,
-  ]);
+    [
+      filtrosAtuais?.categoria,
+      filtrosAtuais?.dataInicio,
+      filtrosAtuais?.dataFim,
+      filtrosAtuais?.tipo,
+      buscarTodos,
+      usarDatasPadrao,
+      dataInicioMes,
+      dataFimMes,
+    ]
+  );
 
   useEffect(() => {
     setPaginaAtual(1);

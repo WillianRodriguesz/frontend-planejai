@@ -68,7 +68,6 @@ export const useLancamentos = ({
   >([]);
   const [loading, setLoading] = useState(autoFetch);
   const [error, setError] = useState<string | null>(null);
-  const [paginaAnterior, setPaginaAnterior] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
   const fetchLancamentos = async () => {
@@ -120,8 +119,6 @@ export const useLancamentos = ({
       } else {
         setTodosLancamentos((prev) => [...prev, ...lancamentosFormatados]);
       }
-
-      setPaginaAnterior(pagina);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Erro desconhecido");
       if (pagina === 1) {
@@ -152,7 +149,6 @@ export const useLancamentos = ({
 
       await adicionarLancamentoApi(idCarteira, lancamentoDto);
       setTodosLancamentos([]);
-      setPaginaAnterior(0);
       setHasMore(true);
       await fetchLancamentos();
     } catch (err) {
@@ -171,7 +167,6 @@ export const useLancamentos = ({
     try {
       await atualizarLancamentoApi(idCarteira, idLancamento, dadosAtualizacao);
       setTodosLancamentos([]);
-      setPaginaAnterior(0);
       setHasMore(true);
       await fetchLancamentos();
     } catch (err) {
@@ -187,7 +182,6 @@ export const useLancamentos = ({
     try {
       await deletarLancamentoApi(idCarteira, idLancamento);
       setTodosLancamentos([]);
-      setPaginaAnterior(0);
       setHasMore(true);
       // Forçar refetch
       await fetchLancamentos();
@@ -199,7 +193,6 @@ export const useLancamentos = ({
   useEffect(() => {
     if (autoFetch && idCarteira) {
       fetchLancamentos();
-      setPaginaAnterior(pagina);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoFetch, idCarteira, pagina, itensPorPagina, filtros]);
