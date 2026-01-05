@@ -7,6 +7,9 @@ import Toast from "../atomos/Toast";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
+import { useUsuarioStore } from "../../stores/useUsuarioStore";
+import { useCarteiraStore } from "../../stores/useCarteiraStore";
+import { useCategoriasStore } from "../../stores/useCategoriasStore";
 // Floating label custom input, não usa CampoOutlined para garantir animação
 
 export default function Login() {
@@ -20,6 +23,9 @@ export default function Login() {
   const { showLoading, hideLoading } = useLoading();
   const { login, loading } = useAuth();
   const { toasts, error: showError, hideToast } = useToast();
+  const { fetchUsuario, reset: resetUsuario } = useUsuarioStore();
+  const { clearCarteira } = useCarteiraStore();
+  const { reset: resetCategorias } = useCategoriasStore();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +41,10 @@ export default function Login() {
 
     try {
       await login({ email, senha });
+      resetUsuario();
+      resetCategorias();
+      clearCarteira();
+      await fetchUsuario();
       setTentativasErradas(0);
       navigate("/home");
     } catch (err) {
