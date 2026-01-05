@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useCarteira } from "../contexts/CarteiraContext";
-// import { buscarGastosPorCategoria } from '../api/lancamentosApi';
+import { buscarGastosMensais } from "../api/gastosApi";
 
 interface GastosCategoria {
   nome: string;
@@ -10,20 +10,11 @@ interface GastosCategoria {
 
 interface UseGastosCategoriaReturn {
   dados: GastosCategoria[];
+  totalGastos: number;
   loading: boolean;
   error: string | null;
   refetch: () => void;
 }
-
-// Dados mockados para desenvolvimento
-const dadosMockados: GastosCategoria[] = [
-  { nome: "Alimentação", valor: 850.5 },
-  { nome: "Transporte", valor: 320.0 },
-  { nome: "Lazer", valor: 150.0 },
-  { nome: "Saúde", valor: 200.0 },
-  { nome: "Educação", valor: 120.0 },
-  { nome: "Outros", valor: 95.3 },
-];
 
 export const useGastosCategoria = (
   mes: number,
@@ -31,12 +22,14 @@ export const useGastosCategoria = (
 ): UseGastosCategoriaReturn => {
   const { idCarteira } = useCarteira();
   const [dados, setDados] = useState<GastosCategoria[]>([]);
+  const [totalGastos, setTotalGastos] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchGastos = async () => {
     if (!idCarteira) {
       setDados([]);
+      setTotalGastos(0);
       return;
     }
 
@@ -44,13 +37,22 @@ export const useGastosCategoria = (
     setError(null);
 
     try {
-      // TODO: Descomentar quando o endpoint estiver pronto
-      // const response = await buscarGastosPorCategoria(idCarteira, mes, ano);
-      // setDados(response);
+      // Formatar mês e ano no formato YYYY-MM
+      const mesFormatado = mes.toString().padStart(2, "0");
+      const mesAno = `${ano}-${mesFormatado}`;
 
-      // Dados mockados por enquanto
-      await new Promise((resolve) => setTimeout(resolve, 800)); // Simular delay da API
-      setDados(dadosMockados);
+      const response = await buscarGastosMensais(idCarteira, mesAno);
+
+      // Transformar dados da API para o formato do componente
+      const dadosFormatados: GastosCategoria[] = response.gastosPorCategoria.map(
+        (gasto) => ({
+          nome: gasto.categoria.nome,
+          valor: gasto.valor,
+        })
+      );
+
+      setDados(dadosFormatados);
+      setTotalGastos(response.totalGastos);
     } catch (err) {
       setError(
         err instanceof Error
@@ -58,6 +60,7 @@ export const useGastosCategoria = (
           : "Erro ao carregar gastos por categoria"
       );
       setDados([]);
+      setTotalGastos(0);
     } finally {
       setLoading(false);
     }
@@ -70,6 +73,7 @@ export const useGastosCategoria = (
 
   return {
     dados,
+    totalGastos,
     loading,
     error,
     refetch: fetchGastos,
