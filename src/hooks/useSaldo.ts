@@ -54,6 +54,7 @@ export const useSaldo = ({ mes, ano }: UseSaldoParams): UseSaldoReturn => {
       setSaldo(null);
       setError(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idCarteira, mes, ano]);
 
   return {

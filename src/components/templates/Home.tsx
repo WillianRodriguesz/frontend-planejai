@@ -1,5 +1,5 @@
 import { Settings } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useLancamentos } from "../../hooks/useLancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useToast } from "../../hooks/useToast";
@@ -58,7 +58,7 @@ export default function Home() {
     filtrosAtuais?.dataFim === "BUSCAR_TODOS";
   const usarDatasPadrao = !filtrosAtuais?.dataInicio && !filtrosAtuais?.dataFim;
 
-  const filtrosApi = {
+  const filtrosApi = useMemo(() => ({
     ...(filtrosAtuais?.categoria && {
       idCategoria: parseInt(filtrosAtuais.categoria, 10),
     }),
@@ -75,7 +75,16 @@ export default function Home() {
       }),
     ...(filtrosAtuais?.tipo &&
       filtrosAtuais.tipo !== "todos" && { tipoTransacao: filtrosAtuais.tipo }),
-  };
+  }), [
+    filtrosAtuais?.categoria,
+    filtrosAtuais?.dataInicio,
+    filtrosAtuais?.dataFim,
+    filtrosAtuais?.tipo,
+    buscarTodos,
+    usarDatasPadrao,
+    dataInicioMes,
+    dataFimMes,
+  ]);
 
   useEffect(() => {
     setPaginaAtual(1);

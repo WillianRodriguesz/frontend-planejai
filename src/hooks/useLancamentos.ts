@@ -198,11 +198,11 @@ export const useLancamentos = ({
 
   useEffect(() => {
     if (autoFetch && idCarteira) {
-      if (pagina === 1 || pagina !== paginaAnterior) {
-        fetchLancamentos();
-      }
+      fetchLancamentos();
+      setPaginaAnterior(pagina);
     }
-  }, [idCarteira, pagina, itensPorPagina, JSON.stringify(filtros)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoFetch, idCarteira, pagina, itensPorPagina, filtros]);
 
   return {
     lancamentos: todosLancamentos,

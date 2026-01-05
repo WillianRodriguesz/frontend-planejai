@@ -65,6 +65,7 @@ export const useGastosCategoria = (
 
   useEffect(() => {
     fetchGastos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idCarteira, mes, ano]);
 
   return {

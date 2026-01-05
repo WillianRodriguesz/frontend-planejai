@@ -41,7 +41,10 @@ class ApiClient {
     if (!response.ok) {
       // Detecta token expirado ou inválido e redireciona para login
       if (response.status === 401 && !endpoint.includes("/auth/login")) {
-        window.location.href = "/login";
+        // Evita loops infinitos de redirecionamento
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
         throw new Error("Sessão expirada");
       }
 
