@@ -1,5 +1,6 @@
 import { Settings } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLancamentos } from "../../hooks/useLancamentos";
 import { useSaldo } from "../../hooks/useSaldo";
 import { useToast } from "../../hooks/useToast";
@@ -16,6 +17,7 @@ import Header from "../organismos/Header";
 import Lancamentos from "../organismos/Lancamentos";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [dataSelecionada, setDataSelecionada] = useState({
     mes: new Date().toLocaleString("pt-BR", { month: "long" }),
     ano: new Date().getFullYear(),
@@ -283,7 +285,9 @@ export default function Home() {
                 dados={dadosGrafico}
                 loading={loadingGrafico}
                 onVerDetalhes={() => {
-                  console.log("Navegar para detalhes de gastos por categoria");
+                  navigate(
+                    `/detalhes-gastos?mes=${dataSelecionada.mes}&ano=${dataSelecionada.ano}`
+                  );
                 }}
               />
             </div>

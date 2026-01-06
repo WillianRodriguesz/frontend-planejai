@@ -6,6 +6,10 @@ interface GastosCategoria {
   nome: string;
   valor: number;
   cor?: string;
+  categoria?: {
+    id: number;
+    nome: string;
+  };
 }
 
 interface UseGastosCategoriaReturn {
@@ -46,6 +50,7 @@ export const useGastosCategoria = (
         response.gastosPorCategoria.map((gasto) => ({
           nome: gasto.categoria.nome,
           valor: gasto.valor,
+          categoria: gasto.categoria,
         }));
 
       setDados(dadosFormatados);

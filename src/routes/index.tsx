@@ -3,6 +3,7 @@ import Login from "../components/templates/Login";
 import Home from "../components/templates/Home";
 import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
 import Registro from "../components/templates/Registro";
+import DetalhesGastos from "../components/templates/DetalhesGastos";
 
 export default function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ export default function AppRoutes() {
         <Route path="/home" element={<Home />} />
         <Route path="/configuracoes" element={<ConfiguracoesUsuario />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/detalhes-gastos" element={<DetalhesGastos />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
