@@ -15,6 +15,10 @@ interface GastosCategoria {
 interface UseGastosCategoriaReturn {
   dados: GastosCategoria[];
   totalGastos: number;
+  relacaoMesAnterior: {
+    diferencaGastosMensal: number;
+    mensagemEconomia: string;
+  } | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -27,6 +31,10 @@ export const useGastosCategoria = (
   const { idCarteira } = useCarteira();
   const [dados, setDados] = useState<GastosCategoria[]>([]);
   const [totalGastos, setTotalGastos] = useState(0);
+  const [relacaoMesAnterior, setRelacaoMesAnterior] = useState<{
+    diferencaGastosMensal: number;
+    mensagemEconomia: string;
+  } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +42,7 @@ export const useGastosCategoria = (
     if (!idCarteira) {
       setDados([]);
       setTotalGastos(0);
+      setRelacaoMesAnterior(null);
       return;
     }
 
@@ -55,6 +64,7 @@ export const useGastosCategoria = (
 
       setDados(dadosFormatados);
       setTotalGastos(response.totalGastos);
+      setRelacaoMesAnterior(response.relacaoMesAnterior || null);
     } catch (err) {
       setError(
         err instanceof Error
@@ -63,6 +73,7 @@ export const useGastosCategoria = (
       );
       setDados([]);
       setTotalGastos(0);
+      setRelacaoMesAnterior(null);
     } finally {
       setLoading(false);
     }
@@ -76,6 +87,7 @@ export const useGastosCategoria = (
   return {
     dados,
     totalGastos,
+    relacaoMesAnterior,
     loading,
     error,
     refetch: fetchGastos,

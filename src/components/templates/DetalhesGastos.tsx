@@ -35,6 +35,7 @@ export default function DetalhesGastos() {
   const {
     dados: dadosGrafico,
     totalGastos,
+    relacaoMesAnterior,
     loading: loadingGrafico,
   } = useGastosCategoria(mesNumero, anoParam);
 
@@ -151,22 +152,51 @@ export default function DetalhesGastos() {
               </div>
             </div>
 
-            <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10 border border-green-500/30">
-                <TrendingUp className="w-5 h-5 text-green-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-xs mb-1">
-                  Média por Categoria
-                </p>
-                <p className="text-xl font-bold text-white">
-                  {formataValorBRL(
-                    categoriasComId.length > 0
-                      ? totalGastos / categoriasComId.length
-                      : 0
+            <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex flex-col gap-2">
+              <div className="flex items-center justify-start gap-3">
+                <div
+                  className={`p-2 rounded-lg ${
+                    relacaoMesAnterior &&
+                    relacaoMesAnterior.diferencaGastosMensal < 0
+                      ? "bg-red-500/10 border border-red-500/30"
+                      : "bg-green-500/10 border border-green-500/30"
+                  }`}
+                >
+                  {relacaoMesAnterior &&
+                  relacaoMesAnterior.diferencaGastosMensal < 0 ? (
+                    <TrendingDown className="w-5 h-5 text-red-400" />
+                  ) : (
+                    <TrendingUp className="w-5 h-5 text-green-400" />
                   )}
-                </p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-xs mb-1">
+                    Relação Mês Anterior
+                  </p>
+                  {relacaoMesAnterior && (
+                    <p
+                      className={`text-xl font-bold ${
+                        relacaoMesAnterior.diferencaGastosMensal < 0
+                          ? "text-red-400"
+                          : "text-green-400"
+                      }`}
+                    >
+                      {formataValorBRL(
+                        relacaoMesAnterior.diferencaGastosMensal
+                      )}
+                    </p>
+                  )}
+                </div>
               </div>
+              {relacaoMesAnterior ? (
+                <p className="text-xs text-gray-300 leading-relaxed w-full text-center">
+                  {relacaoMesAnterior.mensagemEconomia}
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500 w-full text-center">
+                  Sem dados do mês anterior
+                </p>
+              )}
             </div>
           </div>
 
