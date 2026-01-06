@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, TrendingDown, TrendingUp, List, Award } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { TrendingDown, TrendingUp, List, Award } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../organismos/Header";
 import CardLancamento from "../moleculas/CardLancamento";
@@ -14,7 +14,6 @@ import { formataValorBRL } from "../../utils/formataValorBrl";
 import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 export default function DetalhesGastos() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const mesParam =
     searchParams.get("mes") ||
@@ -97,13 +96,7 @@ export default function DetalhesGastos() {
 
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center pb-8">
         <div className="w-full max-w-7xl">
-          <div className="flex items-center gap-4 py-6">
-            <button
-              onClick={() => navigate("/home")}
-              className="p-2 rounded-lg bg-card/50 border border-purple-500/30 hover:bg-card/80 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5 text-purple-400" />
-            </button>
+          <div className="py-6">
             <div>
               <h1 className="text-2xl font-bold text-white">
                 Detalhes de Gastos
