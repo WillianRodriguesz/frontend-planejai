@@ -113,7 +113,7 @@ const CardSaldo = ({
         layout: { duration: 0.3, type: "spring" },
         opacity: { duration: 0.3 },
       }}
-      className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden h-[280px] flex flex-col justify-between"
+      className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden h-[220px] lg:h-[280px] flex flex-col justify-between"
     >
       {/* Efeito de brilho */}
       <motion.div

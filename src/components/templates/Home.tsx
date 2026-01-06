@@ -275,7 +275,7 @@ export default function Home() {
               ) : null}
             </div>
 
-            <div className="hidden lg:block w-full">
+            <div className="w-full">
               <CardGraficoPizza
                 key={`grafico-${dataSelecionada.mes}-${dataSelecionada.ano}`}
                 dataMes={dataSelecionada.mes}
