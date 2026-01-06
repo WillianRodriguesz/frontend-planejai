@@ -37,19 +37,16 @@ export const useGastosCategoria = (
     setError(null);
 
     try {
-      // Formatar mês e ano no formato YYYY-MM
       const mesFormatado = mes.toString().padStart(2, "0");
       const mesAno = `${ano}-${mesFormatado}`;
 
       const response = await buscarGastosMensais(idCarteira, mesAno);
 
-      // Transformar dados da API para o formato do componente
-      const dadosFormatados: GastosCategoria[] = response.gastosPorCategoria.map(
-        (gasto) => ({
+      const dadosFormatados: GastosCategoria[] =
+        response.gastosPorCategoria.map((gasto) => ({
           nome: gasto.categoria.nome,
           valor: gasto.valor,
-        })
-      );
+        }));
 
       setDados(dadosFormatados);
       setTotalGastos(response.totalGastos);

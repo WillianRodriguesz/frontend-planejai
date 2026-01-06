@@ -94,7 +94,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
 
   if (loading) {
     return (
-      <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden">
+      <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden h-[280px]">
         <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
 
         <div className="flex items-center justify-between mb-8">
@@ -110,15 +110,53 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
 
         <div className="flex items-center gap-6">
           <div
-            className="flex-shrink-0"
+            className="flex-shrink-0 relative"
             style={{ width: "160px", height: "160px" }}
           >
             <div className="w-full h-full bg-gray-700/50 rounded-full animate-pulse"></div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="w-8 h-2 bg-gray-600/50 rounded animate-pulse mb-1"></div>
+              <div className="w-6 h-2 bg-gray-600/50 rounded animate-pulse"></div>
+            </div>
           </div>
-          <div className="flex-1 space-y-2">
-            <div className="h-3 bg-gray-700/50 rounded animate-pulse"></div>
-            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-5/6"></div>
-            <div className="h-3 bg-gray-700/50 rounded animate-pulse w-4/6"></div>
+
+          <div className="flex-1 space-y-3">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1"></div>
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse w-8"></div>
+              </div>
+              <div className="w-full h-1.5 bg-gray-700/30 rounded-full overflow-hidden">
+                <div className="h-full w-3/4 bg-gray-600/50 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1 w-5/6"></div>
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse w-8"></div>
+              </div>
+              <div className="w-full h-1.5 bg-gray-700/30 rounded-full overflow-hidden">
+                <div className="h-full w-1/2 bg-gray-600/50 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1 w-4/6"></div>
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse w-8"></div>
+              </div>
+              <div className="w-full h-1.5 bg-gray-700/30 rounded-full overflow-hidden">
+                <div className="h-full w-2/5 bg-gray-600/50 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse flex-1 w-3/6"></div>
+                <div className="h-3 bg-gray-700/50 rounded animate-pulse w-8"></div>
+              </div>
+              <div className="w-full h-1.5 bg-gray-700/30 rounded-full overflow-hidden">
+                <div className="h-full w-1/4 bg-gray-600/50 rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -127,7 +165,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
 
   if (!dadosComCores.length) {
     return (
-      <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6">
+      <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 h-[280px] flex flex-col">
         <div className="flex items-center justify-between mb-8">
           <h2 className="flex items-baseline gap-2">
             <span className="text-white text-lg font-semibold">
@@ -152,7 +190,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
   }
 
   return (
-    <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6">
+    <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 h-[280px] flex flex-col">
       <div className="flex items-center justify-between mb-8">
         <h2 className="flex items-baseline gap-2">
           <span className="text-white text-lg font-semibold">
@@ -173,9 +211,7 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
         )}
       </div>
 
-      {/* Layout: Gráfico à esquerda, Legenda à direita */}
-      <div className="flex items-center gap-6">
-        {/* Gráfico à esquerda com total no centro */}
+      <div className="flex items-center gap-6 flex-1">
         <div
           className="flex-shrink-0 relative"
           style={{ width: "160px", height: "160px" }}
@@ -203,7 +239,6 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
             </PieChart>
           </ResponsiveContainer>
 
-          {/* Total no centro do gráfico */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <p className="text-gray-400 text-[10px] leading-tight">Total</p>
             <p className="text-white text-sm font-bold leading-tight">
@@ -214,7 +249,6 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
           </div>
         </div>
 
-        {/* Legenda à direita - com barras de progresso */}
         <div className="flex-1 space-y-2.5 overflow-hidden">
           {dadosComCores.slice(0, 4).map((item, index) => {
             const percentual = ((item.valor / totalGastos) * 100).toFixed(1);

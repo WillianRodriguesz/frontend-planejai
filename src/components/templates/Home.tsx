@@ -215,8 +215,7 @@ export default function Home() {
             />
           </div>
           {/* Grid responsivo: 1 coluna no mobile, 2 colunas no desktop */}
-          <div className="w-full pt-2 grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Card Saldo */}
+          <div className="w-full pt-2 grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div className="w-full">
               {error ? (
                 <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
@@ -276,7 +275,6 @@ export default function Home() {
               ) : null}
             </div>
 
-            {/* Card Gráfico Pizza - apenas desktop */}
             <div className="hidden lg:block w-full">
               <CardGraficoPizza
                 key={`grafico-${dataSelecionada.mes}-${dataSelecionada.ano}`}
@@ -285,7 +283,6 @@ export default function Home() {
                 dados={dadosGrafico}
                 loading={loadingGrafico}
                 onVerDetalhes={() => {
-                  // TODO: Implementar navegação para página de detalhes
                   console.log("Navegar para detalhes de gastos por categoria");
                 }}
               />
