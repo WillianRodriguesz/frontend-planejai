@@ -195,7 +195,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
+    <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden pb-20 md:pb-0">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}

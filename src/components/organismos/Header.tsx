@@ -56,7 +56,7 @@ const Header = () => {
           <button
             onClick={() => navigate("/configuracoes")}
             aria-label="Perfil do usuário"
-            className="text-white hover:text-violet-600 hover:bg-purple-600/15 p-2 rounded-xl transition-all duration-200 bg-transparent focus:outline-none border-none outline-none ring-0 focus:ring-0"
+            className="hidden md:block text-white hover:text-violet-600 hover:bg-purple-600/15 p-2 rounded-xl transition-all duration-200 bg-transparent focus:outline-none border-none outline-none ring-0 focus:ring-0"
           >
             <User className="h-6 w-6" />
           </button>

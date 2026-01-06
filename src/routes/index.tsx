@@ -4,6 +4,7 @@ import Home from "../components/templates/Home";
 import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
 import Registro from "../components/templates/Registro";
 import DetalhesGastos from "../components/templates/DetalhesGastos";
+import MenuInferiorMobile from "../components/moleculas/MenuInferiorMobile";
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AppRoutes() {
         <Route path="/detalhes-gastos" element={<DetalhesGastos />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
+      <MenuInferiorMobile />
     </BrowserRouter>
   );
 }

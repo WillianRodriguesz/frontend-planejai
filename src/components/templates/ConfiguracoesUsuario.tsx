@@ -81,7 +81,7 @@ const ConfiguracoesUsuario = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden">
+    <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden pb-20 md:pb-0">
       <Header />
       <div className="min-h-[60px] w-full"></div>
 

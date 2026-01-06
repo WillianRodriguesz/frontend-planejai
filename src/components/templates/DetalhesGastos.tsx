@@ -91,7 +91,7 @@ export default function DetalhesGastos() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-white flex flex-col">
+    <div className="min-h-screen bg-background text-white flex flex-col pb-20 md:pb-0">
       <Header />
       <div className="min-h-[60px] w-full"></div>
 
