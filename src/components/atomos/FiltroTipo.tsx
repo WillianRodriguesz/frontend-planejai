@@ -41,7 +41,7 @@ const FiltroTipo = ({ onAplicar }: FiltroTipoProps) => {
       <button
         aria-label="Filtrar por tipo"
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white hover:text-violet-600 bg-card/80 backdrop-blur-xl border-solid border border-purple-500/30 px-8 py-2 rounded-xl transition-all duration-200 focus:outline-none h-11 flex items-center justify-center gap-2 md:px-4"
+        className="text-white hover:text-violet-600 bg-card/80 backdrop-blur-xl border-solid border border-purple-500/30 px-2 md:px-4 py-2 rounded-xl transition-all duration-200 focus:outline-none h-11 flex items-center justify-center gap-2 w-full"
       >
         <ArrowDownUp className="h-5 w-5" />
         <span className="hidden md:inline-block text-sm font-medium">Tipo</span>
