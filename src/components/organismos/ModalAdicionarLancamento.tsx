@@ -9,6 +9,7 @@ import SelectCustomizado from "../atomos/SelectCustomizado";
 import Toast from "../atomos/Toast";
 import { useCategorias } from "../../hooks/useCategorias";
 import { useToast } from "../../hooks/useToast";
+import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 interface ModalAdicionarLancamentoProps {
   isOpen: boolean;
@@ -29,11 +30,22 @@ const ModalAdicionarLancamento = ({
 }: ModalAdicionarLancamentoProps) => {
   const { categorias, loading: loadingCategorias } = useCategorias();
   const { toasts, warning, hideToast } = useToast();
+  
+  const getDataHoje = () => {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  };
+
   const [titulo, setTitulo] = useState("");
   const [categoria, setCategoria] = useState("");
   const [valor, setValor] = useState("");
-  const [data, setData] = useState(new Date().toISOString().substring(0, 10));
+  const [data, setData] = useState(getDataHoje());
   const [tipo, setTipo] = useState<"entrada" | "saida">("saida");
+  const [tituloFocused, setTituloFocused] = useState(false);
+  const [valorFocused, setValorFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +66,7 @@ const ModalAdicionarLancamento = ({
     setTitulo("");
     setCategoria("");
     setValor("");
-    setData(new Date().toISOString().substring(0, 10));
+    setData(getDataHoje());
     setTipo("saida");
 
     onClose();
@@ -110,8 +122,10 @@ const ModalAdicionarLancamento = ({
                       id="titulo"
                       value={titulo}
                       onChange={(e) => setTitulo(e.target.value)}
+                      onFocus={() => setTituloFocused(true)}
+                      onBlur={() => setTituloFocused(false)}
                       className="w-full bg-transparent border-none outline-none focus:outline-none"
-                      placeholder="Ex: Supermercado"
+                      placeholder={!tituloFocused ? "Ex: Supermercado" : ""}
                       required
                     />
                   </CampoOutlined>
@@ -121,6 +135,7 @@ const ModalAdicionarLancamento = ({
                       options={categorias.map((cat) => ({
                         value: cat.id.toString(),
                         label: cat.nome,
+                        icon: obterIconeCategoria(cat.nome),
                       }))}
                       value={categoria}
                       onChange={setCategoria}
@@ -141,8 +156,10 @@ const ModalAdicionarLancamento = ({
                         id="valor"
                         value={valor}
                         onChange={(e) => setValor(e.target.value)}
+                        onFocus={() => setValorFocused(true)}
+                        onBlur={() => setValorFocused(false)}
                         className="w-full bg-transparent border-none outline-none focus:outline-none"
-                        placeholder="R$ 0,00"
+                        placeholder={!valorFocused ? "R$ 0,00" : ""}
                         step="0.01"
                         min="0"
                         required
@@ -223,8 +240,10 @@ const ModalAdicionarLancamento = ({
                       id="titulo-mobile"
                       value={titulo}
                       onChange={(e) => setTitulo(e.target.value)}
+                      onFocus={() => setTituloFocused(true)}
+                      onBlur={() => setTituloFocused(false)}
                       className="w-full bg-transparent border-none outline-none focus:outline-none"
-                      placeholder="Ex: Supermercado"
+                      placeholder={!tituloFocused ? "Ex: Supermercado" : ""}
                       required
                     />
                   </CampoOutlined>
@@ -234,6 +253,7 @@ const ModalAdicionarLancamento = ({
                       options={categorias.map((cat) => ({
                         value: cat.id.toString(),
                         label: cat.nome,
+                        icon: obterIconeCategoria(cat.nome),
                       }))}
                       value={categoria}
                       onChange={setCategoria}
@@ -254,8 +274,10 @@ const ModalAdicionarLancamento = ({
                         id="valor-mobile"
                         value={valor}
                         onChange={(e) => setValor(e.target.value)}
+                        onFocus={() => setValorFocused(true)}
+                        onBlur={() => setValorFocused(false)}
                         className="w-full bg-transparent border-none outline-none focus:outline-none"
-                        placeholder="R$ 0,00"
+                        placeholder={!valorFocused ? "R$ 0,00" : ""}
                         step="0.01"
                         min="0"
                         required

@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 interface Option {
   value: string;
   label: string;
+  icon?: LucideIcon;
 }
 
 interface SelectCustomizadoProps {
@@ -69,9 +71,14 @@ const SelectCustomizado = ({
           disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
         }`}
       >
-        <span className={selectedOption ? "text-gray-300" : "text-gray-500"}>
-          {selectedOption ? selectedOption.label : placeholder}
-        </span>
+        <div className="flex items-center gap-2 flex-1">
+          {selectedOption?.icon && (
+            <selectedOption.icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+          )}
+          <span className={selectedOption ? "text-gray-300" : "text-gray-500"}>
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
+        </div>
         <ChevronDown
           className={`w-4 h-4 text-purple-400 transition-transform flex-shrink-0 ml-2 ${
             isOpen ? "rotate-180" : ""
@@ -90,13 +97,18 @@ const SelectCustomizado = ({
                 option.value === value ? "bg-purple-500/10" : ""
               }`}
             >
-              <span
-                className={`text-sm ${
-                  option.value === value ? "text-purple-400" : "text-gray-300"
-                }`}
-              >
-                {option.label}
-              </span>
+              <div className="flex items-center gap-2 flex-1">
+                {option.icon && (
+                  <option.icon className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                )}
+                <span
+                  className={`text-sm ${
+                    option.value === value ? "text-purple-400" : "text-gray-300"
+                  }`}
+                >
+                  {option.label}
+                </span>
+              </div>
               {option.value === value && (
                 <Check className="w-4 h-4 text-purple-400" />
               )}

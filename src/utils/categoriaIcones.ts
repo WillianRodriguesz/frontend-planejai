@@ -18,6 +18,9 @@ const categoriaIconeMap: Record<string, LucideIcon> = {
   transporte: Car,
   lazer: Ticket,
   contas: Receipt,
+  outros: Package,
+  cartaoCredito: Receipt,
+  cartãocredito: Receipt,
 };
 
 export const obterIconeCategoria = (nomeCategoria?: string): LucideIcon => {
