@@ -3,13 +3,14 @@ import { User, Lock, Eye, EyeOff, Save, Camera } from "lucide-react";
 import Header from "../organismos/Header";
 import CampoOutlined from "../atomos/CampoOutlined";
 import Toast from "../atomos/Toast";
+import ModalSelecionarAvatar from "../organismos/ModalSelecionarAvatar";
 import { useUsuario } from "../../hooks/useUsuario";
 import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
 import { useUsuarioStore } from "../../stores/useUsuarioStore";
 
 const ConfiguracoesUsuario = () => {
-  const { atualizarUsuario, loading } = useUsuario();
+  const { atualizarUsuario, atualizarAvatar, loading } = useUsuario();
   const { trocarSenha, loading: loadingAuth } = useAuth();
   const { toasts, success, error: showError, hideToast } = useToast();
   const { usuario } = useUsuarioStore();
@@ -23,6 +24,8 @@ const ConfiguracoesUsuario = () => {
   const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
   const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
+  const [modalAvatarAberto, setModalAvatarAberto] = useState(false);
+  const [avatarSelecionado, setAvatarSelecionado] = useState("😀");
 
   // Preencher campos quando o usuário estiver disponível na store
   useEffect(() => {
@@ -30,6 +33,7 @@ const ConfiguracoesUsuario = () => {
       setNome(usuario.nome);
       setEmail(usuario.email);
       setTelefone(usuario.telefone || "");
+      setAvatarSelecionado(usuario.avatar || "😀");
     }
   }, [usuario]);
 
@@ -80,6 +84,18 @@ const ConfiguracoesUsuario = () => {
     }
   };
 
+  const handleSelecionarAvatar = async (avatar: string) => {
+    setAvatarSelecionado(avatar);
+    try {
+      await atualizarAvatar({ avatar });
+      success("Avatar atualizado com sucesso!");
+    } catch (err) {
+      showError(
+        err instanceof Error ? err.message : "Erro ao atualizar avatar"
+      );
+    }
+  };
+
   return (
     <div className="bg-background min-h-screen w-full h-full flex flex-col overflow-x-hidden pb-20 md:pb-0">
       <Header />
@@ -101,10 +117,15 @@ const ConfiguracoesUsuario = () => {
             <div className="mt-8 bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl p-6 shadow-xl">
               <div className="flex flex-col items-center space-y-4">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                    <User className="w-12 h-12 text-white" />
+                  <div className="w-28 h-28 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span style={{ fontSize: "4.5rem", lineHeight: 1 }}>
+                      {avatarSelecionado}
+                    </span>
                   </div>
-                  <button className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center shadow-lg transition-colors">
+                  <button
+                    onClick={() => setModalAvatarAberto(true)}
+                    className="absolute bottom-0 right-0 w-8 h-8 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center shadow-lg transition-colors"
+                  >
                     <Camera className="w-4 h-4 text-white" />
                   </button>
                 </div>
@@ -264,6 +285,13 @@ const ConfiguracoesUsuario = () => {
           </div>
         </div>
       </div>
+
+      <ModalSelecionarAvatar
+        isOpen={modalAvatarAberto}
+        onClose={() => setModalAvatarAberto(false)}
+        onSelect={handleSelecionarAvatar}
+        avatarAtual={avatarSelecionado}
+      />
     </div>
   );
 };

@@ -89,3 +89,10 @@ button {
   padding: 0;
   margin: 0;
 }
+
+/* Avatar grande no modal */
+.avatar-grande {
+  font-size: 5rem !important;
+  transform: scale(1.5);
+  transform-origin: center;
+}

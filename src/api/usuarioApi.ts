@@ -4,6 +4,7 @@ import type {
   UsuarioDto,
   BuscarUsuarioResponseDto,
   AtualizarUsuarioDto,
+  AtualizarAvatarDto,
 } from "../types/usuario";
 
 /**
@@ -29,6 +30,15 @@ export const atualizarUsuario = async (
   dados: AtualizarUsuarioDto
 ): Promise<UsuarioDto> => {
   return apiClient.put<UsuarioDto>("/planejai/usuarios", dados);
+};
+
+/**
+ * Atualiza o avatar do usuário autenticado
+ */
+export const atualizarAvatar = async (
+  dados: AtualizarAvatarDto
+): Promise<UsuarioDto> => {
+  return apiClient.patch<UsuarioDto>("/planejai/usuarios/avatar", dados);
 };
 
 /**

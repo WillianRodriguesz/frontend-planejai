@@ -3,6 +3,7 @@ export interface UsuarioDto {
   nome: string;
   email: string;
   telefone?: string;
+  avatar?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,6 +19,10 @@ export interface AtualizarUsuarioDto {
   nome?: string;
   email?: string;
   telefone?: string;
+}
+
+export interface AtualizarAvatarDto {
+  avatar: string;
 }
 
 export interface BuscarUsuarioResponseDto {

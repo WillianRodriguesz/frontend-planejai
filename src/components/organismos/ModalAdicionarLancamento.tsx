@@ -30,12 +30,12 @@ const ModalAdicionarLancamento = ({
 }: ModalAdicionarLancamentoProps) => {
   const { categorias, loading: loadingCategorias } = useCategorias();
   const { toasts, warning, hideToast } = useToast();
-  
+
   const getDataHoje = () => {
     const hoje = new Date();
     const ano = hoje.getFullYear();
-    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
     return `${ano}-${mes}-${dia}`;
   };
 

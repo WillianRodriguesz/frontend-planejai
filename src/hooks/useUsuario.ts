@@ -4,6 +4,7 @@ import type {
   UsuarioDto,
   BuscarUsuarioResponseDto,
   AtualizarUsuarioDto,
+  AtualizarAvatarDto,
 } from "../types/usuario";
 import {
   criarUsuario as criarUsuarioApi,
@@ -11,6 +12,7 @@ import {
   atualizarUsuario as atualizarUsuarioApi,
   deletarUsuario as deletarUsuarioApi,
   buscarUsuarioPorId as buscarUsuarioPorIdApi,
+  atualizarAvatar as atualizarAvatarApi,
 } from "../api/usuarioApi";
 
 interface UseUsuarioReturn {
@@ -19,6 +21,7 @@ interface UseUsuarioReturn {
   criarUsuario: (dados: CriarUsuarioDto) => Promise<UsuarioDto>;
   buscarUsuario: () => Promise<BuscarUsuarioResponseDto>;
   atualizarUsuario: (dados: AtualizarUsuarioDto) => Promise<UsuarioDto>;
+  atualizarAvatar: (dados: AtualizarAvatarDto) => Promise<UsuarioDto>;
   deletarUsuario: () => Promise<void>;
   buscarUsuarioPorId: (id: string) => Promise<UsuarioDto>;
 }
@@ -108,12 +111,31 @@ export const useUsuario = (): UseUsuarioReturn => {
     }
   };
 
+  const atualizarAvatar = async (
+    dados: AtualizarAvatarDto
+  ): Promise<UsuarioDto> => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await atualizarAvatarApi(dados);
+      return result;
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro desconhecido";
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     error,
     criarUsuario,
     buscarUsuario,
     atualizarUsuario,
+    atualizarAvatar,
     deletarUsuario,
     buscarUsuarioPorId,
   };
