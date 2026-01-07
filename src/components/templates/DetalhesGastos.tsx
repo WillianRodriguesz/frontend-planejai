@@ -4,6 +4,7 @@ import { TrendingDown, TrendingUp, List, Award } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../organismos/Header";
 import CardLancamento from "../moleculas/CardLancamento";
+import MenuCalendario from "../moleculas/MenuCalendario";
 import { useGastosCategoria } from "../../hooks/useGastosCategoria";
 import { useLancamentos } from "../../hooks/useLancamentos";
 import {
@@ -14,13 +15,20 @@ import { formataValorBRL } from "../../utils/formataValorBrl";
 import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 export default function DetalhesGastos() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const mesParam =
     searchParams.get("mes") ||
     new Date().toLocaleString("pt-BR", { month: "long" });
   const anoParam = parseInt(
     searchParams.get("ano") || new Date().getFullYear().toString()
   );
+
+  const handleMesChange = (data: { mes: string; ano: number }) => {
+    setSearchParams({ mes: data.mes.toLowerCase(), ano: data.ano.toString() });
+  };
+
+  const mesInicial = converterMesParaNumero(mesParam) - 1;
+  const anoInicial = anoParam;
 
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<
     number | null
@@ -98,6 +106,11 @@ export default function DetalhesGastos() {
       <div className="flex-1 w-full px-4 md:px-8 flex flex-col items-center pb-8">
         <div className="w-full max-w-7xl">
           <div className="py-6">
+            <MenuCalendario
+              onChange={handleMesChange}
+              mesInicial={mesInicial}
+              anoInicial={anoInicial}
+            />
             <div>
               <h1 className="text-2xl font-bold text-white">
                 Detalhes de Gastos
