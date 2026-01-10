@@ -177,12 +177,80 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
           </h2>
         </div>
 
-        <div className="flex items-center justify-center py-8">
-          <div className="text-center">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gray-700/50 flex items-center justify-center">
-              <div className="w-6 h-6 rounded-full bg-purple-500/20"></div>
+        <div className="flex items-center gap-6">
+          {/* Gráfico vazio com visual mais interessante */}
+          <div
+            className="flex-shrink-0 relative"
+            style={{ width: "160px", height: "160px" }}
+          >
+            {/* Círculo externo com gradiente */}
+            <svg width="160" height="160" className="transform -rotate-90">
+              <circle
+                cx="80"
+                cy="80"
+                r="65"
+                fill="none"
+                stroke="url(#emptyGradient)"
+                strokeWidth="30"
+                strokeDasharray="408.4"
+                strokeDashoffset="0"
+                opacity="0.15"
+              />
+              <defs>
+                <linearGradient id="emptyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#8B5CF6" />
+                  <stop offset="50%" stopColor="#06B6D4" />
+                  <stop offset="100%" stopColor="#10B981" />
+                </linearGradient>
+              </defs>
+            </svg>
+            
+            {/* Ícone centralizado */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30 flex items-center justify-center mb-2">
+                <svg
+                  className="w-8 h-8 text-purple-400/50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-500 text-[10px] font-medium">Sem dados</p>
             </div>
-            <p className="text-gray-400 text-xs">Nenhum gasto registrado</p>
+          </div>
+
+          {/* Lista de categorias vazias */}
+          <div className="flex-1 space-y-3">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 opacity-40">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-purple-500/50 to-purple-600/50"></div>
+                <div className="h-2.5 bg-gray-700/30 rounded flex-1 max-w-[120px]"></div>
+              </div>
+              <div className="flex items-center gap-2 opacity-30">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-cyan-500/50 to-cyan-600/50"></div>
+                <div className="h-2.5 bg-gray-700/30 rounded flex-1 max-w-[100px]"></div>
+              </div>
+              <div className="flex items-center gap-2 opacity-20">
+                <div className="w-3 h-3 rounded-full bg-gradient-to-br from-green-500/50 to-green-600/50"></div>
+                <div className="h-2.5 bg-gray-700/30 rounded flex-1 max-w-[80px]"></div>
+              </div>
+            </div>
+            <p className="text-gray-500 text-xs pt-2">
+              Nenhum gasto registrado neste período
+            </p>
           </div>
         </div>
       </div>
