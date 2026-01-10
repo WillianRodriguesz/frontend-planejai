@@ -200,7 +200,7 @@ const ModalFiltroLancamento = ({
             exit={{ y: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <div className="bg-gradient-to-b from-card/90 to-card/80 backdrop-blur-xl border-t border-purple-500/30 shadow-xl rounded-t-2xl p-6">
+            <div className="bg-gradient-to-b from-card/90 to-card/80 backdrop-blur-xl border-t border-purple-500/30 shadow-xl rounded-t-2xl p-6 pb-24">
               <div className="flex flex-col items-center mb-4">
                 <div className="w-10 h-1 bg-gray-500/30 rounded-full mb-4"></div>
                 <div className="flex items-center justify-between w-full">
