@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import BotaoTipoTransacaoModal from "../atomos/BotaoTipoTransacaoModal";
@@ -46,6 +46,56 @@ const ModalAdicionarLancamento = ({
   const [tipo, setTipo] = useState<"entrada" | "saida">("saida");
   const [tituloFocused, setTituloFocused] = useState(false);
   const [valorFocused, setValorFocused] = useState(false);
+
+  // Bloqueia scroll da página quando modal está aberto (mobile)
+  useEffect(() => {
+    if (isOpen) {
+      // Salva a posição atual do scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      // Restaura a posição do scroll ao fechar
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+
+    return () => {
+      // Cleanup ao desmontar
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
+
+  // Bloqueia scroll da página quando modal está aberto (mobile)
+  useEffect(() => {
+    if (isOpen) {
+      // Salva a posição atual do scroll
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      // Restaura a posição do scroll ao fechar
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+
+    return () => {
+      // Cleanup ao desmontar
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

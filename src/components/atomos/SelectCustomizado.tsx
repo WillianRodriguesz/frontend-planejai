@@ -59,6 +59,22 @@ const SelectCustomizado = ({
     setIsOpen(false);
   };
 
+  const handleDropdownScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const element = e.currentTarget;
+    const atTop = element.scrollTop === 0;
+    const atBottom = element.scrollHeight - element.scrollTop === element.clientHeight;
+    
+    if ((atTop && e.touches[0].clientY > element.getBoundingClientRect().top) ||
+        (atBottom && e.touches[0].clientY < element.getBoundingClientRect().bottom)) {
+      e.preventDefault();
+    }
+    e.stopPropagation();
+  };
+
   return (
     <div className="relative" ref={containerRef}>
       <button
@@ -87,7 +103,12 @@ const SelectCustomizado = ({
       </button>
 
       {isOpen && !disabled && (
-        <div className="absolute left-0 right-0 z-50 mt-2 rounded-xl border border-purple-500/30 bg-card/95 backdrop-blur-xl shadow-xl max-h-60 overflow-y-auto">
+        <div 
+          className="absolute left-0 right-0 z-50 mt-2 rounded-xl border border-purple-500/30 bg-card/95 backdrop-blur-xl shadow-xl max-h-60 overflow-y-auto"
+          onScroll={handleDropdownScroll}
+          onTouchMove={handleTouchMove}
+          onWheel={(e) => e.stopPropagation()}
+        >
           {options.map((option) => (
             <button
               key={option.value}
