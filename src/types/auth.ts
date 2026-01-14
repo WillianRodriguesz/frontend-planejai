@@ -22,3 +22,24 @@ export interface TrocarSenhaResponseDto {
   statusCode: number;
   message: string;
 }
+
+export interface VerificarEmailDto {
+  email: string;
+  codigo: string;
+}
+
+export interface VerificarEmailResponseDto {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  avatar: string;
+}
+
+export interface ReenviarCodigoDto {
+  email: string;
+}
+
+export interface ReenviarCodigoResponseDto {
+  message: string;
+}

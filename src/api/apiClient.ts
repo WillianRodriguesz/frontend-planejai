@@ -1,5 +1,3 @@
-// Cliente HTTP base para todas as chamadas de API
-
 const API_URL = import.meta.env.VITE_API_URL;
 
 interface FetchOptions extends RequestInit {
@@ -34,44 +32,72 @@ class ApiClient {
         "Content-Type": "application/json",
         ...fetchOptions.headers,
       },
-      credentials: "include", // Envia cookies automaticamente
+      credentials: "include",
       ...fetchOptions,
     });
 
     if (!response.ok) {
-      // Detecta token expirado ou inválido e redireciona para login
       if (response.status === 401 && !endpoint.includes("/auth/login")) {
-        // Evita loops infinitos de redirecionamento
         if (window.location.pathname !== "/login") {
           window.location.href = "/login";
         }
         throw new Error("Sessão expirada");
       }
 
-      let message = "Erro desconhecido";
-      switch (response.status) {
-        case 400:
-          message = "Dados inválidos fornecidos";
-          break;
-        case 401:
-          message = "Credenciais inválidas";
-          break;
-        case 403:
-          message = "Acesso negado";
-          break;
-        case 404:
-          message = "Recurso não encontrado";
-          break;
-        case 409:
-          message = "Conflito de dados";
-          break;
-        case 500:
-          message = "Erro interno do servidor";
-          break;
-        default:
-          message = `Erro na requisição: ${response.statusText}`;
+      let errorMessage = "Erro desconhecido";
+      try {
+        const errorData = await response.json();
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        } else {
+          switch (response.status) {
+            case 400:
+              errorMessage = "Dados inválidos fornecidos";
+              break;
+            case 401:
+              errorMessage = "Credenciais inválidas";
+              break;
+            case 403:
+              errorMessage = "Acesso negado";
+              break;
+            case 404:
+              errorMessage = "Recurso não encontrado";
+              break;
+            case 409:
+              errorMessage = "Conflito de dados";
+              break;
+            case 500:
+              errorMessage = "Erro interno do servidor";
+              break;
+            default:
+              errorMessage = `Erro na requisição: ${response.statusText}`;
+          }
+        }
+      } catch {
+        switch (response.status) {
+          case 400:
+            errorMessage = "Dados inválidos fornecidos";
+            break;
+          case 401:
+            errorMessage = "Credenciais inválidas";
+            break;
+          case 403:
+            errorMessage = "Acesso negado";
+            break;
+          case 404:
+            errorMessage = "Recurso não encontrado";
+            break;
+          case 409:
+            errorMessage = "Conflito de dados";
+            break;
+          case 500:
+            errorMessage = "Erro interno do servidor";
+            break;
+          default:
+            errorMessage = `Erro na requisição: ${response.statusText}`;
+        }
       }
-      throw new Error(message);
+      throw new Error(errorMessage);
     }
 
     return response.json();

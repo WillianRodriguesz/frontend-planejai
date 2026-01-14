@@ -5,6 +5,10 @@ import type {
   LogoutResponseDto,
   TrocarSenhaDto,
   TrocarSenhaResponseDto,
+  VerificarEmailDto,
+  VerificarEmailResponseDto,
+  ReenviarCodigoDto,
+  ReenviarCodigoResponseDto,
 } from "../types/auth";
 
 /**
@@ -29,6 +33,30 @@ export const trocarSenha = async (
 ): Promise<TrocarSenhaResponseDto> => {
   return apiClient.patch<TrocarSenhaResponseDto>(
     "/planejai/usuarios/senha",
+    dados
+  );
+};
+
+/**
+ * Verifica o email do usuário com código de 6 dígitos
+ */
+export const verificarEmail = async (
+  dados: VerificarEmailDto
+): Promise<VerificarEmailResponseDto> => {
+  return apiClient.post<VerificarEmailResponseDto>(
+    "/planejai/auth/verificar-email",
+    dados
+  );
+};
+
+/**
+ * Reenvia o código de verificação de email
+ */
+export const reenviarCodigo = async (
+  dados: ReenviarCodigoDto
+): Promise<ReenviarCodigoResponseDto> => {
+  return apiClient.post<ReenviarCodigoResponseDto>(
+    "/planejai/auth/reenviar-codigo",
     dados
   );
 };

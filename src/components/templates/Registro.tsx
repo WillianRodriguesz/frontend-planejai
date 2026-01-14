@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Mail,
@@ -8,12 +8,14 @@ import {
   Eye,
   EyeOff,
   CheckCircle,
+  RefreshCw,
 } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import Toast from "../atomos/Toast";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useUsuario } from "../../hooks/useUsuario";
 import { useToast } from "../../hooks/useToast";
+import { verificarEmail, reenviarCodigo } from "../../api/authApi";
 
 export default function Registro() {
   const [email, setEmail] = useState("");
@@ -30,6 +32,23 @@ export default function Registro() {
   const { toasts, success, error: showError, hideToast } = useToast();
 
   const [registroSucesso, setRegistroSucesso] = useState(false);
+  const [aguardandoVerificacao, setAguardandoVerificacao] = useState(false);
+  const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
+  const [countdownReenvio, setCountdownReenvio] = useState(0);
+  const [podeReenviar, setPodeReenviar] = useState(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  useEffect(() => {
+    if (countdownReenvio > 0) {
+      const timer = setTimeout(() => {
+        setCountdownReenvio(countdownReenvio - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (countdownReenvio === 0 && aguardandoVerificacao) {
+      setPodeReenviar(true);
+    }
+  }, [countdownReenvio, aguardandoVerificacao]);
+
   const handleRegistro = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -41,17 +60,128 @@ export default function Registro() {
     showLoading("Registrando...", "Criando sua conta");
     try {
       await criarUsuario({ nome, email, telefone, senha });
-      setRegistroSucesso(true);
-      success("Cadastro realizado com sucesso!");
-      setTimeout(() => {
-        navigate("/login");
-      }, 10000);
+      setAguardandoVerificacao(true);
+      setCountdownReenvio(60);
+      setPodeReenviar(false);
+      success(
+        "Conta criada! Verifique seu email para o código de verificação."
+      );
     } catch (err) {
       showError(
         err instanceof Error
           ? err.message
           : "Erro ao criar conta. Tente novamente."
       );
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const handleVerificarCodigo = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const codigoCompleto = codigo.join("");
+    if (codigoCompleto.length !== 6) {
+      showError("O código deve ter 6 caracteres.");
+      return;
+    }
+
+    showLoading("Verificando...", "Validando código");
+    try {
+      await verificarEmail({ email, codigo: codigoCompleto });
+      setAguardandoVerificacao(false);
+      setRegistroSucesso(true);
+      success("Email verificado com sucesso!");
+      navigate("/login");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro ao verificar código";
+
+      // Mensagens específicas para erros comuns
+      if (errorMessage.includes("Código de verificação incorreto")) {
+        showError(
+          "Código incorreto. Verifique o código enviado para seu email e tente novamente."
+        );
+      } else if (
+        errorMessage.includes("expirado") ||
+        errorMessage.includes("expirou")
+      ) {
+        showError("Código expirado. Solicite um novo código.");
+      } else {
+        showError(errorMessage);
+      }
+    } finally {
+      hideLoading();
+    }
+  };
+
+  const handleCodigoChange = (index: number, value: string) => {
+    // Apenas alfanuméricos em maiúsculo
+    const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+    if (sanitized.length > 1) {
+      // Usuário colou um código
+      const chars = sanitized.slice(0, 6).split("");
+      const newCodigo = [...codigo];
+      chars.forEach((char, i) => {
+        if (index + i < 6) {
+          newCodigo[index + i] = char;
+        }
+      });
+      setCodigo(newCodigo);
+
+      const nextIndex = Math.min(index + chars.length, 5);
+      inputRefs.current[nextIndex]?.focus();
+    } else if (sanitized.length === 1) {
+      const newCodigo = [...codigo];
+      newCodigo[index] = sanitized;
+      setCodigo(newCodigo);
+
+      if (index < 5) {
+        inputRefs.current[index + 1]?.focus();
+      }
+    } else {
+      const newCodigo = [...codigo];
+      newCodigo[index] = "";
+      setCodigo(newCodigo);
+    }
+  };
+
+  const handleCodigoKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !codigo[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleReenviarCodigo = async () => {
+    if (!podeReenviar) return;
+
+    showLoading("Reenviando...", "Enviando novo código");
+    try {
+      await reenviarCodigo({ email });
+      setCodigo(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
+      setCountdownReenvio(60);
+      setPodeReenviar(false);
+      success("Novo código enviado para seu email!");
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Erro ao reenviar código";
+
+      if (errorMessage.includes("muitos")) {
+        showError(
+          "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
+        );
+      } else {
+        showError(errorMessage);
+      }
     } finally {
       hideLoading();
     }
@@ -68,14 +198,91 @@ export default function Registro() {
         />
       ))}
       {registroSucesso ? (
-        <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 min-h-[450px] md:min-h-[460px] flex flex-col items-center justify-center text-center">
+        <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 flex flex-col items-center justify-center text-center">
           <CheckCircle className="w-16 h-16 text-green-400 mb-4 animate-pulse" />
           <h1 className="text-3xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-4">
-            Cadastro realizado com sucesso!
+            Email verificado com sucesso!
           </h1>
-          <p className="text-gray-400 text-base md:text-base font-medium">
-            Redirecionando para o login em alguns segundos...
+          <p className="text-gray-400 text-base md:text-base font-medium mb-6">
+            Sua conta foi ativada e está pronta para uso.
           </p>
+          <a
+            href="/home"
+            className="text-purple-400 hover:text-purple-300 font-semibold text-base underline"
+          >
+            Ir para a página inicial
+          </a>
+        </div>
+      ) : aguardandoVerificacao ? (
+        <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 flex flex-col">
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-3">
+              Verificar Email
+            </h1>
+            <p className="text-gray-400 text-base md:text-base font-medium">
+              Digite o código de 6 caracteres enviado para{" "}
+              <span className="text-purple-400 font-semibold">{email}</span>
+            </p>
+          </div>
+          <form
+            className="space-y-6 flex-1 flex flex-col justify-center"
+            onSubmit={handleVerificarCodigo}
+            noValidate
+          >
+            <div className="flex justify-center gap-2 md:gap-3">
+              {codigo.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => {
+                    inputRefs.current[index] = el;
+                  }}
+                  type="text"
+                  value={digit}
+                  onChange={(e) => handleCodigoChange(index, e.target.value)}
+                  onKeyDown={(e) => handleCodigoKeyDown(index, e)}
+                  maxLength={1}
+                  className="w-12 h-14 md:w-11 md:h-13 bg-transparent border-2 border-gray-700 rounded-xl text-2xl md:text-xl text-white text-center font-mono font-bold outline-none transition-all duration-200 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(167,139,250,0.3)]"
+                  autoComplete="off"
+                />
+              ))}
+            </div>
+            <div className="flex justify-center mt-2">
+              <BotaoSalvar
+                className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
+                disabled={codigo.join("").length !== 6}
+              >
+                Verificar Código
+              </BotaoSalvar>
+            </div>
+          </form>
+          <div className="mt-6 text-center">
+            <button
+              type="button"
+              onClick={handleReenviarCodigo}
+              disabled={!podeReenviar}
+              className={`flex items-center justify-center gap-2 text-sm md:text-sm font-semibold mx-auto transition-colors ${
+                podeReenviar
+                  ? "text-purple-400 hover:text-purple-300 cursor-pointer"
+                  : "text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${!podeReenviar && "opacity-50"}`}
+              />
+              {countdownReenvio > 0
+                ? `Reenviar código em ${countdownReenvio}s`
+                : "Reenviar código"}
+            </button>
+          </div>
+          <div className="mt-4 text-center text-gray-400 text-sm md:text-sm">
+            Já verificou seu email?{" "}
+            <a
+              href="/login"
+              className="text-purple-400 hover:underline font-semibold"
+            >
+              Entrar
+            </a>
+          </div>
         </div>
       ) : (
         <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 min-h-[450px] md:min-h-[460px]">
