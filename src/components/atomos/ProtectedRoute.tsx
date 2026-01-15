@@ -13,7 +13,6 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Tentar validar o token para verificar se está autenticado
         await apiClient.get("/planejai/auth/validate");
         setIsAuthenticated(true);
       } catch (error) {

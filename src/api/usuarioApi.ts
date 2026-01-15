@@ -13,14 +13,14 @@ import type {
 export const criarUsuario = async (
   dados: CriarUsuarioDto
 ): Promise<UsuarioDto> => {
-  return apiClient.post<UsuarioDto>("/planejai/usuarios", dados);
+  return apiClient.post<UsuarioDto>("/planejai/usuario", dados);
 };
 
 /**
  * Busca o usuário autenticado e o ID da carteira
  */
 export const buscarUsuario = async (): Promise<BuscarUsuarioResponseDto> => {
-  return apiClient.get<BuscarUsuarioResponseDto>("/planejai/usuarios");
+  return apiClient.get<BuscarUsuarioResponseDto>("/planejai/usuario");
 };
 
 /**
@@ -29,7 +29,7 @@ export const buscarUsuario = async (): Promise<BuscarUsuarioResponseDto> => {
 export const atualizarUsuario = async (
   dados: AtualizarUsuarioDto
 ): Promise<UsuarioDto> => {
-  return apiClient.put<UsuarioDto>("/planejai/usuarios", dados);
+  return apiClient.put<UsuarioDto>("/planejai/usuario", dados);
 };
 
 /**
@@ -38,19 +38,19 @@ export const atualizarUsuario = async (
 export const atualizarAvatar = async (
   dados: AtualizarAvatarDto
 ): Promise<UsuarioDto> => {
-  return apiClient.patch<UsuarioDto>("/planejai/usuarios/avatar", dados);
+  return apiClient.patch<UsuarioDto>("/planejai/usuario/avatar", dados);
 };
 
 /**
  * Deleta o usuário autenticado
  */
 export const deletarUsuario = async (): Promise<void> => {
-  return apiClient.delete<void>("/planejai/usuarios");
+  return apiClient.delete<void>("/planejai/usuario");
 };
 
 /**
  * Busca um usuário por ID
  */
 export const buscarUsuarioPorId = async (id: string): Promise<UsuarioDto> => {
-  return apiClient.get<UsuarioDto>(`/planejai/usuarios/${id}`);
+  return apiClient.get<UsuarioDto>(`/planejai/usuario/${id}`);
 };
