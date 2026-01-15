@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff, Key } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
@@ -10,6 +10,7 @@ import { useUsuarioStore } from "../../stores/useUsuarioStore";
 import { useCarteiraStore } from "../../stores/useCarteiraStore";
 import { useCategoriasStore } from "../../stores/useCategoriasStore";
 import { solicitarRedefinicaoSenha } from "../../api/authApi";
+import { apiClient } from "../../api/apiClient";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -28,6 +29,21 @@ export default function Login() {
   const { fetchUsuario, reset: resetUsuario } = useUsuarioStore();
   const { clearCarteira } = useCarteiraStore();
   const { reset: resetCategorias } = useCategoriasStore();
+
+  // Verificar se usuário já está autenticado ao carregar a página
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        await apiClient.get("/planejai/auth/validate");
+        // Token válido, redirecionar para home
+        navigate("/home");
+      } catch (error) {
+        // Token inválido ou inexistente, continuar na tela de login
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

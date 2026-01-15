@@ -227,7 +227,7 @@ export default function Home() {
                   <p className="text-red-300 text-sm mt-1">{error}</p>
                 </div>
               ) : loading ? (
-                <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-4 relative overflow-hidden">
+                <div className="w-full rounded-2xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-xl p-6 relative overflow-hidden h-[220px] lg:h-[280px] flex flex-col justify-between">
                   <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
 
                   <div className="flex items-center justify-between mb-6">
@@ -243,9 +243,9 @@ export default function Home() {
                     <Settings className="text-gray-400 hover:text-violet-600 cursor-pointer w-5 h-5" />
                   </div>
 
-                  <div className="text-left mb-6">
-                    <p className="text-gray-400 text-sm">Saldo do mês</p>
-                    <div className="relative h-9 w-40 bg-gray-700/50 rounded overflow-hidden mt-1">
+                  <div className="text-left flex-1 flex flex-col justify-center">
+                    <p className="text-gray-400 text-sm mb-2">Saldo do mês</p>
+                    <div className="relative h-9 w-40 bg-gray-700/50 rounded overflow-hidden">
                       <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                     </div>
                   </div>

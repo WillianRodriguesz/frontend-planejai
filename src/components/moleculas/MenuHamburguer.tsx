@@ -3,6 +3,7 @@ import { Menu, Home, User, BarChart3, LogOut, X } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCarteira } from "../../contexts/CarteiraContext";
 import { useUsuarioStore } from "../../stores/useUsuarioStore";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function MenuHamburguer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ export default function MenuHamburguer() {
   const location = useLocation();
   const { setIdCarteira } = useCarteira();
   const { usuario } = useUsuarioStore();
+  const { logout } = useAuth();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -44,12 +46,19 @@ export default function MenuHamburguer() {
     };
   }, [isOpen]);
 
-  const handleLogout = () => {
-    document.cookie =
-      "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    setIdCarteira(null);
-    navigate("/login");
-    setIsOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    } finally {
+      // Limpar dados locais independentemente do resultado da API
+      document.cookie =
+        "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      setIdCarteira(null);
+      navigate("/login");
+      setIsOpen(false);
+    }
   };
 
   const handleNavigation = (path: string) => {

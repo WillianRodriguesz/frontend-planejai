@@ -12,7 +12,7 @@ const Header = () => {
           <MenuHamburguer />
           <div
             className="relative w-10 h-10 bg-gradient-to-br from-purple-500 via-purple-600 to-purple-800 rounded-xl flex items-center justify-center shadow-2xl shadow-purple-500/40 ring-1 ring-white/20 hover:scale-105 transition-transform duration-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-white/20 before:to-transparent before:rounded-xl cursor-pointer"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/home")}
             aria-label="Ir para home"
             tabIndex={0}
             role="button"
