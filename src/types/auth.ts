@@ -43,3 +43,11 @@ export interface ReenviarCodigoDto {
 export interface ReenviarCodigoResponseDto {
   message: string;
 }
+
+export interface SolicitarRedefinicaoSenhaDto {
+  email: string;
+}
+
+export interface SolicitarRedefinicaoSenhaResponseDto {
+  message: string;
+}
