@@ -197,14 +197,20 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
                 opacity="0.15"
               />
               <defs>
-                <linearGradient id="emptyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  id="emptyGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" stopColor="#8B5CF6" />
                   <stop offset="50%" stopColor="#06B6D4" />
                   <stop offset="100%" stopColor="#10B981" />
                 </linearGradient>
               </defs>
             </svg>
-            
+
             {/* Ícone centralizado */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30 flex items-center justify-center mb-2">
@@ -303,7 +309,11 @@ const CardGraficoPizza: React.FC<CardGraficoPizzaProps> = ({
                   <Cell key={`cell-${index}`} fill={entry.cor} />
                 ))}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip
+                content={<CustomTooltip />}
+                position={{ x: -10, y: -30 }}
+                cursor={false}
+              />
             </PieChart>
           </ResponsiveContainer>
 
