@@ -99,16 +99,18 @@ const Lancamentos = ({
     const filtroTipo = novosFiltros.find((f) => f.tipo === "tipo");
     const filtroCategoria = novosFiltros.find((f) => f.tipo === "categoria");
 
-    const [dataInicio, dataFim] = filtroData?.valorOriginal?.split("|") || [
-      "",
-      "",
-    ];
+    let dataInicio = "";
+    let dataFim = "";
+
+    if (filtroData?.valorOriginal && filtroData.valorOriginal !== "default") {
+      [dataInicio, dataFim] = filtroData.valorOriginal.split("|");
+    }
 
     if (onFiltrar) {
       onFiltrar({
         categoria: filtroCategoria?.valorOriginal || "",
-        dataInicio: dataInicio || "",
-        dataFim: dataFim || "",
+        dataInicio,
+        dataFim,
         tipo:
           (filtroTipo?.valorOriginal as "todos" | "entrada" | "saida") ||
           "todos",
@@ -165,21 +167,21 @@ const Lancamentos = ({
   };
 
   const removerFiltro = (tipoFiltro: "data" | "tipo" | "categoria") => {
-    const novosFiltros = filtrosAtivos.filter((f) => f.tipo !== tipoFiltro);
-    setFiltrosAtivos(novosFiltros);
+    let novosFiltros = filtrosAtivos.filter((f) => f.tipo !== tipoFiltro);
 
-    if (tipoFiltro === "data" && novosFiltros.length === 0) {
-      if (onFiltrar) {
-        onFiltrar({
-          categoria: "",
-          dataInicio: "BUSCAR_TODOS",
-          dataFim: "BUSCAR_TODOS",
-          tipo: "todos",
-        });
-      }
-    } else {
-      aplicarFiltros(novosFiltros);
+    if (tipoFiltro === "data") {
+      // Always keep the default data filter
+      novosFiltros = novosFiltros.filter((f) => f.tipo !== "data");
+      novosFiltros.push({
+        tipo: "data",
+        label: "Período",
+        valor: "Mês atual",
+        valorOriginal: "default",
+      });
     }
+
+    setFiltrosAtivos(novosFiltros);
+    aplicarFiltros(novosFiltros);
   };
 
   useEffect(() => {
@@ -316,7 +318,7 @@ const Lancamentos = ({
             );
           })
         ) : (
-          <div className="p-6 flex items-center justify-center min-h-[120px]">
+          <div className="p-6 flex items-center justify-center min-h-[100px]">
             <div className="flex items-center gap-4 opacity-60">
               {/* Ícone minimalista */}
               <div className="relative w-12 h-12 flex-shrink-0">
