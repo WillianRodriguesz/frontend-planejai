@@ -51,3 +51,16 @@ export interface SolicitarRedefinicaoSenhaDto {
 export interface SolicitarRedefinicaoSenhaResponseDto {
   message: string;
 }
+
+export interface RedefinirSenhaDto {
+  token: string;
+  novaSenha: string;
+}
+
+export interface RedefinirSenhaResponseDto {
+  id: string;
+  nome: string;
+  email: string;
+  telefone: string;
+  avatar: string;
+}

@@ -4,7 +4,7 @@ import "./index.css";
 import "./altura-responsiva.css";
 import App from "./App.tsx";
 
-let scrollbarTimeout: NodeJS.Timeout;
+let scrollbarTimeout: number;
 let isScrolling = false;
 
 const handleScroll = () => {
