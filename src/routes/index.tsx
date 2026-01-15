@@ -4,6 +4,7 @@ import Home from "../components/templates/Home";
 import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
 import Registro from "../components/templates/Registro";
 import DetalhesGastos from "../components/templates/DetalhesGastos";
+import RedefinirSenha from "../components/templates/RedefinirSenha";
 import MenuInferiorMobile from "../components/moleculas/MenuInferiorMobile";
 
 export default function AppRoutes() {
@@ -20,6 +21,7 @@ export default function AppRoutes() {
         <Route path="/configuracoes" element={<ConfiguracoesUsuario />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/detalhes-gastos" element={<DetalhesGastos />} />
+        <Route path="/redefinir-senha" element={<RedefinirSenha />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
       <MenuInferiorMobile />

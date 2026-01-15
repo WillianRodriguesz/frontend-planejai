@@ -11,6 +11,8 @@ import type {
   ReenviarCodigoResponseDto,
   SolicitarRedefinicaoSenhaDto,
   SolicitarRedefinicaoSenhaResponseDto,
+  RedefinirSenhaDto,
+  RedefinirSenhaResponseDto,
 } from "../types/auth";
 
 /**
@@ -71,6 +73,18 @@ export const solicitarRedefinicaoSenha = async (
 ): Promise<SolicitarRedefinicaoSenhaResponseDto> => {
   return apiClient.post<SolicitarRedefinicaoSenhaResponseDto>(
     "/planejai/auth/solicitar-redefinicao-senha",
+    dados
+  );
+};
+
+/**
+ * Redefinir senha com token
+ */
+export const redefinirSenha = async (
+  dados: RedefinirSenhaDto
+): Promise<RedefinirSenhaResponseDto> => {
+  return apiClient.post<RedefinirSenhaResponseDto>(
+    "/planejai/auth/redefinir-senha",
     dados
   );
 };
