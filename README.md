@@ -73,6 +73,8 @@
 
 ### ✅ Core Features
 
+<div align="center">
+
 <table>
   <tr>
     <td align="center">
@@ -110,6 +112,8 @@
   </tr>
 </table>
 
+</div>
+
 ### 🚀 Recursos Técnicos
 
 - ⚡ **Performance Otimizada** - Lazy loading e code splitting
@@ -128,6 +132,8 @@
   <img src="https://skillicons.dev/icons?i=react,typescript,vite,tailwind,framer" alt="Frontend Stack"/>
 </div>
 
+<div align="center">
+
 | Tecnologia        | Versão | Propósito    |
 | ----------------- | ------ | ------------ |
 | **React**         | 18.x   | Framework UI |
@@ -136,11 +142,15 @@
 | **Tailwind CSS**  | 3.x    | Styling      |
 | **Framer Motion** | 11.x   | Animações    |
 
+</div>
+
 ### ⚙️ Backend Stack
 
 <div align="center">
   <img src="https://skillicons.dev/icons?i=nestjs,nodejs,typescript,postgresql,jwt" alt="Backend Stack"/>
 </div>
+
+<div align="center">
 
 | Tecnologia     | Versão | Propósito     |
 | -------------- | ------ | ------------- |
@@ -149,6 +159,8 @@
 | **PostgreSQL** | 15.x   | Database      |
 | **TypeORM**    | 0.3.x  | ORM           |
 | **JWT**        | 9.x    | Autenticação  |
+
+</div>
 
 ### 📚 Bibliotecas Principais
 
@@ -303,6 +315,8 @@ A API está documentada com **Swagger/OpenAPI**. Acesse:
 
 ### 🎯 Endpoints Principais
 
+<div align="center">
+
 | Método   | Endpoint                       | Descrição                 |
 | -------- | ------------------------------ | ------------------------- |
 | `POST`   | `/auth/login`                  | Autenticação de usuário   |
@@ -312,6 +326,8 @@ A API está documentada com **Swagger/OpenAPI**. Acesse:
 | `POST`   | `/lancamentos`                 | Criação de lançamento     |
 | `PUT`    | `/lancamentos/:id`             | Atualização de lançamento |
 | `DELETE` | `/lancamentos/:id`             | Exclusão de lançamento    |
+
+</div>
 
 ### 📋 Exemplo de Uso
 
@@ -446,6 +462,8 @@ Use o template de issue para reportar bugs:
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+_Este é um projeto particular com potencial para se tornar um SaaS no futuro._
+
 </div>
 
 ---
@@ -481,12 +499,10 @@ Se gostou do projeto, dê uma ⭐ no repositório!
 
 ### 📧 Contato
 
-**Email**: contato@planejai.com  
-**LinkedIn**: [Planejai](https://linkedin.com/company/planejai)  
-**Website**: [planejai.com](https://planejai.com)
+**Email**: willianrdriguesz@gmail.com.com  
+**LinkedIn**: [Planejai](https://www.linkedin.com/in/willianrdrigues/)  
+**Website**: [planejai.com](https://www.linkedin.com/in/willianrdrigues/)
 
 ---
-
-**Feito com ❤️ pela comunidade de desenvolvedores**
 
 </div>
