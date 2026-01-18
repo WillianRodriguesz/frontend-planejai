@@ -51,9 +51,15 @@ export default function Home() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const mesNumero = converterMesParaNumero(dataSelecionada.mes);
-  const { dataInicio: dataInicioMes, dataFim: dataFimMes } =
-    obterPrimeiroeUltimoDiaDoMes(mesNumero, dataSelecionada.ano);
+  const mesNumero = useMemo(
+    () => converterMesParaNumero(dataSelecionada.mes),
+    [dataSelecionada.mes],
+  );
+
+  const { dataInicio: dataInicioMes, dataFim: dataFimMes } = useMemo(
+    () => obterPrimeiroeUltimoDiaDoMes(mesNumero, dataSelecionada.ano),
+    [mesNumero, dataSelecionada.ano],
+  );
 
   const buscarTodos =
     filtrosAtuais?.dataInicio === "BUSCAR_TODOS" ||
@@ -90,7 +96,7 @@ export default function Home() {
       usarDatasPadrao,
       dataInicioMes,
       dataFimMes,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -135,7 +141,7 @@ export default function Home() {
       success("Lançamento adicionado com sucesso!");
     } catch (err) {
       showError(
-        err instanceof Error ? err.message : "Erro ao adicionar lançamento"
+        err instanceof Error ? err.message : "Erro ao adicionar lançamento",
       );
     }
   };
@@ -162,7 +168,7 @@ export default function Home() {
       success("Lançamento atualizado com sucesso!");
     } catch (err) {
       showError(
-        err instanceof Error ? err.message : "Erro ao atualizar lançamento"
+        err instanceof Error ? err.message : "Erro ao atualizar lançamento",
       );
     }
   };
@@ -175,7 +181,7 @@ export default function Home() {
       success("Lançamento excluído com sucesso!");
     } catch (err) {
       showError(
-        err instanceof Error ? err.message : "Erro ao excluir lançamento"
+        err instanceof Error ? err.message : "Erro ao excluir lançamento",
       );
     }
   };
@@ -286,7 +292,7 @@ export default function Home() {
                 loading={loadingGrafico}
                 onVerDetalhes={() => {
                   navigate(
-                    `/detalhes-gastos?mes=${dataSelecionada.mes}&ano=${dataSelecionada.ano}`
+                    `/detalhes-gastos?mes=${dataSelecionada.mes}&ano=${dataSelecionada.ano}`,
                   );
                 }}
               />

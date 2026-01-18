@@ -15,35 +15,27 @@ import type {
   RedefinirSenhaResponseDto,
 } from "../types/auth";
 
-/**
- * Faz login do usuário
- */
+
 export const login = async (dados: LoginDto): Promise<LoginResponseDto> => {
   return apiClient.post<LoginResponseDto>("/planejai/auth/login", dados);
 };
 
-/**
- * Faz logout do usuário
- */
+
 export const logout = async (): Promise<LogoutResponseDto> => {
   return apiClient.post<LogoutResponseDto>("/planejai/auth/logout", {});
 };
 
-/**
- * Troca a senha do usuário autenticado
- */
+
 export const trocarSenha = async (
   dados: TrocarSenhaDto
 ): Promise<TrocarSenhaResponseDto> => {
   return apiClient.patch<TrocarSenhaResponseDto>(
-    "/planejai/usuarios/senha",
+    "/planejai/usuario/senha",
     dados
   );
 };
 
-/**
- * Verifica o email do usuário com código de 6 dígitos
- */
+
 export const verificarEmail = async (
   dados: VerificarEmailDto
 ): Promise<VerificarEmailResponseDto> => {
@@ -53,9 +45,7 @@ export const verificarEmail = async (
   );
 };
 
-/**
- * Reenvia o código de verificação de email
- */
+
 export const reenviarCodigo = async (
   dados: ReenviarCodigoDto
 ): Promise<ReenviarCodigoResponseDto> => {
@@ -65,9 +55,7 @@ export const reenviarCodigo = async (
   );
 };
 
-/**
- * Solicita redefinição de senha
- */
+
 export const solicitarRedefinicaoSenha = async (
   dados: SolicitarRedefinicaoSenhaDto
 ): Promise<SolicitarRedefinicaoSenhaResponseDto> => {
@@ -77,9 +65,7 @@ export const solicitarRedefinicaoSenha = async (
   );
 };
 
-/**
- * Redefinir senha com token
- */
+
 export const redefinirSenha = async (
   dados: RedefinirSenhaDto
 ): Promise<RedefinirSenhaResponseDto> => {
