@@ -260,13 +260,43 @@ npm install
 npm run dev
 ```
 
-### 🐳 Docker (Opcional)
+### 🐳 Docker
+
+#### Opção 1: Usando Docker Compose (Recomendado)
 
 ```bash
 # Build e execução com Docker Compose
-docker-compose up -d
+docker-compose up --build
+
+# Ou em background
+docker-compose up -d --build
 
 # Acesse http://localhost:3000
+```
+
+#### Opção 2: Usando Docker diretamente
+
+```bash
+# Build da imagem
+docker build -t planejai-frontend .
+
+# Executar o container
+docker run -p 3000:80 planejai-frontend
+
+# Acesse http://localhost:3000
+```
+
+#### Comandos Úteis
+
+```bash
+# Parar containers
+docker-compose down
+
+# Ver logs
+docker-compose logs -f
+
+# Limpar imagens não utilizadas
+docker image prune -f
 ```
 
 ---
@@ -334,7 +364,7 @@ A API está documentada com **Swagger/OpenAPI**. Acesse:
 ```typescript
 // Buscar gastos mensais
 const response = await api.get(
-  `/carteira/${carteiraId}/gastos-mensais?mes=2024-01`
+  `/carteira/${carteiraId}/gastos-mensais?mes=2024-01`,
 );
 
 interface GastosMensaisDto {
@@ -367,7 +397,11 @@ interface GastosMensaisDto {
 
 ```css
 /* Font Family */
-font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+font-family:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  sans-serif;
 
 /* Scale */
 --text-xs: 0.75rem; /* 12px */
