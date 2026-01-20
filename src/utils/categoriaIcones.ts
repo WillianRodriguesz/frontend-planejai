@@ -6,21 +6,27 @@ import {
   Ticket,
   Receipt,
   Package,
+  Dumbbell,
+  BookOpen,
+  Home,
+  Repeat,
+  CreditCard,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const categoriaIconeMap: Record<string, LucideIcon> = {
   salário: Wallet,
-  salario: Wallet,
   freelance: Laptop,
   alimentação: UtensilsCrossed,
-  alimentacao: UtensilsCrossed,
   transporte: Car,
   lazer: Ticket,
   contas: Receipt,
   outros: Package,
-  cartaoCredito: Receipt,
-  cartãocredito: Receipt,
+  "cartão de crédito": CreditCard,
+  academia: Dumbbell,
+  educação: BookOpen,
+  aluguel: Home,
+  assinaturas: Repeat,
 };
 
 export const obterIconeCategoria = (nomeCategoria?: string): LucideIcon => {
