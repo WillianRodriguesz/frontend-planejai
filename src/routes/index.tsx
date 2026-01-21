@@ -5,6 +5,7 @@ import ConfiguracoesUsuario from "../components/templates/ConfiguracoesUsuario";
 import Registro from "../components/templates/Registro";
 import DetalhesGastos from "../components/templates/DetalhesGastos";
 import RedefinirSenha from "../components/templates/RedefinirSenha";
+import Termos from "../components/templates/Termos";
 import MenuInferiorMobile from "../components/moleculas/MenuInferiorMobile";
 import ProtectedRoute from "../components/atomos/ProtectedRoute";
 
@@ -20,6 +21,7 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/redefinir-senha" element={<RedefinirSenha />} />
+        <Route path="/termos" element={<Termos />} />
         <Route
           path="/home"
           element={

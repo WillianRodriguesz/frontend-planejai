@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   CheckCircle,
+  Check,
   RefreshCw,
 } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
@@ -26,6 +27,11 @@ export default function Registro() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [focado, setFocado] = useState<string | null>(null);
+  const [aceitouTodosTermos, setAceitouTodosTermos] = useState(false);
+
+  const handleAbrirTermo = () => {
+    navigate("/termos");
+  };
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
   const { criarUsuario, loading } = useUsuario();
@@ -57,20 +63,33 @@ export default function Registro() {
       return;
     }
 
+    if (!aceitouTodosTermos) {
+      showError("Você deve aceitar todos os termos para criar a conta.");
+      return;
+    }
+
     showLoading("Registrando...", "Criando sua conta");
     try {
-      await criarUsuario({ nome, email, telefone, senha });
+      await criarUsuario({
+        nome,
+        email,
+        telefone,
+        senha,
+        aceitouLgpd: true,
+        aceitouTermosUso: true,
+        aceitouPoliticaPrivacidade: true,
+      });
       setAguardandoVerificacao(true);
       setCountdownReenvio(60);
       setPodeReenviar(false);
       success(
-        "Conta criada! Verifique seu email para o código de verificação."
+        "Conta criada! Verifique seu email para o código de verificação.",
       );
     } catch (err) {
       showError(
         err instanceof Error
           ? err.message
-          : "Erro ao criar conta. Tente novamente."
+          : "Erro ao criar conta. Tente novamente.",
       );
     } finally {
       hideLoading();
@@ -100,7 +119,7 @@ export default function Registro() {
       // Mensagens específicas para erros comuns
       if (errorMessage.includes("Código de verificação incorreto")) {
         showError(
-          "Código incorreto. Verifique o código enviado para seu email e tente novamente."
+          "Código incorreto. Verifique o código enviado para seu email e tente novamente.",
         );
       } else if (
         errorMessage.includes("expirado") ||
@@ -149,7 +168,7 @@ export default function Registro() {
 
   const handleCodigoKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !codigo[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -177,7 +196,7 @@ export default function Registro() {
 
       if (errorMessage.includes("muitos")) {
         showError(
-          "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
+          "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.",
         );
       } else {
         showError(errorMessage);
@@ -493,6 +512,45 @@ export default function Registro() {
               >
                 Confirmar Senha
               </label>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="aceitou-todos-termos"
+                    checked={aceitouTodosTermos}
+                    onChange={(e) => setAceitouTodosTermos(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-5 h-5 border-2 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                      aceitouTodosTermos
+                        ? "bg-purple-600 border-purple-600"
+                        : "border-gray-600 hover:border-purple-400"
+                    }`}
+                    onClick={() => setAceitouTodosTermos(!aceitouTodosTermos)}
+                  >
+                    {aceitouTodosTermos && (
+                      <Check className="w-4 h-4 text-white transform scale-100 transition-transform duration-200" />
+                    )}
+                  </div>
+                </div>
+                <label
+                  htmlFor="aceitou-todos-termos"
+                  className="text-sm text-gray-300 cursor-pointer"
+                  onClick={() => setAceitouTodosTermos(!aceitouTodosTermos)}
+                >
+                  Aceito todos os{" "}
+                  <button
+                    type="button"
+                    className="text-purple-400 hover:underline font-medium"
+                    onClick={handleAbrirTermo}
+                  >
+                    termos e políticas
+                  </button>
+                </label>
+              </div>
             </div>
             <div className="flex justify-center">
               <BotaoSalvar
