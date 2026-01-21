@@ -19,6 +19,7 @@ export default function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [tentativasErradas, setTentativasErradas] = useState(0);
   const [bloqueadoAte, setBloqueadoAte] = useState<Date | null>(null);
+  const [timer, setTimer] = useState<number>(0);
   const [mostrarRecuperacao, setMostrarRecuperacao] = useState(false);
   const [emailRecuperacao, setEmailRecuperacao] = useState("");
   const [recuperacaoEnviada, setRecuperacaoEnviada] = useState(false);
@@ -30,28 +31,39 @@ export default function Login() {
   const { clearCarteira } = useCarteiraStore();
   const { reset: resetCategorias } = useCategoriasStore();
 
-  // Verificar se usuário já está autenticado ao carregar a página
   useEffect(() => {
     const checkAuth = async () => {
       try {
         await apiClient.get("/planejai/auth/validate");
-        // Token válido, redirecionar para home
         navigate("/home");
       } catch (error) {
-        // Token inválido ou inexistente, continuar na tela de login
       }
     };
 
     checkAuth();
   }, [navigate]);
 
+  useEffect(() => {
+    if (!bloqueadoAte) {
+      setTimer(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      const diff = Math.ceil((bloqueadoAte.getTime() - Date.now()) / 1000);
+      setTimer(diff > 0 ? diff : 0);
+      if (diff <= 0) {
+        setBloqueadoAte(null);
+        setTimer(0);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [bloqueadoAte]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (bloqueadoAte && new Date() < bloqueadoAte) {
-      showError(
-        "Login bloqueado temporariamente devido a múltiplas tentativas falhidas."
-      );
+      toasts.forEach((toast) => hideToast(toast.id));
       return;
     }
 
@@ -67,17 +79,21 @@ export default function Login() {
       navigate("/home");
     } catch (err) {
       setTentativasErradas((prev) => prev + 1);
+      toasts.forEach((toast) => hideToast(toast.id));
       const errorMsg =
         err instanceof Error
           ? err.message
           : "Erro ao fazer login. Verifique suas credenciais.";
       showError(errorMsg);
 
-      if (tentativasErradas + 1 >= 3) {
-        const timeout = 5 * 60 * 1000;
+      if (tentativasErradas + 1 >= 5) {
+        const timeout = 60 * 1000; // 60 segundos
         setBloqueadoAte(new Date(Date.now() + timeout));
         setTentativasErradas(0);
-        showError("Muitas tentativas falhidas. Login bloqueado por 5 minutos.");
+        toasts.forEach((toast) => hideToast(toast.id));
+        showError(
+          "Muitas tentativas falhadas. Login bloqueado por 60 segundos.",
+        );
       }
     } finally {
       hideLoading();
@@ -223,7 +239,7 @@ export default function Login() {
                 </label>
               </div>
 
-              <div className="flex justify-center mt-2">
+              <div className="flex flex-col items-center mt-2 space-y-2">
                 <BotaoSalvar
                   className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
                   disabled={
@@ -232,6 +248,12 @@ export default function Login() {
                 >
                   Entrar
                 </BotaoSalvar>
+                {bloqueadoAte && new Date() < bloqueadoAte && timer > 0 && (
+                  <span className="text-xs text-red-400 text-center">
+                    Login bloqueado. Aguarde {timer} segundo(s) para tentar
+                    novamente.
+                  </span>
+                )}
               </div>
             </form>
 

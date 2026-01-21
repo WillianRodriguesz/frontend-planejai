@@ -1,9 +1,27 @@
-import { Wallet } from "lucide-react";
-import {useNavigate } from "react-router-dom";
+import { Wallet, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import MenuHamburguer from "../moleculas/MenuHamburguer";
+import { useAuth } from "../../hooks/useAuth";
+import { useCarteira } from "../../contexts/CarteiraContext";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { setIdCarteira } = useCarteira();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    } finally {
+      // Limpar dados locais independentemente do resultado da API
+      document.cookie =
+        "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      setIdCarteira(null);
+      navigate("/login");
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md border-b-4 border-purple-600 shadow-lg shadow-purple-600/30 h-[60px]">
@@ -30,7 +48,17 @@ const Header = () => {
           </h1>
         </div>
 
-        <div className="flex items-center"></div>
+        <div className="flex items-center">
+          {/* Botão de Logout - Apenas Mobile */}
+          <button
+            onClick={handleLogout}
+            className="md:hidden flex items-center justify-center group"
+            aria-label="Sair"
+            title="Sair"
+          >
+            <LogOut className="w-6 h-6 text-gray-400 group-hover:text-gray-300 group-hover:scale-110 transition-all" />
+          </button>
+        </div>
       </div>
     </header>
   );
