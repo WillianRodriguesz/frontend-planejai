@@ -141,12 +141,25 @@ export default function Login() {
         />
       ))}
 
+      <div className="mb-4 flex flex-col items-center">
+        <div className="relative minimal-glow">
+          <img
+            src="/logo-planejai.png"
+            alt="Planejai Logo"
+            className="w-28 h-28"
+          />
+        </div>
+        <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-purple-600 drop-shadow-lg minimal-glow">
+          Planejai
+        </h2>
+      </div>
+
       <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 flex flex-col">
         {!mostrarRecuperacao ? (
           <>
             <div className="mb-8 text-center">
               <h1 className="text-3xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-3">
-                Bem-vindo ao Planejai
+                Bem vindo
               </h1>
               <p className="text-gray-400 text-base md:text-base font-medium mb-3">
                 Seu app para organizar suas finanças
