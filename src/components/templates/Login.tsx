@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, Key } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
 import Toast from "../atomos/Toast";
 import { useLoading } from "../../contexts/LoadingContext";
@@ -36,8 +36,7 @@ export default function Login() {
       try {
         await apiClient.get("/planejai/auth/validate");
         navigate("/home");
-      } catch (error) {
-      }
+      } catch (error) {}
     };
 
     checkAuth();
@@ -132,7 +131,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#212121] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#212121] flex flex-col items-center justify-center px-4">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}
@@ -141,6 +140,7 @@ export default function Login() {
           onClose={() => hideToast(toast.id)}
         />
       ))}
+
       <div className="max-w-md md:max-w-96 w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-6 flex flex-col">
         {!mostrarRecuperacao ? (
           <>
@@ -148,7 +148,7 @@ export default function Login() {
               <h1 className="text-3xl md:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-3">
                 Bem-vindo ao Planejai
               </h1>
-              <p className="text-gray-400 text-base md:text-base font-medium">
+              <p className="text-gray-400 text-base md:text-base font-medium mb-3">
                 Seu app para organizar suas finanças
               </p>
             </div>
@@ -239,6 +239,16 @@ export default function Login() {
                 </label>
               </div>
 
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => setMostrarRecuperacao(true)}
+                  className="text-purple-400 hover:text-purple-300 text-sm font-medium underline bg-transparent border-none outline-none cursor-pointer transition-colors"
+                >
+                  Esqueci minha senha
+                </button>
+              </div>
+
               <div className="flex flex-col items-center mt-2 space-y-2">
                 <BotaoSalvar
                   className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
@@ -256,33 +266,6 @@ export default function Login() {
                 )}
               </div>
             </form>
-
-            <div className="flex items-center my-6">
-              <div className="flex-1 h-px bg-gray-700" />
-              <span className="mx-3 md:mx-2.5 text-gray-400 text-sm md:text-sm">
-                ou
-              </span>
-              <div className="flex-1 h-px bg-gray-700" />
-            </div>
-
-            <button
-              onClick={() => setMostrarRecuperacao(true)}
-              className="w-full flex items-center justify-center gap-3 md:gap-2.5 bg-gradient-to-r from-purple-600/20 to-purple-500/20 hover:from-purple-600/30 hover:to-purple-500/30 border border-purple-500/50 rounded-xl py-2.5 md:py-2 font-semibold text-purple-300 hover:text-purple-200 transition-all duration-200 shadow-md text-sm md:text-sm mb-6"
-            >
-              <Key className="w-5 h-5 md:w-4.5 md:h-4.5" />
-              Esqueci minha senha
-            </button>
-
-            <div className="text-center text-gray-400 text-sm md:text-sm">
-              Não tem uma conta?{" "}
-              <button
-                type="button"
-                className="text-purple-400 hover:underline font-semibold bg-transparent border-none outline-none cursor-pointer"
-                onClick={() => navigate("/registro")}
-              >
-                Registre-se
-              </button>
-            </div>
           </>
         ) : (
           <>
@@ -372,6 +355,17 @@ export default function Login() {
             </div>
           </>
         )}
+      </div>
+
+      <div className="text-center text-gray-400 text-sm md:text-sm mt-6">
+        Não tem uma conta?{" "}
+        <button
+          type="button"
+          className="text-purple-400 hover:underline font-semibold bg-transparent border-none outline-none cursor-pointer"
+          onClick={() => navigate("/registro")}
+        >
+          Registre-se
+        </button>
       </div>
     </div>
   );

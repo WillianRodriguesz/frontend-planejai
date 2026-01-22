@@ -37,7 +37,12 @@ class ApiClient {
     });
 
     if (!response.ok) {
-      if (response.status === 401 && !endpoint.includes("/auth/login")) {
+      if (
+        response.status === 401 &&
+        !endpoint.includes("/auth/login") &&
+        !endpoint.includes("/termos") &&
+        !endpoint.includes("/usuario")
+      ) {
         if (window.location.pathname !== "/login") {
           window.location.href = "/login";
         }

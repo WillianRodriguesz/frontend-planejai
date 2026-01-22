@@ -52,7 +52,23 @@ html::-webkit-scrollbar-thumb {
 html::-webkit-scrollbar-thumb:hover {
   background: rgba(139, 92, 246, 0.8);
 }
+/* Animação de shake para campos inválidos */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
 
+.shake {
+  animation: shake 0.5s;
+}
 html.scrolling::-webkit-scrollbar-thumb {
   background: rgba(139, 92, 246, 0.5);
 }

@@ -1,10 +1,7 @@
-import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { buscarTermo } from "../../api/usuarioApi";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useToast } from "../../hooks/useToast";
-import BotaoSalvar from "../atomos/BotaoSalvar";
 import Toast from "../atomos/Toast";
 
 export default function Termos() {
@@ -16,7 +13,6 @@ export default function Termos() {
     }>
   >([]);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
   const { toasts, error: showError, hideToast } = useToast();
 
@@ -44,22 +40,16 @@ export default function Termos() {
         setHasLoaded(true);
         if (validTermos.length === 0) {
           showError("Nenhum termo encontrado.");
-          navigate("/registro");
         }
       } catch (err) {
         showError("Erro ao carregar os termos.");
-        navigate("/registro");
       } finally {
         hideLoading();
       }
     };
 
     carregarTermos();
-  }, [hasLoaded, navigate, showLoading, hideLoading, showError]);
-
-  const handleVoltar = () => {
-    navigate("/registro");
-  };
+  }, [hasLoaded, showLoading, hideLoading, showError]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1c1c1c] to-[#212121] flex items-center justify-center px-4">
@@ -73,13 +63,6 @@ export default function Termos() {
       ))}
       <div className="max-w-4xl w-full bg-gradient-to-br from-card/90 to-card/80 backdrop-blur-xl border border-purple-500/30 rounded-2xl shadow-xl p-6 md:p-8">
         <div className="mb-6">
-          <button
-            onClick={handleVoltar}
-            className="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Voltar
-          </button>
           <h1 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 text-center">
             Termos e Políticas
           </h1>
@@ -110,11 +93,6 @@ export default function Termos() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-400"></div>
           </div>
         )}
-        <div className="mt-8 flex justify-center">
-          <BotaoSalvar onClick={handleVoltar} className="w-full max-w-xs">
-            Entendi
-          </BotaoSalvar>
-        </div>
       </div>
     </div>
   );
