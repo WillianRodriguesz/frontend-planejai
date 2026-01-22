@@ -40,6 +40,18 @@ export default function Registro() {
   const handleAbrirTermo = () => {
     window.open("/termos", "_blank");
   };
+
+  const formatPhone = (value: string) => {
+    const cleaned = value.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    if (cleaned.length <= 2) return cleaned;
+    if (cleaned.length <= 7)
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+  };
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
   const { criarUsuario, loading } = useUsuario();
@@ -83,7 +95,7 @@ export default function Registro() {
       newErrors.nome = true;
       hasError = true;
     }
-    if (!telefone.trim()) {
+    if (telefone.replace(/\D/g, "").length < 11) {
       newErrors.telefone = true;
       hasError = true;
     }
@@ -124,14 +136,16 @@ export default function Registro() {
         });
       }, 500);
 
-      if (
-        !nome.trim() ||
-        !telefone.trim() ||
-        !email.trim() ||
-        senha.length < 8 ||
-        !confirmarSenha.trim()
-      ) {
-        showError("Preencha todos os campos obrigatórios corretamente.");
+      if (!nome.trim()) {
+        showError("Nome é obrigatório.");
+      } else if (telefone.replace(/\D/g, "").length < 11) {
+        showError("Telefone deve conter 11 dígitos.");
+      } else if (!email.trim()) {
+        showError("E-mail é obrigatório.");
+      } else if (senha.length < 8) {
+        showError("Senha deve conter no mínimo 8 caracteres.");
+      } else if (!confirmarSenha.trim()) {
+        showError("Confirmação de senha é obrigatória.");
       } else if (senha !== confirmarSenha) {
         showError("As senhas não coincidem.");
       }
@@ -435,7 +449,7 @@ export default function Registro() {
                 type="tel"
                 id="registro-telefone"
                 value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
+                onChange={(e) => setTelefone(formatPhone(e.target.value))}
                 onFocus={() => setFocado("telefone")}
                 onBlur={() => setFocado(null)}
                 required

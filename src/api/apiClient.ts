@@ -12,15 +12,20 @@ class ApiClient {
   }
 
   private buildURL(endpoint: string, params?: Record<string, string>): string {
-    const url = new URL(`${this.baseURL}${endpoint}`);
+    let url = `${this.baseURL}${endpoint}`;
 
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
+        searchParams.append(key, value);
       });
+      const paramString = searchParams.toString();
+      if (paramString) {
+        url += `?${paramString}`;
+      }
     }
 
-    return url.toString();
+    return url;
   }
 
   async request<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
@@ -138,4 +143,4 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient(API_URL);
+export const apiClient = new ApiClient("");
