@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   CheckCircle,
+  Check,
   RefreshCw,
 } from "lucide-react";
 import BotaoSalvar from "../atomos/BotaoSalvar";
@@ -26,6 +27,31 @@ export default function Registro() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
   const [focado, setFocado] = useState<string | null>(null);
+  const [aceitouTodosTermos, setAceitouTodosTermos] = useState(false);
+  const [errors, setErrors] = useState({
+    nome: false,
+    telefone: false,
+    email: false,
+    senha: false,
+    confirmarSenha: false,
+    aceitouTermos: false,
+  });
+
+  const handleAbrirTermo = () => {
+    window.open("/termos", "_blank");
+  };
+
+  const formatPhone = (value: string) => {
+    const cleaned = value.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{2})(\d{5})(\d{4})$/);
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    if (cleaned.length <= 2) return cleaned;
+    if (cleaned.length <= 7)
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`;
+  };
   const navigate = useNavigate();
   const { showLoading, hideLoading } = useLoading();
   const { criarUsuario, loading } = useUsuario();
@@ -52,25 +78,107 @@ export default function Registro() {
   const handleRegistro = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Reset errors
+    setErrors({
+      nome: false,
+      telefone: false,
+      email: false,
+      senha: false,
+      confirmarSenha: false,
+      aceitouTermos: false,
+    });
+
+    let hasError = false;
+    const newErrors = { ...errors };
+
+    if (!nome.trim()) {
+      newErrors.nome = true;
+      hasError = true;
+    }
+    if (telefone.replace(/\D/g, "").length < 11) {
+      newErrors.telefone = true;
+      hasError = true;
+    }
+    if (!email.trim()) {
+      newErrors.email = true;
+      hasError = true;
+    }
+    if (senha.length < 8) {
+      newErrors.senha = true;
+      hasError = true;
+    }
+    if (!confirmarSenha.trim()) {
+      newErrors.confirmarSenha = true;
+      hasError = true;
+    }
     if (senha !== confirmarSenha) {
-      showError("As senhas não coincidem.");
+      newErrors.senha = true;
+      newErrors.confirmarSenha = true;
+      hasError = true;
+    }
+
+    if (!aceitouTodosTermos) {
+      newErrors.aceitouTermos = true;
+      hasError = true;
+    }
+
+    if (hasError) {
+      setErrors(newErrors);
+      // Remove shake after animation
+      setTimeout(() => {
+        setErrors({
+          nome: false,
+          telefone: false,
+          email: false,
+          senha: false,
+          confirmarSenha: false,
+          aceitouTermos: false,
+        });
+      }, 500);
+
+      if (!nome.trim()) {
+        showError("Nome é obrigatório.");
+      } else if (telefone.replace(/\D/g, "").length < 11) {
+        showError("Telefone deve conter 11 dígitos.");
+      } else if (!email.trim()) {
+        showError("E-mail é obrigatório.");
+      } else if (senha.length < 8) {
+        showError("Senha deve conter no mínimo 8 caracteres.");
+      } else if (!confirmarSenha.trim()) {
+        showError("Confirmação de senha é obrigatória.");
+      } else if (senha !== confirmarSenha) {
+        showError("As senhas não coincidem.");
+      }
+      return;
+    }
+
+    if (!aceitouTodosTermos) {
+      showError("Você deve aceitar todos os termos para criar a conta.");
       return;
     }
 
     showLoading("Registrando...", "Criando sua conta");
     try {
-      await criarUsuario({ nome, email, telefone, senha });
+      await criarUsuario({
+        nome,
+        email,
+        telefone,
+        senha,
+        aceitouLgpd: true,
+        aceitouTermosUso: true,
+        aceitouPoliticaPrivacidade: true,
+      });
       setAguardandoVerificacao(true);
       setCountdownReenvio(60);
       setPodeReenviar(false);
       success(
-        "Conta criada! Verifique seu email para o código de verificação."
+        "Conta criada! Verifique seu email para o código de verificação.",
       );
     } catch (err) {
       showError(
         err instanceof Error
           ? err.message
-          : "Erro ao criar conta. Tente novamente."
+          : "Erro ao criar conta. Tente novamente.",
       );
     } finally {
       hideLoading();
@@ -100,7 +208,7 @@ export default function Registro() {
       // Mensagens específicas para erros comuns
       if (errorMessage.includes("Código de verificação incorreto")) {
         showError(
-          "Código incorreto. Verifique o código enviado para seu email e tente novamente."
+          "Código incorreto. Verifique o código enviado para seu email e tente novamente.",
         );
       } else if (
         errorMessage.includes("expirado") ||
@@ -149,7 +257,7 @@ export default function Registro() {
 
   const handleCodigoKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !codigo[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -177,7 +285,7 @@ export default function Registro() {
 
       if (errorMessage.includes("muitos")) {
         showError(
-          "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
+          "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.",
         );
       } else {
         showError(errorMessage);
@@ -309,9 +417,9 @@ export default function Registro() {
                 onFocus={() => setFocado("nome")}
                 onBlur={() => setFocado(null)}
                 required
-                className={`peer w-full bg-transparent border-2 border-gray-700 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
-                  focado === "nome" ? "border-purple-500 shadow-md" : ""
-                }`}
+                className={`peer w-full bg-transparent border-2 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
+                  errors.nome ? "border-red-500 shake" : "border-gray-700"
+                } ${focado === "nome" ? "border-purple-500 shadow-md" : ""}`}
                 placeholder=" "
                 autoComplete="name"
               />
@@ -319,16 +427,18 @@ export default function Registro() {
                 className={`absolute left-3 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-4 md:h-4 transition-colors duration-200 ${
                   focado === "nome" || nome
                     ? "text-purple-400 drop-shadow-[0_0_8px_#a78bfa]"
-                    : "text-gray-400"
+                    : errors.nome
+                      ? "text-red-400"
+                      : "text-gray-400"
                 }`}
               />
               <label
                 htmlFor="registro-nome"
-                className={`absolute left-8 md:left-9 text-xs font-medium text-gray-400 pointer-events-none transition-all duration-200
+                className={`absolute left-8 md:left-9 text-xs font-medium pointer-events-none transition-all duration-200
                 ${
                   focado === "nome" || nome
                     ? "top-0 -translate-y-1.5 scale-90 bg-card px-1 text-purple-400"
-                    : "top-1/2 -translate-y-1/2 scale-100"
+                    : `top-1/2 -translate-y-1/2 scale-100 ${errors.nome ? "text-red-400" : "text-gray-400"}`
                 }`}
               >
                 Nome
@@ -339,13 +449,13 @@ export default function Registro() {
                 type="tel"
                 id="registro-telefone"
                 value={telefone}
-                onChange={(e) => setTelefone(e.target.value)}
+                onChange={(e) => setTelefone(formatPhone(e.target.value))}
                 onFocus={() => setFocado("telefone")}
                 onBlur={() => setFocado(null)}
                 required
-                className={`peer w-full bg-transparent border-2 border-gray-700 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
-                  focado === "telefone" ? "border-purple-500 shadow-md" : ""
-                }`}
+                className={`peer w-full bg-transparent border-2 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
+                  errors.telefone ? "border-red-500 shake" : "border-gray-700"
+                } ${focado === "telefone" ? "border-purple-500 shadow-md" : ""}`}
                 placeholder=" "
                 autoComplete="tel"
               />
@@ -353,16 +463,18 @@ export default function Registro() {
                 className={`absolute left-3 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-4 md:h-4 transition-colors duration-200 ${
                   focado === "telefone" || telefone
                     ? "text-purple-400 drop-shadow-[0_0_8px_#a78bfa]"
-                    : "text-gray-400"
+                    : errors.telefone
+                      ? "text-red-400"
+                      : "text-gray-400"
                 }`}
               />
               <label
                 htmlFor="registro-telefone"
-                className={`absolute left-8 md:left-9 text-xs font-medium text-gray-400 pointer-events-none transition-all duration-200
+                className={`absolute left-8 md:left-9 text-xs font-medium pointer-events-none transition-all duration-200
                 ${
                   focado === "telefone" || telefone
                     ? "top-0 -translate-y-1.5 scale-90 bg-card px-1 text-purple-400"
-                    : "top-1/2 -translate-y-1/2 scale-100"
+                    : `top-1/2 -translate-y-1/2 scale-100 ${errors.telefone ? "text-red-400" : "text-gray-400"}`
                 }`}
               >
                 Telefone
@@ -377,9 +489,9 @@ export default function Registro() {
                 onFocus={() => setFocado("email")}
                 onBlur={() => setFocado(null)}
                 required
-                className={`peer w-full bg-transparent border-2 border-gray-700 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
-                  focado === "email" ? "border-purple-500 shadow-md" : ""
-                }`}
+                className={`peer w-full bg-transparent border-2 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
+                  errors.email ? "border-red-500 shake" : "border-gray-700"
+                } ${focado === "email" ? "border-purple-500 shadow-md" : ""}`}
                 placeholder=" "
                 autoComplete="email"
               />
@@ -387,16 +499,18 @@ export default function Registro() {
                 className={`absolute left-3 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-4 md:h-4 transition-colors duration-200 ${
                   focado === "email" || email
                     ? "text-purple-400 drop-shadow-[0_0_8px_#a78bfa]"
-                    : "text-gray-400"
+                    : errors.email
+                      ? "text-red-400"
+                      : "text-gray-400"
                 }`}
               />
               <label
                 htmlFor="registro-email"
-                className={`absolute left-8 md:left-9 text-xs font-medium text-gray-400 pointer-events-none transition-all duration-200
+                className={`absolute left-8 md:left-9 text-xs font-medium pointer-events-none transition-all duration-200
                 ${
                   focado === "email" || email
                     ? "top-0 -translate-y-1.5 scale-90 bg-card px-1 text-purple-400"
-                    : "top-1/2 -translate-y-1/2 scale-100"
+                    : `top-1/2 -translate-y-1/2 scale-100 ${errors.email ? "text-red-400" : "text-gray-400"}`
                 }`}
               >
                 E-mail
@@ -411,9 +525,9 @@ export default function Registro() {
                 onFocus={() => setFocado("senha")}
                 onBlur={() => setFocado(null)}
                 required
-                className={`peer w-full bg-transparent border-2 border-gray-700 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pr-11 md:pr-10 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
-                  focado === "senha" ? "border-purple-500 shadow-md" : ""
-                }`}
+                className={`peer w-full bg-transparent border-2 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pr-11 md:pr-10 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
+                  errors.senha ? "border-red-500 shake" : "border-gray-700"
+                } ${focado === "senha" ? "border-purple-500 shadow-md" : ""}`}
                 placeholder=" "
                 autoComplete="new-password"
               />
@@ -421,7 +535,9 @@ export default function Registro() {
                 className={`absolute left-3 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-4 md:h-4 transition-colors duration-200 ${
                   focado === "senha" || senha
                     ? "text-purple-400 drop-shadow-[0_0_8px_#a78bfa]"
-                    : "text-gray-400"
+                    : errors.senha
+                      ? "text-red-400"
+                      : "text-gray-400"
                 }`}
               />
               <button
@@ -437,11 +553,11 @@ export default function Registro() {
               </button>
               <label
                 htmlFor="registro-senha"
-                className={`absolute left-8 md:left-9 text-xs font-medium text-gray-400 pointer-events-none transition-all duration-200
+                className={`absolute left-8 md:left-9 text-xs font-medium pointer-events-none transition-all duration-200
                 ${
                   focado === "senha" || senha
                     ? "top-0 -translate-y-1.5 scale-90 bg-card px-1 text-purple-400"
-                    : "top-1/2 -translate-y-1/2 scale-100"
+                    : `top-1/2 -translate-y-1/2 scale-100 ${errors.senha ? "text-red-400" : "text-gray-400"}`
                 }`}
               >
                 Senha
@@ -456,11 +572,11 @@ export default function Registro() {
                 onFocus={() => setFocado("confirmarSenha")}
                 onBlur={() => setFocado(null)}
                 required
-                className={`peer w-full bg-transparent border-2 border-gray-700 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pr-11 md:pr-10 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
-                  focado === "confirmarSenha"
-                    ? "border-purple-500 shadow-md"
-                    : ""
-                }`}
+                className={`peer w-full bg-transparent border-2 rounded-xl px-4 md:px-3.5 pl-10 md:pl-9 pr-11 md:pr-10 pt-4 md:pt-3.5 pb-3 md:pb-3.5 text-sm md:text-sm text-white outline-none transition-all duration-200 focus:border-purple-500 ${
+                  errors.confirmarSenha
+                    ? "border-red-500 shake"
+                    : "border-gray-700"
+                } ${focado === "confirmarSenha" ? "border-purple-500 shadow-md" : ""}`}
                 placeholder=" "
                 autoComplete="new-password"
               />
@@ -468,7 +584,9 @@ export default function Registro() {
                 className={`absolute left-3 md:left-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-4 md:h-4 transition-colors duration-200 ${
                   focado === "confirmarSenha" || confirmarSenha
                     ? "text-purple-400 drop-shadow-[0_0_8px_#a78bfa]"
-                    : "text-gray-400"
+                    : errors.confirmarSenha
+                      ? "text-red-400"
+                      : "text-gray-400"
                 }`}
               />
               <button
@@ -484,15 +602,56 @@ export default function Registro() {
               </button>
               <label
                 htmlFor="registro-confirmar-senha"
-                className={`absolute left-8 md:left-9 text-xs font-medium text-gray-400 pointer-events-none transition-all duration-200
+                className={`absolute left-8 md:left-9 text-xs font-medium pointer-events-none transition-all duration-200
                 ${
                   focado === "confirmarSenha" || confirmarSenha
                     ? "top-0 -translate-y-1.5 scale-90 bg-card px-1 text-purple-400"
-                    : "top-1/2 -translate-y-1/2 scale-100"
+                    : `top-1/2 -translate-y-1/2 scale-100 ${errors.confirmarSenha ? "text-red-400" : "text-gray-400"}`
                 }`}
               >
                 Confirmar Senha
               </label>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-start space-x-3">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="aceitou-todos-termos"
+                    checked={aceitouTodosTermos}
+                    onChange={(e) => setAceitouTodosTermos(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div
+                    className={`w-5 h-5 border-2 rounded-md flex items-center justify-center cursor-pointer transition-all duration-200 ${
+                      aceitouTodosTermos
+                        ? "bg-purple-600 border-purple-600"
+                        : errors.aceitouTermos
+                          ? "border-red-500 shake"
+                          : "border-gray-600 hover:border-purple-400"
+                    }`}
+                    onClick={() => setAceitouTodosTermos(!aceitouTodosTermos)}
+                  >
+                    {aceitouTodosTermos && (
+                      <Check className="w-4 h-4 text-white transform scale-100 transition-transform duration-200" />
+                    )}
+                  </div>
+                </div>
+                <label
+                  htmlFor="aceitou-todos-termos"
+                  className={`text-sm cursor-pointer ${errors.aceitouTermos ? "text-red-400" : "text-gray-300"}`}
+                  onClick={() => setAceitouTodosTermos(!aceitouTodosTermos)}
+                >
+                  Aceito todos os{" "}
+                  <button
+                    type="button"
+                    className={`font-medium hover:underline ${errors.aceitouTermos ? "text-red-400" : "text-purple-400"}`}
+                    onClick={handleAbrirTermo}
+                  >
+                    termos e políticas
+                  </button>
+                </label>
+              </div>
             </div>
             <div className="flex justify-center">
               <BotaoSalvar
