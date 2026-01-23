@@ -1,6 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { TrendingDown, TrendingUp, List, Award } from "lucide-react";
+import {
+  TrendingDown,
+  TrendingUp,
+  List,
+  Award,
+  PieChart,
+  FileText,
+  DollarSign,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../organismos/Header";
 import CardLancamento from "../moleculas/CardLancamento";
@@ -44,6 +52,7 @@ export default function DetalhesGastos() {
     dados: dadosGrafico,
     totalGastos,
     relacaoMesAnterior,
+    quantidadeSaidas,
     loading: loadingGrafico,
   } = useGastosCategoria(mesNumero, anoParam);
 
@@ -122,95 +131,156 @@ export default function DetalhesGastos() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
-            <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
-              <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
-                <TrendingDown className="w-5 h-5 text-red-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-xs mb-1">Total de Gastos</p>
-                <p className="text-xl font-bold text-white">
-                  {formataValorBRL(totalGastos)}
-                </p>
-              </div>
-            </div>
-
-            {topCategoria && (
-              <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
-                <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/30">
-                  <Award className="w-5 h-5 text-purple-400" />
+            {loadingGrafico ? (
+              <>
+                {/* Skeleton 1: Total de Gastos */}
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-gray-700/50 animate-pulse">
+                    <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-3 bg-gray-700/50 rounded w-20 mb-2 animate-pulse"></div>
+                    <div className="h-5 bg-gray-700/50 rounded w-16 animate-pulse"></div>
+                  </div>
                 </div>
-                <div className="overflow-hidden flex-1">
-                  <p className="text-gray-400 text-xs mb-1">Top Gasto</p>
-                  <div className="flex items-center gap-2">
-                    <p className="text-lg font-bold text-white truncate flex-1">
-                      {topCategoria.nome}
+                {/* Skeleton 2: Top Gasto */}
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-gray-700/50 animate-pulse">
+                    <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                  </div>
+                  <div className="overflow-hidden flex-1">
+                    <div className="h-3 bg-gray-700/50 rounded w-20 mb-2 animate-pulse"></div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 bg-gray-700/50 rounded w-24 animate-pulse"></div>
+                      <div className="h-3 bg-gray-700/50 rounded w-16 animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+                {/* Skeleton 3: Categorias */}
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-gray-700/50 animate-pulse">
+                    <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-3 bg-gray-700/50 rounded w-20 mb-2 animate-pulse"></div>
+                    <div className="h-5 bg-gray-700/50 rounded w-16 animate-pulse"></div>
+                  </div>
+                </div>
+                {/* Skeleton 4: Relação Mês Anterior */}
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex flex-col gap-2">
+                  <div className="flex items-center justify-start gap-3">
+                    <div className="p-2 rounded-lg bg-gray-700/50 animate-pulse">
+                      <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="h-3 bg-gray-700/50 rounded w-24 mb-2 animate-pulse"></div>
+                      <div className="h-5 bg-gray-700/50 rounded w-16 animate-pulse"></div>
+                    </div>
+                  </div>
+                  <div className="h-3 bg-gray-700/50 rounded w-full animate-pulse"></div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-red-500/10 border border-red-500/30">
+                    <TrendingDown className="w-5 h-5 text-red-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs mb-1">
+                      Total de Gastos
                     </p>
-                    <p className="text-sm font-semibold text-purple-400 whitespace-nowrap">
-                      {formataValorBRL(topCategoria.valor)}
+                    <p className="text-xl font-bold text-white">
+                      {formataValorBRL(totalGastos)}
                     </p>
                   </div>
                 </div>
-              </div>
-            )}
 
-            <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
-              <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
-                <List className="w-5 h-5 text-cyan-400" />
-              </div>
-              <div>
-                <p className="text-gray-400 text-xs mb-1">Categorias</p>
-                <p className="text-xl font-bold text-white">
-                  {categoriasComId.length}
-                </p>
-              </div>
-            </div>
-
-            <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex flex-col gap-2">
-              <div className="flex items-center justify-start gap-3">
-                <div
-                  className={`p-2 rounded-lg ${
-                    relacaoMesAnterior &&
-                    relacaoMesAnterior.diferencaGastosMensal < 0
-                      ? "bg-red-500/10 border border-red-500/30"
-                      : "bg-green-500/10 border border-green-500/30"
-                  }`}
-                >
-                  {relacaoMesAnterior &&
-                  relacaoMesAnterior.diferencaGastosMensal < 0 ? (
-                    <TrendingDown className="w-5 h-5 text-red-400" />
-                  ) : (
-                    <TrendingUp className="w-5 h-5 text-green-400" />
-                  )}
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                    <Award className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="overflow-hidden flex-1">
+                    <p className="text-gray-400 text-xs mb-1">Top Gasto</p>
+                    {topCategoria ? (
+                      <div className="flex items-center gap-2">
+                        <p className="text-lg font-bold text-white truncate flex-1">
+                          {topCategoria.nome}
+                        </p>
+                        <p className="text-sm font-semibold text-purple-400 whitespace-nowrap">
+                          {formataValorBRL(topCategoria.valor)}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 text-sm">
+                        Nenhum gasto registrado no momento
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <p className="text-gray-400 text-xs mb-1">
-                    Relação Mês Anterior
-                  </p>
-                  {relacaoMesAnterior && (
-                    <p
-                      className={`text-xl font-bold ${
+
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex items-center justify-start gap-3">
+                  <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/30">
+                    <DollarSign className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs mb-1">
+                      Total de Saídas
+                    </p>
+                    <p className="text-xl font-bold text-white">
+                      {quantidadeSaidas}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4 flex flex-col gap-2">
+                  <div className="flex items-center justify-start gap-3">
+                    <div
+                      className={`p-2 rounded-lg ${
+                        relacaoMesAnterior &&
                         relacaoMesAnterior.diferencaGastosMensal < 0
-                          ? "text-red-400"
-                          : "text-green-400"
+                          ? "bg-red-500/10 border border-red-500/30"
+                          : "bg-green-500/10 border border-green-500/30"
                       }`}
                     >
-                      {formataValorBRL(
-                        relacaoMesAnterior.diferencaGastosMensal
+                      {relacaoMesAnterior &&
+                      relacaoMesAnterior.diferencaGastosMensal < 0 ? (
+                        <TrendingDown className="w-5 h-5 text-red-400" />
+                      ) : (
+                        <TrendingUp className="w-5 h-5 text-green-400" />
                       )}
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-xs mb-1">
+                        Relação Mês Anterior
+                      </p>
+                      {relacaoMesAnterior && (
+                        <p
+                          className={`text-xl font-bold ${
+                            relacaoMesAnterior.diferencaGastosMensal < 0
+                              ? "text-red-400"
+                              : "text-green-400"
+                          }`}
+                        >
+                          {formataValorBRL(
+                            relacaoMesAnterior.diferencaGastosMensal
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  {relacaoMesAnterior ? (
+                    <p className="text-xs text-gray-300 leading-relaxed w-full text-center">
+                      {relacaoMesAnterior.mensagemEconomia}
+                    </p>
+                  ) : (
+                    <p className="text-xs text-gray-500 w-full text-center">
+                      Sem dados do mês anterior
                     </p>
                   )}
                 </div>
-              </div>
-              {relacaoMesAnterior ? (
-                <p className="text-xs text-gray-300 leading-relaxed w-full text-center">
-                  {relacaoMesAnterior.mensagemEconomia}
-                </p>
-              ) : (
-                <p className="text-xs text-gray-500 w-full text-center">
-                  Sem dados do mês anterior
-                </p>
-              )}
-            </div>
+              </>
+            )}
           </div>
 
           <div className="mb-6">
@@ -237,6 +307,12 @@ export default function DetalhesGastos() {
                 </div>
               ) : categoriasComId.length === 0 ? (
                 <div className="text-center py-8">
+                  <div className="relative w-16 h-16 mx-auto mb-4 flex-shrink-0">
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <PieChart className="w-8 h-8 text-purple-400/70" />
+                    </div>
+                  </div>
                   <p className="text-gray-400">
                     Nenhum gasto registrado neste período
                   </p>
@@ -291,47 +367,78 @@ export default function DetalhesGastos() {
               Gastos por Categoria
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-              {categoriasComId.map((categoria) => {
-                const Icone = obterIconeCategoria(categoria.nome);
-                const percentual =
-                  totalGastos > 0
-                    ? ((categoria.valor / totalGastos) * 100).toFixed(1)
-                    : "0.0";
-                const isSelected = categoriaSelecionada === categoria.id;
-
-                return (
-                  <motion.button
-                    key={categoria.id}
-                    onClick={() =>
-                      handleCategoriaClick(categoria.id, categoria.nome)
-                    }
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`w-full rounded-xl bg-gradient-to-br backdrop-blur-xl border shadow-lg p-4 text-left transition-all ${
-                      isSelected
-                        ? "from-purple-500/20 to-purple-600/10 border-purple-500/50"
-                        : "from-card/80 to-card/40 border-purple-500/30 hover:border-purple-500/50"
-                    }`}
+              {loadingGrafico ? (
+                // Skeletons para os cards de categoria
+                Array.from({ length: 8 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-full rounded-xl bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border border-purple-500/30 shadow-lg p-4"
                   >
                     <div className="flex items-start justify-between mb-3">
-                      <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/30">
-                        <Icone className="w-5 h-5 text-purple-400" />
+                      <div className="p-2 rounded-lg bg-gray-700/50 animate-pulse">
+                        <div className="w-5 h-5 bg-gray-600/50 rounded"></div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-purple-400 text-xs font-medium">
-                          {percentual}%
-                        </p>
-                      </div>
+                      <div className="h-3 bg-gray-700/50 rounded w-8 animate-pulse"></div>
                     </div>
-                    <h3 className="text-white font-semibold text-sm mb-1">
-                      {categoria.nome}
-                    </h3>
-                    <p className="text-gray-300 font-bold text-base">
-                      {formataValorBRL(categoria.valor)}
-                    </p>
-                  </motion.button>
-                );
-              })}
+                    <div className="h-4 bg-gray-700/50 rounded w-20 mb-2 animate-pulse"></div>
+                    <div className="h-5 bg-gray-700/50 rounded w-16 animate-pulse"></div>
+                  </div>
+                ))
+              ) : categoriasComId.length === 0 ? (
+                <div className="col-span-full text-center py-8">
+                  <div className="relative w-16 h-16 mx-auto mb-4 flex-shrink-0">
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30"></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <List className="w-8 h-8 text-purple-400/70" />
+                    </div>
+                  </div>
+                  <p className="text-gray-400">
+                    Nenhuma categoria com gastos neste período
+                  </p>
+                </div>
+              ) : (
+                categoriasComId.map((categoria) => {
+                  const Icone = obterIconeCategoria(categoria.nome);
+                  const percentual =
+                    totalGastos > 0
+                      ? ((categoria.valor / totalGastos) * 100).toFixed(1)
+                      : "0.0";
+                  const isSelected = categoriaSelecionada === categoria.id;
+
+                  return (
+                    <motion.button
+                      key={categoria.id}
+                      onClick={() =>
+                        handleCategoriaClick(categoria.id, categoria.nome)
+                      }
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full rounded-xl bg-gradient-to-br backdrop-blur-xl border shadow-lg p-4 text-left transition-all ${
+                        isSelected
+                          ? "from-purple-500/20 to-purple-600/10 border-purple-500/50"
+                          : "from-card/80 to-card/40 border-purple-500/30 hover:border-purple-500/50"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="p-2 rounded-lg bg-purple-500/10 border border-purple-500/30">
+                          <Icone className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div className="text-right">
+                          <p className="text-purple-400 text-xs font-medium">
+                            {percentual}%
+                          </p>
+                        </div>
+                      </div>
+                      <h3 className="text-white font-semibold text-sm mb-1">
+                        {categoria.nome}
+                      </h3>
+                      <p className="text-gray-300 font-bold text-base">
+                        {formataValorBRL(categoria.valor)}
+                      </p>
+                    </motion.button>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -378,6 +485,12 @@ export default function DetalhesGastos() {
                   </div>
                 ) : lancamentos.length === 0 ? (
                   <div className="w-full rounded-xl bg-card/50 border border-purple-500/30 p-8 text-center">
+                    <div className="relative w-16 h-16 mx-auto mb-4 flex-shrink-0">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-purple-500/30"></div>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <FileText className="w-8 h-8 text-purple-400/70" />
+                      </div>
+                    </div>
                     <p className="text-gray-400">
                       Nenhum lançamento encontrado nesta categoria
                     </p>

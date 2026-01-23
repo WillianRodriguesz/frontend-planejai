@@ -5,30 +5,72 @@ import type {
   LogoutResponseDto,
   TrocarSenhaDto,
   TrocarSenhaResponseDto,
+  VerificarEmailDto,
+  VerificarEmailResponseDto,
+  ReenviarCodigoDto,
+  ReenviarCodigoResponseDto,
+  SolicitarRedefinicaoSenhaDto,
+  SolicitarRedefinicaoSenhaResponseDto,
+  RedefinirSenhaDto,
+  RedefinirSenhaResponseDto,
 } from "../types/auth";
 
-/**
- * Faz login do usuário
- */
+
 export const login = async (dados: LoginDto): Promise<LoginResponseDto> => {
   return apiClient.post<LoginResponseDto>("/planejai/auth/login", dados);
 };
 
-/**
- * Faz logout do usuário
- */
+
 export const logout = async (): Promise<LogoutResponseDto> => {
   return apiClient.post<LogoutResponseDto>("/planejai/auth/logout", {});
 };
 
-/**
- * Troca a senha do usuário autenticado
- */
+
 export const trocarSenha = async (
   dados: TrocarSenhaDto
 ): Promise<TrocarSenhaResponseDto> => {
   return apiClient.patch<TrocarSenhaResponseDto>(
-    "/planejai/usuarios/senha",
+    "/planejai/usuario/senha",
+    dados
+  );
+};
+
+
+export const verificarEmail = async (
+  dados: VerificarEmailDto
+): Promise<VerificarEmailResponseDto> => {
+  return apiClient.post<VerificarEmailResponseDto>(
+    "/planejai/auth/verificar-email",
+    dados
+  );
+};
+
+
+export const reenviarCodigo = async (
+  dados: ReenviarCodigoDto
+): Promise<ReenviarCodigoResponseDto> => {
+  return apiClient.post<ReenviarCodigoResponseDto>(
+    "/planejai/auth/reenviar-codigo",
+    dados
+  );
+};
+
+
+export const solicitarRedefinicaoSenha = async (
+  dados: SolicitarRedefinicaoSenhaDto
+): Promise<SolicitarRedefinicaoSenhaResponseDto> => {
+  return apiClient.post<SolicitarRedefinicaoSenhaResponseDto>(
+    "/planejai/auth/solicitar-redefinicao-senha",
+    dados
+  );
+};
+
+
+export const redefinirSenha = async (
+  dados: RedefinirSenhaDto
+): Promise<RedefinirSenhaResponseDto> => {
+  return apiClient.post<RedefinirSenhaResponseDto>(
+    "/planejai/auth/redefinir-senha",
     dados
   );
 };

@@ -51,7 +51,7 @@ interface UseLancamentosReturn {
   adicionarLancamento: (lancamento: NovoLancamentoForm) => Promise<void>;
   atualizarLancamento: (
     idLancamento: string,
-    dados: AtualizarLancamentoDto
+    dados: AtualizarLancamentoDto,
   ) => Promise<void>;
   deletarLancamento: (idLancamento: string) => Promise<void>;
 }
@@ -108,7 +108,7 @@ export const useLancamentos = ({
             idCategoria: lanc.idCategoria,
             nomeCategoria,
           };
-        }
+        },
       );
 
       const temMaisDados = lancamentosFormatados.length === itensPorPagina;
@@ -158,7 +158,7 @@ export const useLancamentos = ({
 
   const atualizarLancamento = async (
     idLancamento: string,
-    dadosAtualizacao: AtualizarLancamentoDto
+    dadosAtualizacao: AtualizarLancamentoDto,
   ) => {
     if (!idCarteira) {
       throw new Error("ID da carteira não encontrado");
@@ -181,9 +181,10 @@ export const useLancamentos = ({
 
     try {
       await deletarLancamentoApi(idCarteira, idLancamento);
+      // Resetar estados e buscar dados atualizados
       setTodosLancamentos([]);
       setHasMore(true);
-      // Forçar refetch
+      // Buscar novamente respeitando filtros ativos
       await fetchLancamentos();
     } catch (err) {
       throw err;
@@ -195,7 +196,7 @@ export const useLancamentos = ({
       fetchLancamentos();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoFetch, idCarteira, pagina, itensPorPagina, filtros]);
+  }, [autoFetch, idCarteira, pagina, itensPorPagina, JSON.stringify(filtros)]);
 
   return {
     lancamentos: todosLancamentos,
