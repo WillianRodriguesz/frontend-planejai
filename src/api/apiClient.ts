@@ -1,4 +1,3 @@
-
 interface FetchOptions extends RequestInit {
   params?: Record<string, string>;
 }
@@ -142,4 +141,6 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient("");
+import { API_URL } from "../config/api";
+
+export const apiClient = new ApiClient(API_URL);
