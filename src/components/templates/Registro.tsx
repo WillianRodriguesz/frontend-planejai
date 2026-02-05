@@ -62,6 +62,7 @@ export default function Registro() {
   const [codigo, setCodigo] = useState(["", "", "", "", "", ""]);
   const [countdownReenvio, setCountdownReenvio] = useState(0);
   const [podeReenviar, setPodeReenviar] = useState(false);
+  const [codigoError, setCodigoError] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -124,7 +125,6 @@ export default function Registro() {
 
     if (hasError) {
       setErrors(newErrors);
-      // Remove shake after animation
       setTimeout(() => {
         setErrors({
           nome: false,
@@ -197,33 +197,18 @@ export default function Registro() {
     showLoading("Verificando...", "Validando código");
     try {
       await verificarEmail({ email, codigo: codigoCompleto });
-      setAguardandoVerificacao(false);
-      setRegistroSucesso(true);
-      success("Email verificado com sucesso!");
-      navigate("/login");
+      setCodigoError(false);
+      hideLoading();
+      // Redireciona com reload completo para garantir que o cookie seja lido
+      window.location.href = "/home";
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Erro ao verificar código";
-
-      // Mensagens específicas para erros comuns
-      if (errorMessage.includes("Código de verificação incorreto")) {
-        showError(
-          "Código incorreto. Verifique o código enviado para seu email e tente novamente.",
-        );
-      } else if (
-        errorMessage.includes("expirado") ||
-        errorMessage.includes("expirou")
-      ) {
-        showError("Código expirado. Solicite um novo código.");
-      } else {
-        showError(errorMessage);
-      }
-    } finally {
+      setCodigoError(true);
       hideLoading();
     }
   };
 
   const handleCodigoChange = (index: number, value: string) => {
+    setCodigoError(false);
     // Apenas alfanuméricos em maiúsculo
     const sanitized = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
 
@@ -349,11 +334,17 @@ export default function Registro() {
                   onChange={(e) => handleCodigoChange(index, e.target.value)}
                   onKeyDown={(e) => handleCodigoKeyDown(index, e)}
                   maxLength={1}
-                  className="w-12 h-14 md:w-11 md:h-13 bg-transparent border-2 border-gray-700 rounded-xl text-2xl md:text-xl text-white text-center font-mono font-bold outline-none transition-all duration-200 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(167,139,250,0.3)]"
+                  className={`w-12 h-14 md:w-11 md:h-13 bg-transparent border-2 ${codigoError ? "border-red-500" : "border-gray-700"} rounded-xl text-2xl md:text-xl text-white text-center font-mono font-bold outline-none transition-all duration-200 focus:border-purple-500 focus:shadow-[0_0_15px_rgba(167,139,250,0.3)]`}
                   autoComplete="off"
                 />
               ))}
             </div>
+            {codigoError && (
+              <p className="text-red-500 text-sm text-center mt-2">
+                Código incorreto. Verifique o código enviado para seu email e
+                tente novamente.
+              </p>
+            )}
             <div className="flex justify-center mt-2">
               <BotaoSalvar
                 className="text-sm md:text-sm h-10 md:h-9 w-full max-w-xs flex items-center justify-center"
