@@ -9,6 +9,7 @@ import SelectCustomizado from "../atomos/SelectCustomizado";
 import Toast from "../atomos/Toast";
 import { useCategorias } from "../../hooks/useCategorias";
 import { useToast } from "../../hooks/useToast";
+import { obterIconeCategoria } from "../../utils/categoriaIcones";
 
 interface Lancamento {
   id: string;
@@ -52,28 +53,27 @@ const ModalEditarLancamento = ({
   useEffect(() => {
     if (isOpen) {
       const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
+      document.body.style.width = "100%";
     } else {
       const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
     }
 
     return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
     };
   }, [isOpen]);
 
   useEffect(() => {
     if (lancamento && isOpen) {
       setTitulo(lancamento.titulo);
-      setCategoria(lancamento.idCategoria?.toString() || "");
       setValor(lancamento.valor.toString());
 
       const dataFormatada = lancamento.data.split("/").reverse().join("-");
@@ -82,6 +82,23 @@ const ModalEditarLancamento = ({
       setTipo(lancamento.tipo);
     }
   }, [lancamento, isOpen]);
+
+  // Novo useEffect para definir categoria quando categorias estiverem carregadas
+  useEffect(() => {
+    if (lancamento && isOpen && categorias.length > 0) {
+      // Tenta encontrar pela idCategoria
+      let cat = categorias.find((c) => c.id === lancamento.idCategoria);
+      if (cat) {
+        setCategoria(cat.id.toString());
+      } else if (lancamento.nomeCategoria) {
+        // Se não encontrou por id, tenta pelo nome
+        cat = categorias.find((c) => c.nome === lancamento.nomeCategoria);
+        if (cat) {
+          setCategoria(cat.id.toString());
+        }
+      }
+    }
+  }, [lancamento, isOpen, categorias]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +183,7 @@ const ModalEditarLancamento = ({
                       options={categorias.map((cat) => ({
                         value: cat.id.toString(),
                         label: cat.nome,
+                        icon: obterIconeCategoria(cat.nome),
                       }))}
                       value={categoria}
                       onChange={setCategoria}
@@ -278,6 +296,7 @@ const ModalEditarLancamento = ({
                       options={categorias.map((cat) => ({
                         value: cat.id.toString(),
                         label: cat.nome,
+                        icon: obterIconeCategoria(cat.nome),
                       }))}
                       value={categoria}
                       onChange={setCategoria}

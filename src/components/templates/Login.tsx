@@ -42,9 +42,23 @@ export default function Login() {
     checkAuth();
   }, [navigate]);
 
+  // Carregar bloqueio do localStorage ao montar o componente
+  useEffect(() => {
+    const bloqueioSalvo = localStorage.getItem("loginBloqueadoAte");
+    if (bloqueioSalvo) {
+      const dataBloqueio = new Date(bloqueioSalvo);
+      if (dataBloqueio > new Date()) {
+        setBloqueadoAte(dataBloqueio);
+      } else {
+        localStorage.removeItem("loginBloqueadoAte");
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (!bloqueadoAte) {
       setTimer(0);
+      localStorage.removeItem("loginBloqueadoAte");
       return;
     }
     const interval = setInterval(() => {
@@ -53,6 +67,7 @@ export default function Login() {
       if (diff <= 0) {
         setBloqueadoAte(null);
         setTimer(0);
+        localStorage.removeItem("loginBloqueadoAte");
       }
     }, 1000);
     return () => clearInterval(interval);
@@ -87,7 +102,9 @@ export default function Login() {
 
       if (tentativasErradas + 1 >= 5) {
         const timeout = 60 * 1000; // 60 segundos
-        setBloqueadoAte(new Date(Date.now() + timeout));
+        const dataBloqueio = new Date(Date.now() + timeout);
+        setBloqueadoAte(dataBloqueio);
+        localStorage.setItem("loginBloqueadoAte", dataBloqueio.toISOString());
         setTentativasErradas(0);
         toasts.forEach((toast) => hideToast(toast.id));
         showError(
